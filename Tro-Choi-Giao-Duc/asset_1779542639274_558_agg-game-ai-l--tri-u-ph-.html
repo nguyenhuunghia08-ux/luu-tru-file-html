@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Ai Là Triệu Phú - Giáo Dục</title>
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --neon-blue: #00d2ff;
+            --neon-green: #39ff14;
+            --neon-red: #ff3131;
+            --neon-orange: #ffac33;
+            --dark-bg: #02021a;
+            --panel-bg: rgba(0, 0, 50, 0.8);
+            --border-glow: 2px solid var(--neon-blue);
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--dark-bg);
+            color: white;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* --- Math Fraction Styling --- */
+        .math-frac { 
+            display: inline-flex; 
+            flex-direction: column; 
+            vertical-align: middle; 
+            text-align: center; 
+            line-height: 1.2; 
+            font-family: 'Inter', sans-serif; 
+            margin: 0 4px; 
+        }
+        .math-frac .num { border-bottom: 2px solid currentColor; padding: 0 2px; }
+        .math-frac .den { padding: 0 2px; }
+
+        /* --- Canvas for Fireworks --- */
+        #fireworks-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        /* --- Game Container --- */
+        #game-wrapper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            max-width: 1200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: radial-gradient(circle at center, #0a0a3c 0%, #02021a 100%);
+            padding: 20px;
+        }
+
+        /* --- Screens --- */
+        .screen {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            z-index: 10;
+        }
+
+        .screen.active { display: flex; }
+
+        /* --- Start Screen --- */
+        #start-screen h1 {
+            font-size: 3.5rem;
+            text-shadow: 0 0 20px var(--neon-blue);
+            margin-bottom: 10px;
+            color: var(--neon-blue);
+        }
+
+        .instruction-box {
+            background: var(--panel-bg);
+            border: var(--border-glow);
+            padding: 20px;
+            border-radius: 15px;
+            max-width: 500px;
+            margin-bottom: 30px;
+            box-shadow: 0 0 15px rgba(0, 210, 255, 0.3);
+        }
+
+        /* --- Main Game Layout --- */
+        #game-screen {
+            display: none;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: stretch;
+            width: 100%;
+            height: 100%;
+        }
+
+        .game-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .ladder-aside {
+            width: 250px;
+            background: rgba(0, 0, 0, 0.5);
+            border-left: 2px solid var(--neon-blue);
+            display: flex;
+            flex-direction: column-reverse;
+            padding: 10px;
+            overflow-y: auto;
+        }
+
+        /* --- Lifelines --- */
+        .lifelines {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .lifeline-btn {
+            width: 70px;
+            height: 50px;
+            border-radius: 25px;
+            border: 2px solid var(--neon-orange);
+            background: transparent;
+            color: var(--neon-orange);
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2rem;
+            touch-action: manipulation;
+        }
+
+        .lifeline-btn.used {
+            opacity: 0.3;
+            cursor: not-allowed;
+            text-decoration: line-through;
+            border-color: #555;
+            color: #555;
+        }
+
+        /* --- Media Content --- */
+        .media-container {
+            width: 100%;
+            max-width: 500px;
+            margin-bottom: 20px;
+        }
+
+        .media-container img, .media-container video {
+            border-radius: 15px;
+            border: 4px solid white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            max-height: 200px;
+            width: 100%;
+            object-fit: contain;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .media-container audio {
+            width: 100%;
+            margin: 10px 0;
+        }
+
+        /* --- Question & Answers --- */
+        .question-box {
+            width: 90%;
+            background: var(--panel-bg);
+            border: var(--border-glow);
+            padding: 25px;
+            border-radius: 50px;
+            position: relative;
+            margin-bottom: 30px;
+            font-size: 1.4rem;
+            box-shadow: 0 0 20px rgba(0, 210, 255, 0.2);
+            clip-path: polygon(5% 0%, 95% 0%, 100% 50%, 95% 100%, 5% 100%, 0% 50%);
+        }
+
+        .answer-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            width: 90%;
+        }
+
+        .answer-btn {
+            background: var(--panel-bg);
+            border: 1.5px solid var(--neon-blue);
+            color: white;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            border-radius: 40px;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s;
+            position: relative;
+            clip-path: polygon(5% 0%, 95% 0%, 100% 50%, 95% 100%, 5% 100%, 0% 50%);
+            touch-action: manipulation;
+        }
+
+        .answer-btn span {
+            color: var(--neon-orange);
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        /* --- States --- */
+        .answer-btn.selected {
+            background: var(--neon-orange);
+            color: black;
+            animation: blink 0.3s infinite;
+        }
+
+        .answer-btn.correct {
+            background: var(--neon-green) !important;
+            color: black !important;
+            border-color: white;
+            animation: pulse 0.5s infinite;
+        }
+
+        .answer-btn.wrong {
+            background: var(--neon-red) !important;
+            color: white !important;
+            border-color: white;
+        }
+
+        .answer-btn.hidden {
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        @keyframes blink {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+            100% { transform: scale(1); }
+        }
+
+        /* --- Prize Ladder UI --- */
+        .ladder-item {
+            padding: 8px 15px;
+            margin: 2px 0;
+            display: flex;
+            justify-content: space-between;
+            color: var(--neon-orange);
+            font-weight: bold;
+            border-radius: 5px;
+        }
+
+        .ladder-item.active {
+            background: var(--neon-orange);
+            color: black;
+            box-shadow: 0 0 10px var(--neon-orange);
+        }
+
+        .ladder-item.safe {
+            color: white;
+        }
+
+        /* --- Buttons --- */
+        .btn-main {
+            background: var(--neon-blue);
+            color: black;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 0 15px var(--neon-blue);
+            transition: 0.3s;
+            touch-action: manipulation;
+        }
+
+        .btn-main:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 25px var(--neon-blue);
+        }
+
+        /* --- Responsive Styles --- */
+        @media (max-width: 768px) {
+            #game-screen {
+                flex-direction: column;
+            }
+
+            .ladder-aside {
+                width: 100%;
+                height: 60px;
+                flex-direction: row;
+                order: 2;
+                border-left: none;
+                border-top: 2px solid var(--neon-blue);
+                overflow-x: auto;
+                padding: 5px;
+                align-items: center;
+            }
+
+            .ladder-item {
+                flex-shrink: 0;
+                margin: 0 5px;
+                padding: 5px 10px;
+                font-size: 0.8rem;
+            }
+
+            .answer-grid {
+                grid-template-columns: 1fr;
+            }
+
+            #start-screen h1 { font-size: 2rem; }
+            .question-box { font-size: 1.1rem; padding: 20px; }
+            .answer-btn { padding: 12px 20px; font-size: 1rem; }
+        }
+
+        /* Overlays for explain */
+        #explain-overlay {
+            position: absolute;
+            bottom: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.9);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid var(--neon-green);
+            z-index: 101;
+            display: none;
+            width: 80%;
+            max-width: 600px;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="fireworks-canvas"></canvas>
+
+    <div id="game-wrapper">
+        <!-- Start Screen -->
+        <div id="start-screen" class="screen active">
+            <h1>AI LÀ TRIỆU PHÚ</h1>
+            <h2 style="color: var(--neon-orange);">Chủ đề: Trái cây & Tiếng Anh</h2>
+            
+            <div class="instruction-box">
+                <p><i class="fas fa-star"></i> Vượt qua 10 câu hỏi để thắng $1,000,000</p>
+                <p><i class="fas fa-shield-halved"></i> Mốc an toàn: Câu 5 và Câu 10</p>
+                <p><i class="fas fa-adjust"></i> Quyền trợ giúp: 50:50 (Bỏ 2 phương án sai)</p>
+                <p><i class="fas fa-info-circle"></i> Mỗi câu trả lời có 2 giây hồi hộp!</p>
+            </div>
+
+            <button class="btn-main" id="start-btn">BẮT ĐẦU CHƠI</button>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="game-screen" class="screen">
+            <div class="game-main">
+                <div class="lifelines">
+                    <button class="lifeline-btn" id="btn-5050" title="50:50">50:50</button>
+                </div>
+
+                <div class="media-container" id="media-content"></div>
+
+                <div class="question-box" id="question-text">
+                    Đang tải câu hỏi...
+                </div>
+
+                <div class="answer-grid" id="answer-grid">
+                    <button class="answer-btn" data-index="0"><span>A:</span> <div class="text"></div></button>
+                    <button class="answer-btn" data-index="1"><span>B:</span> <div class="text"></div></button>
+                    <button class="answer-btn" data-index="2"><span>C:</span> <div class="text"></div></button>
+                    <button class="answer-btn" data-index="3"><span>D:</span> <div class="text"></div></button>
+                </div>
+            </div>
+
+            <aside class="ladder-aside" id="prize-ladder">
+                <!-- Dynamically filled -->
+            </aside>
+            
+            <div id="explain-overlay"></div>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="result-screen" class="screen">
+            <h1 id="result-title">GAME OVER</h1>
+            <div class="instruction-box">
+                <h2 id="result-prize">$0</h2>
+                <p id="result-msg">Rất tiếc, hãy thử lại nhé!</p>
+            </div>
+            <button class="btn-main" onclick="location.reload()">CHƠI LẠI</button>
+        </div>
+    </div>
+
+    <script>
+        /* --- QUESTION DATA --- */
+        const questionData = [
+            {"q":"Quả táo trong tiếng Anh được gọi là gì?","options":["Banana","Apple","Orange","Grape"],"answer":1,"explain":"Apple có nghĩa là quả táo.","level":1,"type":"Trắc nghiệm","image":"https://image.pollinations.ai/prompt/apple%2C%203D%20Disney%20Land%20animation%20style%2C%20cinematic%20lighting%2C%20cute%20character%2C%20vibrant%20colors%2C%20high%20quality%2C%208k%20resolution?width=1024&height=1024&nologo=true&model=flux&seed=233226"},
+            {"q":"Quả chuối (Banana) thường có màu gì khi chín?","options":["Màu đỏ","Màu xanh","Màu vàng","Màu tím"],"answer":2,"explain":"Khi chín, quả chuối thường chuyển sang màu vàng.","level":2,"type":"Trắc nghiệm","image":"https://image.pollinations.ai/prompt/yellow%20banana%2C%203D%20Disney%20Land%20animation%20style%2C%20cinematic%20lighting%2C%20cute%20character%2C%20vibrant%20colors%2C%20high%20quality%2C%208k%20resolution?width=1024&height=1024&nologo=true&model=flux&seed=922795"},
+            {"q":"Đúng hay Sai: Quả cam (Orange) có màu tím?","options":["Đúng","Sai"],"answer":1,"explain":"Quả cam thường có màu cam hoặc xanh, không phải màu tím.","level":3,"type":"Đúng/Sai","image":"https://image.pollinations.ai/prompt/orange%2C%203D%20Disney%20Land%20animation%20style%2C%20cinematic%20lighting%2C%20cute%20character%2C%20vibrant%20colors%2C%20high%20quality%2C%208k%20resolution?width=1024&height=1024&nologo=true&model=flux&seed=538748"},
+            {"q":"Điền chữ cái còn thiếu: M_ngo (Quả xoài)","options":["a","e","i","o"],"answer":0,"explain":"Từ đúng là Mango.","level":4,"type":"Điền khuyết","image":"https://image.pollinations.ai/prompt/mango%2C%203D%20Disney%20Land%20animation%20style%2C%20cinematic%20lighting%2C%20cute%20character%2C%20vibrant%20colors%2C%20high%20quality%2C%208k%20resolution?width=1024&height=1024&nologo=true&model=flux&seed=796446"},
+            {"q":"Quả nào sau đây to, vỏ xanh và ruột đỏ?","options":["Watermelon","Grape","Pear","Peach"],"answer":0,"explain":"Watermelon (dưa hấu) có vỏ xanh và ruột đỏ.","level":5,"type":"Trắc nghiệm","image":"https://image.pollinations.ai/prompt/watermelon%2C%203D%20Disney%20Land%20animation%20style%2C%20cinematic%20lighting%2C%20cute%20character%2C%20vibrant%20colors%2C%20high%20quality%2C%208k%20resolution?width=1024&height=1024&nologo=true&model=flux&seed=179961"},
+            {"q":"True or False: 'Grapes' means 'Quả nho'.","options":["True","False"],"answer":0,"explain":"Grapes có nghĩa là quả nho.","level":6,"type":"True/False","image":"https://image.pollinations.ai/prompt/grapes%2C%203D%20Disney%20Land%20animation%20style%2C%20cinematic%20lighting%2C%20cute%20character%2C%20vibrant%20colors%2C%20high%20quality%2C%208k%20resolution?width=1024&height=1024&nologo=true&model=flux&seed=48822"},
+            {"q":"Điền từ còn thiếu: Đây là quả dâu tây. Tiếng Anh là '____berry'.","options":["Blue","Straw","Black","Rasp"],"answer":1,"explain":"Strawberry là quả dâu tây.","level":7,"type":"Điền khuyết","image":"https://image.pollinations.ai/prompt/strawberry%2C%203D%20Disney%20Land%20animation%20style%2C%20cinematic%20lighting%2C%20cute%20character%2C%20vibrant%20colors%2C%20high%20quality%2C%208k%20resolution?width=1024&height=1024&nologo=true&model=flux&seed=961722"},
+            {"q":"Quả dứa (thơm) trong tiếng Anh là gì?","options":["Pineapple","Coconut","Lemon","Melon"],"answer":0,"explain":"Pineapple là quả dứa.","level":8,"type":"Trắc nghiệm","image":"https://image.pollinations.ai/prompt/pineapple%2C%203D%20Disney%20Land%20animation%20style%2C%20cinematic%20lighting%2C%20cute%20character%2C%20vibrant%20colors%2C%20high%20quality%2C%208k%20resolution?width=1024&height=1024&nologo=true&model=flux&seed=101700"},
+            {"q":"Đúng hay Sai: Trái cây cung cấp nhiều vitamin tốt cho cơ thể.","options":["Đúng","Sai"],"answer":0,"explain":"Trái cây chứa nhiều vitamin và khoáng chất tốt cho sức khỏe.","level":9,"type":"Đúng/Sai"},
+            {"q":"Quả nào nhỏ, mọc thành chùm và có thể có màu xanh hoặc tím?","options":["Mango","Grape","Apple","Durian"],"answer":1,"explain":"Quả nho (Grape) thường mọc thành chùm.","level":10,"type":"Trắc nghiệm","image":"https://image.pollinations.ai/prompt/grapes%2C%203D%20Disney%20Land%20animation%20style%2C%20cinematic%20lighting%2C%20cute%20character%2C%20vibrant%20colors%2C%20high%20quality%2C%208k%20resolution?width=1024&height=1024&nologo=true&model=flux&seed=749749"}
+        ];
+
+        /* --- AUDIO ASSETS --- */
+        const audioFiles = {
+            intro: new Audio("https://raw.githubusercontent.com/HuuNghia2308/Edu-assets/main/Lop-1/File-Nghe/asset_1777903428531_intro-ai-la-trieu-phu.mp3"),
+            bgm: new Audio("https://raw.githubusercontent.com/HuuNghia2308/Edu-assets/main/Lop-1/File-Nghe/asset_1777903499504_-m-thanh-ch----c-c-u-h-i.mp3"),
+            correct: new Audio("https://raw.githubusercontent.com/HuuNghia2308/Edu-assets/main/Lop-1/File-Nghe/asset_1777903530000_am-thanh-tra-loi-dung-ai-la-trieu-phu.mp3"),
+            wrong: new Audio("https://raw.githubusercontent.com/HuuNghia2308/Edu-assets/main/Lop-1/File-Nghe/asset_1777903552999_-m-thanh-sai-ai-l--trieu-phu.mp3")
+        };
+        audioFiles.bgm.loop = true;
+
+        /* --- GAME STATE --- */
+        let currentIdx = 0;
+        let isLocked = false;
+        let lifelineUsed = false;
+        const prizes = ["$100", "$200", "$300", "$500", "$1,000", "$2,000", "$4,000", "$8,000", "$16,000", "$1,000,000"];
+        const safeIndices = [4, 9]; // Ques 5 and 10
+
+        /* --- HELPERS --- */
+        function formatFractions(text) {
+            return text.replace(/\[F\](.*?)\/(.*?)\[\/F\]/g, '<div class="math-frac"><span class="num">$1</span><span class="den">$2</span></div>');
+        }
+
+        function initPrizeLadder() {
+            const ladder = document.getElementById('prize-ladder');
+            ladder.innerHTML = '';
+            prizes.forEach((prize, i) => {
+                const div = document.createElement('div');
+                div.className = `ladder-item ${safeIndices.includes(i) ? 'safe' : ''}`;
+                div.id = `ladder-${i}`;
+                div.innerHTML = `<span>${i + 1}</span> <span>${prize}</span>`;
+                ladder.appendChild(div);
+            });
+        }
+
+        function updateLadder() {
+            document.querySelectorAll('.ladder-item').forEach(el => el.classList.remove('active'));
+            const activeItem = document.getElementById(`ladder-${currentIdx}`);
+            if (activeItem) {
+                activeItem.classList.add('active');
+                activeItem.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
+            }
+        }
+
+        /* --- CORE LOGIC --- */
+        function loadQuestion() {
+            isLocked = false;
+            document.getElementById('explain-overlay').style.display = 'none';
+            const q = questionData[currentIdx];
+            const qTextEl = document.getElementById('question-text');
+            qTextEl.innerHTML = formatFractions(q.q);
+            
+            // Media
+            const mediaBox = document.getElementById('media-content');
+            mediaBox.innerHTML = '';
+            if (q.image) mediaBox.innerHTML = `<img src="${q.image}" alt="question">`;
+            else if (q.video) mediaBox.innerHTML = `<video src="${q.video}" controls></video>`;
+            else if (q.audio) mediaBox.innerHTML = `<div style="font-size:2rem;"><i class="fas fa-volume-up"></i></div><audio src="${q.audio}" controls></audio>`;
+
+            // Answers
+            const btns = document.querySelectorAll('.answer-btn');
+            btns.forEach((btn, i) => {
+                btn.className = 'answer-btn';
+                const optText = q.options[i];
+                if (optText !== undefined) {
+                    btn.querySelector('.text').innerHTML = formatFractions(optText);
+                    btn.style.display = 'block';
+                } else {
+                    btn.style.display = 'none';
+                }
+            });
+
+            updateLadder();
+            audioFiles.bgm.play();
+        }
+
+        async function handleSelection(idx) {
+            if (isLocked) return;
+            isLocked = true;
+
+            const btns = document.querySelectorAll('.answer-btn');
+            const selectedBtn = btns[idx];
+            selectedBtn.classList.add('selected');
+            
+            audioFiles.bgm.pause();
+
+            // Suspense Delay
+            await new Promise(r => setTimeout(r, 2000));
+
+            const correctIdx = questionData[currentIdx].answer;
+            if (idx === correctIdx) {
+                // Correct
+                selectedBtn.classList.remove('selected');
+                selectedBtn.classList.add('correct');
+                audioFiles.correct.play();
+                startFireworks();
+                
+                // Show explanation if exists
+                if (questionData[currentIdx].explain) {
+                    const explainBox = document.getElementById('explain-overlay');
+                    explainBox.innerHTML = `<strong>Giải thích:</strong> ${questionData[currentIdx].explain}`;
+                    explainBox.style.display = 'block';
+                }
+
+                await new Promise(r => setTimeout(r, 2500));
+                
+                currentIdx++;
+                if (currentIdx >= questionData.length) {
+                    showEnd(true);
+                } else {
+                    loadQuestion();
+                }
+            } else {
+                // Wrong
+                selectedBtn.classList.remove('selected');
+                selectedBtn.classList.add('wrong');
+                btns[correctIdx].classList.add('correct');
+                audioFiles.wrong.play();
+
+                await new Promise(r => setTimeout(r, 2000));
+                showEnd(false);
+            }
+        }
+
+        function showEnd(isVictory) {
+            document.getElementById('game-screen').classList.remove('active');
+            document.getElementById('result-screen').classList.add('active');
+            
+            let lastSafePrize = "$0";
+            for (let i = currentIdx - 1; i >= 0; i--) {
+                if (safeIndices.includes(i)) {
+                    lastSafePrize = prizes[i];
+                    break;
+                }
+            }
+            if (isVictory) lastSafePrize = prizes[prizes.length - 1];
+
+            document.getElementById('result-title').innerText = isVictory ? "XUẤT SẮC!" : "GAME OVER";
+            document.getElementById('result-prize').innerText = lastSafePrize;
+            document.getElementById('result-msg').innerText = isVictory ? "Bạn đã trở thành Triệu Phú!" : "Chúc bạn may mắn lần sau!";
+            
+            if (isVictory) {
+                setInterval(startFireworks, 1000);
+            }
+        }
+
+        /* --- LIFELINE --- */
+        function use5050() {
+            if (lifelineUsed || isLocked) return;
+            lifelineUsed = true;
+            document.getElementById('btn-5050').classList.add('used');
+
+            const correctIdx = questionData[currentIdx].answer;
+            let hidden = 0;
+            const btns = document.querySelectorAll('.answer-btn');
+            
+            let indices = [0, 1, 2, 3].filter(i => i !== correctIdx && i < questionData[currentIdx].options.length);
+            // Shuffle indices to hide randomly
+            indices.sort(() => Math.random() - 0.5);
+            
+            indices.slice(0, 2).forEach(i => {
+                btns[i].classList.add('hidden');
+            });
+        }
+
+        /* --- FIREWORKS SYSTEM --- */
+        const canvas = document.getElementById('fireworks-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Particle {
+            constructor(x, y, color) {
+                this.x = x; this.y = y; this.color = color;
+                this.speed = Math.random() * 5 + 2;
+                this.angle = Math.random() * Math.PI * 2;
+                this.vx = Math.cos(this.angle) * this.speed;
+                this.vy = Math.sin(this.angle) * this.speed;
+                this.opacity = 1;
+            }
+            update() {
+                this.x += this.vx; this.y += this.vy;
+                this.vy += 0.05; this.opacity -= 0.01;
+            }
+            draw() {
+                ctx.globalAlpha = this.opacity;
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, 3, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function startFireworks() {
+            const colors = ['#00d2ff', '#39ff14', '#ff3131', '#ffac33', '#ffffff'];
+            const x = Math.random() * canvas.width;
+            const y = Math.random() * canvas.height * 0.5;
+            for (let i = 0; i < 50; i++) {
+                particles.push(new Particle(x, y, colors[Math.floor(Math.random() * colors.length)]));
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles = particles.filter(p => p.opacity > 0);
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        /* --- INITIALIZATION --- */
+        document.getElementById('start-btn').addEventListener('click', () => {
+            audioFiles.intro.pause();
+            audioFiles.intro.currentTime = 0;
+            document.getElementById('start-screen').classList.remove('active');
+            document.getElementById('game-screen').classList.add('active');
+            initPrizeLadder();
+            loadQuestion();
+        });
+
+        document.getElementById('btn-5050').addEventListener('click', use5050);
+
+        document.querySelectorAll('.answer-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                handleSelection(parseInt(btn.dataset.index));
+            });
+        });
+
+        // Trigger intro on first touch/click for iOS
+        window.addEventListener('touchstart', function() {
+            if (audioFiles.intro.paused && currentIdx === 0 && !isLocked) {
+                audioFiles.intro.play().catch(e => console.log("Safari block"));
+            }
+        }, { once: true });
+        
+        window.addEventListener('click', function() {
+            if (audioFiles.intro.paused && currentIdx === 0 && !isLocked) {
+                audioFiles.intro.play().catch(e => console.log("Interaction required"));
+            }
+        }, { once: true });
+
+    </script>
+</body>
+</html>
