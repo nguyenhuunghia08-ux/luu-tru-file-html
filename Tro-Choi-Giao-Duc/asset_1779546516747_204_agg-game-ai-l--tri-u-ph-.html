@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Ai Là Triệu Phú - Giáo Dục</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #060b28;
+            --neon-blue: #00d4ff;
+            --neon-green: #39ff14;
+            --neon-red: #ff3131;
+            --neon-orange: #ffac33;
+            --text-white: #ffffff;
+            --glass-bg: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            background-image: radial-gradient(circle at center, #1a2a6c, #060b28);
+            color: var(--text-white);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Fraction Support */
+        .math-frac {
+            display: inline-flex;
+            flex-direction: column;
+            vertical-align: middle;
+            text-align: center;
+            line-height: 1.2;
+            font-family: 'Inter', sans-serif;
+            margin: 0 4px;
+        }
+        .math-frac .num {
+            border-bottom: 2px solid currentColor;
+            padding: 0 2px;
+        }
+        .math-frac .den {
+            padding: 0 2px;
+        }
+
+        /* Screens */
+        .screen {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            transition: opacity 0.5s ease;
+            z-index: 10;
+        }
+
+        .hidden {
+            display: none !important;
+            opacity: 0;
+        }
+
+        /* Start Screen */
+        .title-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .title-container h1 {
+            font-size: 3rem;
+            text-shadow: 0 0 20px var(--neon-blue);
+            letter-spacing: 5px;
+        }
+
+        .instruction-box {
+            background: var(--glass-bg);
+            border: 2px solid var(--neon-blue);
+            border-radius: 15px;
+            padding: 20px;
+            max-width: 500px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-start {
+            background: linear-gradient(45deg, #00d4ff, #0055ff);
+            border: none;
+            color: white;
+            padding: 15px 40px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 0 15px var(--neon-blue);
+            transition: transform 0.2s;
+        }
+
+        .btn-start:active {
+            transform: scale(0.95);
+        }
+
+        /* Game Layout */
+        #game-container {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        .main-game {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            z-index: 5;
+        }
+
+        /* Prize Ladder */
+        .ladder-container {
+            width: 250px;
+            background: rgba(0, 0, 0, 0.5);
+            border-left: 2px solid var(--neon-blue);
+            display: flex;
+            flex-direction: column-reverse;
+            padding: 20px 10px;
+            overflow-y: auto;
+        }
+
+        .ladder-item {
+            padding: 8px 15px;
+            margin: 2px 0;
+            border-radius: 5px;
+            font-weight: bold;
+            color: var(--neon-orange);
+            display: flex;
+            justify-content: space-between;
+            transition: background 0.3s;
+        }
+
+        .ladder-item.active {
+            background: var(--neon-orange);
+            color: black;
+            box-shadow: 0 0 10px var(--neon-orange);
+        }
+
+        .ladder-item.safe {
+            color: white;
+        }
+
+        /* Question & Answers */
+        .question-box {
+            width: 90%;
+            max-width: 800px;
+            background: var(--glass-bg);
+            border: 3px solid var(--neon-blue);
+            border-radius: 20px 50px 20px 50px;
+            padding: 30px;
+            text-align: center;
+            font-size: 1.4rem;
+            margin-bottom: 40px;
+            position: relative;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
+        }
+
+        .media-container img, .media-container video {
+            border-radius: 15px;
+            border: 4px solid white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            max-height: 180px;
+            max-width: 100%;
+            object-fit: contain;
+            margin: 10px auto;
+            display: block;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            width: 90%;
+            max-width: 800px;
+        }
+
+        .option-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid var(--neon-blue);
+            border-radius: 30px;
+            padding: 15px 25px;
+            color: white;
+            font-size: 1.1rem;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .option-prefix {
+            color: var(--neon-orange);
+            font-weight: bold;
+            margin-right: 15px;
+        }
+
+        /* Lifelines */
+        .lifelines {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .lifeline-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--glass-bg);
+            border: 2px solid var(--neon-blue);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2rem;
+            transition: 0.3s;
+        }
+
+        .lifeline-btn.used {
+            opacity: 0.3;
+            filter: grayscale(1);
+            cursor: not-allowed;
+            text-decoration: line-through;
+        }
+
+        /* Animations */
+        @keyframes blink-orange {
+            0%, 100% { background: transparent; }
+            50% { background: var(--neon-orange); color: black; }
+        }
+
+        @keyframes pulse-green {
+            0% { box-shadow: 0 0 0 0 rgba(57, 255, 20, 0.7); background: var(--neon-green); }
+            70% { box-shadow: 0 0 0 20px rgba(57, 255, 20, 0); background: var(--neon-green); }
+            100% { box-shadow: 0 0 0 0 rgba(57, 255, 20, 0); background: var(--neon-green); }
+        }
+
+        .selecting { animation: blink-orange 0.5s infinite; }
+        .correct { animation: pulse-green 0.5s infinite; color: black !important; border-color: var(--neon-green); }
+        .wrong { background: var(--neon-red) !important; border-color: var(--neon-red); }
+
+        /* Responsive Mobile */
+        @media (max-width: 768px) {
+            #game-container { flex-direction: column; }
+            .ladder-container {
+                width: 100%;
+                height: 60px;
+                flex-direction: row;
+                border-left: none;
+                border-top: 2px solid var(--neon-blue);
+                overflow-x: auto;
+                order: 2;
+                padding: 10px;
+            }
+            .ladder-item {
+                min-width: 120px;
+                font-size: 0.8rem;
+                margin: 0 5px;
+                justify-content: center;
+            }
+            .options-grid { grid-template-columns: 1fr; }
+            .question-box { font-size: 1.1rem; padding: 15px; }
+            .title-container h1 { font-size: 2rem; }
+            .lifelines { top: 10px; right: 10px; }
+        }
+
+        /* Final Result */
+        .result-prize {
+            font-size: 2.5rem;
+            color: var(--neon-orange);
+            margin: 20px 0;
+            text-shadow: 0 0 10px var(--neon-orange);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Audio Objects -->
+    <audio id="audio-bgm" loop src="https://raw.githubusercontent.com/HuuNghia2308/Edu-assets/main/Lop-1/File-Nghe/asset_1777903499504_-m-thanh-ch----c-c-u-h-i.mp3"></audio>
+    <audio id="audio-correct" src="https://raw.githubusercontent.com/HuuNghia2308/Edu-assets/main/Lop-1/File-Nghe/asset_1777903530000_am-thanh-tra-loi-dung-ai-la-trieu-phu.mp3"></audio>
+    <audio id="audio-wrong" src="https://raw.githubusercontent.com/HuuNghia2308/Edu-assets/main/Lop-1/File-Nghe/asset_1777903552999_-m-thanh-sai-ai-l--trieu-phu.mp3"></audio>
+
+    <!-- Start Screen -->
+    <div id="start-screen" class="screen">
+        <div class="title-container">
+            <h1>AI LÀ TRIỆU PHÚ</h1>
+            <p>Chủ đề: Toán học & Kỹ năng sống</p>
+        </div>
+        <div class="instruction-box">
+            <p><i class="fas fa-star"></i> Vượt qua 10 câu hỏi để trở thành Triệu Phú.</p><br>
+            <p><i class="fas fa-check-circle"></i> Có 4 đáp án, hãy chọn 1 đáp án đúng nhất.</p><br>
+            <p><i class="fas fa-shield-alt"></i> Mốc an toàn tại câu số 5.</p><br>
+            <p><i class="fas fa-lightbulb"></i> Bạn có quyền trợ giúp 50:50.</p>
+        </div>
+        <button class="btn-start" onclick="startGame()">BẮT ĐẦU CHƠI</button>
+    </div>
+
+    <!-- Game Screen -->
+    <div id="game-screen" class="screen hidden">
+        <div id="game-container">
+            <div class="main-game">
+                <div class="lifelines">
+                    <button id="btn-5050" class="lifeline-btn" onclick="use5050()">50:50</button>
+                </div>
+
+                <div class="question-box" id="question-text">
+                    Đang tải câu hỏi...
+                </div>
+                
+                <div id="media-area" class="media-container"></div>
+
+                <div class="options-grid" id="options-grid">
+                    <!-- Options injected by JS -->
+                </div>
+            </div>
+
+            <div class="ladder-container" id="ladder">
+                <!-- Ladder items injected by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Result Screen -->
+    <div id="result-screen" class="screen hidden">
+        <h1 id="result-title">KẾT THÚC!</h1>
+        <div class="result-prize" id="final-prize">$0</div>
+        <div class="instruction-box" id="explain-box"></div>
+        <button class="btn-start" onclick="location.reload()">CHƠI LẠI</button>
+    </div>
+
+    <script>
+        // INPUT DATA
+        const questionData = [
+            {"q":"Số nào lớn nhất trong các số sau: 5, 9, 7, 2?","options":["5","9","7","2"],"answer":1,"explain":"Trong các số đã cho, số 9 đứng sau cùng trong dãy số đếm từ 0 đến 10 nên là số lớn nhất.","level":1},
+            {"q":"Kết quả của phép tính 4 + 5 là bao nhiêu?","options":["8","9","10","7"],"answer":1,"explain":"Sử dụng cách đếm tiếp: 4 thêm 5 đơn vị là 9 (4, 5, 6, 7, 8, 9).","level":2},
+            {"q":"Số nào gồm 2 và 6?","options":["7","8","9","10"],"answer":1,"explain":"Tách gộp số: Gộp 2 và 6 ta được 8.","level":3},
+            {"q":"Dãy số nào dưới đây được sắp xếp theo thứ tự từ bé đến lớn?","options":["10, 8, 5, 2","2, 5, 10, 8","2, 5, 8, 10","5, 2, 8, 10"],"answer":2,"explain":"Thứ tự từ bé đến lớn đúng là: 2 rồi đến 5, đến 8 và cuối cùng là 10.","level":4},
+            {"q":"Điền số thích hợp vào chỗ chấm: 10 - .... = 3","options":["6","7","8","5"],"answer":1,"explain":"Vì 10 bớt đi 7 thì còn lại 3 (hoặc 10 - 3 = 7).","level":5},
+            {"q":"Số liền sau của số 8 là số nào?","options":["7","9","10","6"],"answer":1,"explain":"Số liền sau của một số là số đó cộng thêm 1. Vậy 8 + 1 = 9.","level":6},
+            {"q":"Điền dấu thích hợp vào chỗ chấm: 3 + 4 .... 8","options":[">","<","=","Không có dấu nào"],"answer":1,"explain":"Ta tính 3 + 4 = 7. So sánh 7 và 8, ta thấy 7 bé hơn 8 nên điền dấu <.","level":7},
+            {"q":"Nam có 6 viên bi, Nam cho Việt 2 viên bi. Hỏi Nam còn lại bao nhiêu viên bi?","options":["8 viên bi","3 viên bi","4 viên bi","5 viên bi"],"answer":2,"explain":"Phép tính tương ứng là 6 - 2 = 4. Nam còn lại 4 viên bi.","level":8},
+            {"q":"Số nào đứng giữa số 6 và số 8?","options":["5","7","9","10"],"answer":1,"explain":"Dãy số đếm liên tiếp là 6, 7, 8. Vậy số 7 đứng giữa số 6 và số 8.","level":9},
+            {"q":"Nếu ta thêm 3 bông hoa vào 5 bông hoa đã có, ta được tất cả bao nhiêu bông hoa?","options":["7","8","9","10"],"answer":1,"explain":"Thực hiện phép cộng: 5 + 3 = 8.","level":10}
+        ];
+
+        const prizes = ["$100", "$200", "$300", "$500", "$1,000", "$2,000", "$4,000", "$8,000", "$16,000", "$32,000", "$64,000", "$125,000", "$250,000", "$500,000", "$1,000,000"];
+        
+        let currentLevel = 0;
+        let isAnswering = false;
+        let used5050 = false;
+        const totalQuestions = questionData.length;
+
+        // Sound Elements
+        const sounds = {
+            bgm: document.getElementById('audio-bgm'),
+            correct: document.getElementById('audio-correct'),
+            wrong: document.getElementById('audio-wrong')
+        };
+
+        // Utility: Format Fraction [F]a/b[/F]
+        function formatText(text) {
+            if (!text) return "";
+            return text.replace(/\[F\](.*?)\/(.*?)\[\/F\]/g, '<div class="math-frac"><span class="num">$1</span><span class="den">$2</span></div>');
+        }
+
+        // Initialize Ladder
+        function initLadder() {
+            const ladder = document.getElementById('ladder');
+            ladder.innerHTML = '';
+            // Determine prize scaling based on data length
+            for (let i = 0; i < totalQuestions; i++) {
+                const item = document.createElement('div');
+                item.className = 'ladder-item';
+                if ((i + 1) % 5 === 0 || i === totalQuestions - 1) item.classList.add('safe');
+                item.id = `ladder-${i}`;
+                
+                const prizeVal = (i === totalQuestions - 1) ? "$1,000,000" : prizes[i] || `$${(i+1)*100}`;
+                item.innerHTML = `<span>${i + 1}</span> <span>${prizeVal}</span>`;
+                ladder.appendChild(item);
+            }
+        }
+
+        function startGame() {
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('game-screen').classList.remove('hidden');
+            initLadder();
+            loadQuestion();
+            sounds.bgm.play().catch(e => console.log("Audio play blocked"));
+        }
+
+        function loadQuestion() {
+            isAnswering = false;
+            const data = questionData[currentLevel];
+            
+            // Highlight Ladder
+            document.querySelectorAll('.ladder-item').forEach(el => el.classList.remove('active'));
+            const currentStep = document.getElementById(`ladder-${currentLevel}`);
+            if (currentStep) {
+                currentStep.classList.add('active');
+                currentStep.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
+            }
+
+            // Question Text
+            document.getElementById('question-text').innerHTML = formatText(data.q);
+
+            // Media
+            const mediaArea = document.getElementById('media-area');
+            mediaArea.innerHTML = '';
+            if (data.image) mediaArea.innerHTML = `<img src="${data.image}">`;
+            if (data.video) mediaArea.innerHTML = `<video src="${data.video}" controls></video>`;
+            if (data.audio) mediaArea.innerHTML = `<audio src="${data.audio}" controls></audio>`;
+
+            // Options
+            const optionsGrid = document.getElementById('options-grid');
+            optionsGrid.innerHTML = '';
+            const prefixes = ['A', 'B', 'C', 'D'];
+            
+            data.options.forEach((opt, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerHTML = `<span class="option-prefix">${prefixes[index]}:</span> ${formatText(opt)}`;
+                btn.onclick = () => selectAnswer(index);
+                optionsGrid.appendChild(btn);
+            });
+
+            sounds.bgm.play();
+        }
+
+        function selectAnswer(index) {
+            if (isAnswering) return;
+            isAnswering = true;
+            
+            sounds.bgm.pause();
+            const btns = document.querySelectorAll('.option-btn');
+            btns[index].classList.add('selecting');
+
+            setTimeout(() => {
+                const correctIdx = questionData[currentLevel].answer;
+                btns[index].classList.remove('selecting');
+
+                if (index === correctIdx) {
+                    btns[index].classList.add('correct');
+                    sounds.correct.play();
+                    
+                    setTimeout(() => {
+                        if (currentLevel < totalQuestions - 1) {
+                            currentLevel++;
+                            loadQuestion();
+                        } else {
+                            showResult(true);
+                        }
+                    }, 2500);
+                } else {
+                    btns[index].classList.add('wrong');
+                    btns[correctIdx].classList.add('correct');
+                    sounds.wrong.play();
+                    
+                    setTimeout(() => {
+                        showResult(false);
+                    }, 2500);
+                }
+            }, 2000);
+        }
+
+        function use5050() {
+            if (used5050 || isAnswering) return;
+            used5050 = true;
+            document.getElementById('btn-5050').classList.add('used');
+
+            const correctIdx = questionData[currentLevel].answer;
+            const btns = document.querySelectorAll('.option-btn');
+            let removed = 0;
+            let indices = [0, 1, 2, 3].filter(i => i !== correctIdx);
+            
+            // Randomly pick 2 to hide
+            indices = indices.sort(() => Math.random() - 0.5);
+            indices.slice(0, 2).forEach(idx => {
+                btns[idx].style.visibility = 'hidden';
+            });
+        }
+
+        function showResult(isWin) {
+            document.getElementById('game-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+            
+            const title = document.getElementById('result-title');
+            const prizeDisplay = document.getElementById('final-prize');
+            const explainBox = document.getElementById('explain-box');
+
+            if (isWin) {
+                title.innerText = "CHÚC MỪNG TÂN TRIỆU PHÚ!";
+                prizeDisplay.innerText = "$1,000,000";
+                explainBox.innerText = "Bạn đã trả lời xuất sắc tất cả các câu hỏi!";
+            } else {
+                title.innerText = "RẤT TIẾC, GAME OVER!";
+                // Calculate safe haven prize
+                let safeLevel = 0;
+                if (currentLevel >= 9) safeLevel = 9;
+                else if (currentLevel >= 4) safeLevel = 4;
+                else safeLevel = -1;
+
+                const prize = safeLevel === -1 ? "$0" : (safeLevel === 9 ? "$1,000,000" : prizes[safeLevel]);
+                prizeDisplay.innerText = prize;
+                
+                const lastData = questionData[currentLevel];
+                explainBox.innerHTML = `<strong>Giải thích câu cuối:</strong><br>${lastData.explain}`;
+            }
+        }
+
+        // Prevent Zoom on iOS
+        document.addEventListener('gesturestart', function(e) {
+            e.preventDefault();
+        });
+    </script>
+</body>
+</html>
