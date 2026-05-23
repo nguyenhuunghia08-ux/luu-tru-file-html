@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Magical Treasure Hunt</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Pacifico&display=swap" rel="stylesheet">
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: 'Inter', sans-serif;
+            background: #1a1a1a;
+        }
+
+        #game-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            background-image: url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiQExAHOxaqDwFIbl1C4N8hGj4i5gyJM1x-3nziy-FHwNpbmruA4KHa6at8doK46iyzcd2XYzrkI32SkygeXfqJ2F8PAtkTHeqSZvaZlc1dtlB_ebFvgGOV1WGtggB0s3chJOMKsRngF2dBYil9MEqBV5jGBl5A0X2l3oYvPwIXhOqfCxTv1Hrk5qESAztZ/w640-h350/MAP.png');
+            background-size: cover;
+            background-position: center;
+            overflow: hidden;
+        }
+
+        .math-frac {
+            display: inline-flex;
+            flex-direction: column;
+            vertical-align: middle;
+            text-align: center;
+            line-height: 1.2;
+            font-family: 'Inter', sans-serif;
+            margin: 0 4px;
+        }
+        .math-frac .num { border-bottom: 2px solid currentColor; padding: 0 2px; }
+        .math-frac .den { padding: 0 2px; }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .rabbit {
+            width: 140px;
+            height: 140px;
+            position: absolute;
+            z-index: 50;
+            pointer-events: none;
+            background-image: url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjwPWuJZk50__8hnrVR-5pddpDaIPifjf88D7WRDfuyS4j1tNd7cyJYxWogGONfMAFVKcStr4y6fJuo9mLBXBQ0SufwKIh8GTIjPpHbE1kSmC3VrfDckHuEndSEnqWKFVWG9f2CSTkICO5IPjgI3AFr_w7WLVZBL2Ca_Q7A3xfoKXSE6PWUOe-9Q6nRxr0F/s320/RABBIT-removebg-preview.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            animation: bobbing 1.5s ease-in-out infinite;
+        }
+
+        @keyframes bobbing {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(2deg); }
+        }
+
+        .key-node {
+            position: absolute;
+            font-size: 2rem;
+            z-index: 30;
+            transition: all 0.3s;
+        }
+
+        .treasure {
+            position: absolute;
+            width: 100px;
+            top: 10%;
+            right: 10%;
+            z-index: 40;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .media-asset {
+            border-radius: 15px;
+            border: 4px solid white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            max-height: 180px;
+            object-fit: contain;
+            margin: 10px auto;
+            display: block;
+        }
+
+        .btn-answer {
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+        .btn-answer:hover {
+            transform: scale(1.02);
+            border-color: #4CAF50;
+        }
+
+        #wrong-feedback {
+            pointer-events: none;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+
+<div id="game-container">
+    <!-- UI Layer -->
+    <div id="start-screen" class="absolute inset-0 z-[100] flex items-center justify-center bg-black/60">
+        <div class="glass-panel p-8 max-w-md w-full text-center">
+            <h1 class="text-4xl font-bold text-blue-600 mb-4 font-['Pacifico']">Magical Treasure Hunt</h1>
+            <div class="text-left mb-6 space-y-3 text-gray-700">
+                <p class="font-bold text-xl mb-2">📜 Hướng dẫn chơi:</p>
+                <p>🐰 Chú thỏ sẽ di chuyển trên đường đi tìm kho báu.</p>
+                <p>❓ Trả lời đúng các câu hỏi để nhận chìa khóa (🔑).</p>
+                <p>❌ Nếu trả lời sai, thỏ sẽ phải quay lại vạch xuất phát.</p>
+                <p>💎 Chạm tới rương vàng ở lâu đài để chiến thắng!</p>
+            </div>
+            <button id="btn-start" class="bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-10 rounded-full text-2xl shadow-lg transition-transform active:scale-95">
+                BẮT ĐẦU CHƠI!
+            </button>
+        </div>
+    </div>
+
+    <button id="btn-mute" class="absolute top-4 right-4 z-[110] bg-white/80 p-3 rounded-full text-2xl shadow-md">
+        🔊
+    </button>
+
+    <!-- Game Elements -->
+    <div id="rabbit" class="rabbit" style="display:none;"></div>
+    
+    <div id="path-container"></div>
+
+    <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi6NRXlKsyWaj9cGo2Jla2bVvgqKmRY4l-TVtkHUajc8f4POznsI6A7cbJ0X42-Ixoag2PgIVaqKcLS8bnZkYzy5YurWCOVOyTansdFhQpv3xXgJsEi4y7BtFLzPSPyCD30suw3EheZLCgWjWgZhoCdNiyHvznwJZ-HeneNPq7Fad01HVIk5UkLejSoR6Oo/s320/KHO%20B%C3%81U.png" 
+         class="treasure" id="treasure-chest" alt="Treasure">
+
+    <div id="start-node" class="absolute text-3xl font-bold text-red-600 z-20" style="left: 8%; bottom: 12%;">❌</div>
+
+    <!-- Question Modal -->
+    <div id="question-modal" class="absolute inset-0 z-[80] hidden flex items-center justify-center bg-black/30 p-4">
+        <div class="glass-panel p-6 max-w-lg w-full">
+            <div id="media-container" class="mb-4"></div>
+            <h2 id="question-text" class="text-xl font-bold text-gray-800 mb-6 text-center"></h2>
+            <div id="options-container" class="grid grid-cols-1 gap-3"></div>
+        </div>
+    </div>
+
+    <!-- Feedbacks -->
+    <div id="wrong-feedback" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-5xl font-black text-red-600 opacity-0 italic">
+        Sai rồi!
+    </div>
+</div>
+
+<script>
+    const questionData = [{"q":"Có 5 con cá trong bể, mẹ thả thêm 3 con cá nữa. Hỏi có tất cả bao nhiêu con cá?","options":["7 con cá","8 con cá","9 con cá"],"answer":1,"explain":"Thực hiện phép tính cộng: 5 + 3 = 8.","level":2,"type":"Trắc nghiệm"},{"q":"Số nào lớn hơn số 7 trong các số sau?","options":["5","6","8"],"answer":2,"explain":"Trong dãy số tự nhiên, 8 đứng sau 7 nên 8 lớn hơn 7.","level":2,"type":"Trắc nghiệm"},{"q":"Kết quả của phép tính 10 - 4 là bao nhiêu?","options":["5","6","7"],"answer":1,"explain":"Thực hiện phép tính trừ trong phạm vi 10: 10 - 4 = 6.","level":2,"type":"Trắc nghiệm"},{"q":"Điền số thích hợp vào chỗ trống: 1, 2, 3, ____, 5.","options":["2","4","6"],"answer":1,"explain":"Dãy số đếm liên tiếp từ 1 đến 5, số đứng giữa 3 và 5 là 4.","level":2,"type":"Điền khuyết"},{"q":"Phép tính nào dưới đây có kết quả bằng 9?","options":["5 + 4","6 + 2","7 + 1"],"answer":0,"explain":"Ta có: 5 + 4 = 9; 6 + 2 = 8; 7 + 1 = 8.","level":2,"type":"Trắc nghiệm"},{"q":"Trong các số 2, 5, 0, 9, số nào là số bé nhất?","options":["2","0","5"],"answer":1,"explain":"Số 0 là số bắt đầu của dãy số tự nhiên và bé hơn tất cả các số còn lại.","level":2,"type":"Trắc nghiệm"},{"q":"Chọn dấu thích hợp để điền vào chỗ chấm: 8 .... 10","options":["<",">","="],"answer":0,"explain":"8 ít hơn 10 đơn vị nên ta dùng dấu bé hơn (<).","level":2,"type":"Trắc nghiệm"},{"q":"Dãy số nào dưới đây được sắp xếp theo thứ tự từ bé đến lớn?","options":["1, 3, 2","4, 5, 6","9, 8, 7"],"answer":1,"explain":"Dãy 4, 5, 6 là dãy số tăng dần liên tiếp.","level":2,"type":"Trắc nghiệm"},{"q":"Phát biểu sau đây Đúng hay Sai: \"7 trừ 2 bằng 4\"","options":["Đúng","Sai"],"answer":1,"explain":"Thực hiện phép tính: 7 - 2 = 5. Do đó kết quả bằng 4 là Sai.","level":2,"type":"Đúng/Sai"},{"q":"Lan có 6 cái kẹo, Lan cho em 2 cái. Lan còn lại bao nhiêu cái kẹo?","options":["4 cái kẹo","3 cái kẹo","5 cái kẹo"],"answer":0,"explain":"Đây là bài toán bớt đi: 6 - 2 = 4.","level":2,"type":"Trắc nghiệm"}];
+
+    // Coordinates for the path (percentages)
+    // Node 0 is start (Red X). Node 1-10 are Keys. Node 11 is Treasure.
+    const pathPoints = [
+        {x: 8, y: 88},   // Start
+        {x: 18, y: 75},  // Key 1
+        {x: 35, y: 78},  // Key 2
+        {x: 52, y: 70},  // Key 3
+        {x: 48, y: 55},  // Key 4
+        {x: 30, y: 50},  // Key 5
+        {x: 15, y: 45},  // Key 6
+        {x: 25, y: 30},  // Key 7
+        {x: 45, y: 25},  // Key 8
+        {x: 65, y: 32},  // Key 9
+        {x: 80, y: 28},  // Key 10
+        {x: 85, y: 15}   // Treasure
+    ];
+
+    let currentStep = 0;
+    let isMuted = false;
+    const rabbit = document.getElementById('rabbit');
+    const bgMusic = new Audio('https://raw.githubusercontent.com/HuuNghia2308/Edu-assets/main/Lop-1/File-Nghe/asset_1777789863842_kid---royalty-free-music.mp3');
+    bgMusic.loop = true;
+    bgMusic.volume = 0.4;
+
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+    // Utility: Format fractions
+    function formatMath(text) {
+        if(!text) return "";
+        return text.replace(/\[F\](.*?)\/(.*?)\[\/F\]/g, '<div class="math-frac"><span class="num">$1</span><span class="den">$2</span></div>');
+    }
+
+    // Initialize map keys
+    function setupMap() {
+        const container = document.getElementById('path-container');
+        container.innerHTML = '';
+        for(let i = 1; i <= questionData.length; i++) {
+            const point = pathPoints[i];
+            const key = document.createElement('div');
+            key.className = `key-node key-${i}`;
+            key.innerHTML = '🔑';
+            key.style.left = `${point.x}%`;
+            key.style.top = `${point.y}%`;
+            container.appendChild(key);
+        }
+    }
+
+    // Start Game
+    document.getElementById('btn-start').onclick = () => {
+        document.getElementById('start-screen').style.display = 'none';
+        bgMusic.play();
+        audioCtx.resume();
+        
+        rabbit.style.display = 'block';
+        resetRabbit();
+        setupMap();
+        
+        setTimeout(moveToNextNode, 500);
+    };
+
+    // Mute toggle
+    document.getElementById('btn-mute').onclick = (e) => {
+        isMuted = !isMuted;
+        bgMusic.muted = isMuted;
+        e.target.innerText = isMuted ? '🔇' : '🔊';
+    };
+
+    function resetRabbit() {
+        currentStep = 0;
+        const start = pathPoints[0];
+        gsap.set(rabbit, { 
+            left: `${start.x}%`, 
+            top: `${start.y}%`, 
+            xPercent: -50, 
+            yPercent: -50,
+            scale: 1,
+            opacity: 1,
+            rotation: 0
+        });
+        setupMap();
+    }
+
+    function moveToNextNode() {
+        currentStep++;
+        const target = pathPoints[currentStep];
+        const isLast = currentStep === pathPoints.length - 1;
+        
+        gsap.to(rabbit, {
+            duration: isLast ? 3.0 : 2.5,
+            left: `${target.x}%`,
+            top: `${target.y}%`,
+            ease: "power1.inOut",
+            onComplete: () => {
+                if (isLast) {
+                    handleWin();
+                } else {
+                    showQuestion();
+                }
+            }
+        });
+    }
+
+    function showQuestion() {
+        const qData = questionData[currentStep - 1];
+        const modal = document.getElementById('question-modal');
+        const qText = document.getElementById('question-text');
+        const mediaCont = document.getElementById('media-container');
+        const optCont = document.getElementById('options-container');
+
+        qText.innerHTML = formatMath(qData.q);
+        mediaCont.innerHTML = '';
+        optCont.innerHTML = '';
+
+        // Handle Media
+        if(qData.image) {
+            mediaCont.innerHTML = `<img src="${qData.image}" class="media-asset">`;
+        } else if(qData.video) {
+            mediaCont.innerHTML = `<video src="${qData.video}" controls class="media-asset"></video>`;
+        } else if(qData.audio) {
+            mediaCont.innerHTML = `<div class="text-center"><i class="fa-solid fa-volume-high text-3xl mb-2 text-blue-500"></i><audio src="${qData.audio}" controls class="mx-auto"></audio></div>`;
+        }
+
+        // Handle Options
+        qData.options.forEach((opt, index) => {
+            const btn = document.createElement('button');
+            const prefix = String.fromCharCode(65 + index);
+            btn.className = "btn-answer w-full text-left p-4 rounded-xl bg-gray-100 hover:bg-blue-50 text-gray-800 font-semibold shadow-sm flex items-center";
+            btn.innerHTML = `<span class="bg-blue-500 text-white w-8 h-8 rounded-full flex items-center justify-center mr-3 shadow-inner">${prefix}</span> <span>${formatMath(opt)}</span>`;
+            btn.onclick = () => checkAnswer(index);
+            optCont.appendChild(btn);
+        });
+
+        modal.classList.remove('hidden');
+        gsap.fromTo(modal.children[0], { scale: 0.8, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.4 });
+    }
+
+    function checkAnswer(choice) {
+        const qData = questionData[currentStep - 1];
+        const modal = document.getElementById('question-modal');
+
+        if(choice === qData.answer) {
+            // Correct
+            modal.classList.add('hidden');
+            collectKeyEffect();
+        } else {
+            // Incorrect
+            modal.classList.add('hidden');
+            failLogic();
+        }
+    }
+
+    function collectKeyEffect() {
+        // Remove key from map
+        const keyEl = document.querySelector(`.key-${currentStep}`);
+        if(keyEl) keyEl.style.display = 'none';
+
+        // Floating key animation
+        const floatingKey = document.createElement('div');
+        floatingKey.innerHTML = '🔑';
+        floatingKey.style.position = 'absolute';
+        floatingKey.style.left = rabbit.style.left;
+        floatingKey.style.top = rabbit.style.top;
+        floatingKey.style.fontSize = '3rem';
+        floatingKey.style.zIndex = '100';
+        document.getElementById('game-container').appendChild(floatingKey);
+
+        gsap.to(floatingKey, {
+            y: -100,
+            scale: 2,
+            opacity: 0,
+            duration: 1,
+            onComplete: () => {
+                floatingKey.remove();
+                moveToNextNode();
+            }
+        });
+    }
+
+    function failLogic() {
+        const feedback = document.getElementById('wrong-feedback');
+        
+        // Show "Sai rồi"
+        gsap.timeline()
+            .to(feedback, { opacity: 1, y: -20, duration: 0.5 })
+            .to(feedback, { opacity: 0, duration: 0.5, delay: 1 })
+            .to(rabbit, {
+                rotation: 720,
+                scale: 0,
+                opacity: 0,
+                duration: 0.8,
+                onComplete: () => {
+                    resetRabbit();
+                    setTimeout(moveToNextNode, 500);
+                }
+            });
+    }
+
+    function handleWin() {
+        gsap.to(rabbit, {
+            scale: 1.5,
+            duration: 0.5,
+            yoyo: true,
+            repeat: 3,
+            onComplete: () => {
+                alert("CHÚC MỪNG! CÁC EM ĐÃ TÌM THẤY KHO BÁU!");
+                location.reload();
+            }
+        });
+    }
+
+</script>
+</body>
+</html>
