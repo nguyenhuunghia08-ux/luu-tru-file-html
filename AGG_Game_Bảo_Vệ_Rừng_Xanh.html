@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bảo Vệ Rừng Xanh - Game Trắc Nghiệm</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background: linear-gradient(135deg, #a8e063 0%, #56ab2f 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        .glass-morphism {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 4px solid rgba(255, 255, 255, 0.3);
+        }
+        .math-frac {
+            display: inline-flex;
+            flex-direction: column;
+            vertical-align: middle;
+            text-align: center;
+            line-height: 1.2;
+            font-family: 'Quicksand', sans-serif;
+            margin: 0 4px;
+        }
+        .math-frac .num { border-bottom: 2px solid currentColor; padding: 0 2px; }
+        .math-frac .den { padding: 0 2px; }
+        
+        .media-content {
+            border-radius: 15px;
+            border: 4px solid white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            max-height: 200px;
+            object-fit: contain;
+            margin: 10px auto;
+            display: block;
+        }
+
+        .shake { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; }
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
+        }
+
+        .pop-up { animation: pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) both; }
+        @keyframes pop {
+            0% { transform: scale(0); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .floating { animation: floating 3s ease-in-out infinite; }
+        @keyframes floating {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        #forest-bg {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 200px;
+            z-index: -1;
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-end;
+            opacity: 0.6;
+        }
+        .tree-icon { font-size: 4rem; color: #2d5a27; }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <!-- Background Forest -->
+    <div id="forest-bg">
+        <i class="fas fa-tree tree-icon"></i>
+        <i class="fas fa-tree tree-icon hidden md:block"></i>
+        <i class="fas fa-tree tree-icon"></i>
+        <i class="fas fa-tree tree-icon hidden md:block"></i>
+        <i class="fas fa-tree tree-icon"></i>
+    </div>
+
+    <!-- Top Navigation -->
+    <div class="max-w-3xl mx-auto flex justify-between items-center mb-6">
+        <div class="bg-white px-4 py-2 rounded-full shadow-md flex items-center gap-2">
+            <span class="text-green-600 font-bold text-xl" id="score-display">Cây: 0 🌳</span>
+        </div>
+        <button id="mute-btn" class="w-12 h-12 bg-white rounded-full shadow-md flex items-center justify-center text-green-600 hover:bg-green-50 transition-all">
+            <i class="fas fa-volume-up text-xl"></i>
+        </button>
+    </div>
+
+    <!-- Main Game Container -->
+    <main class="max-w-3xl mx-auto">
+        <!-- Progress Bar -->
+        <div class="w-full bg-white/50 rounded-full h-4 mb-8 overflow-hidden p-1">
+            <div id="progress-bar" class="bg-green-500 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+        </div>
+
+        <!-- Start Screen -->
+        <div id="start-screen" class="glass-morphism rounded-3xl p-8 text-center shadow-2xl pop-up">
+            <h1 class="text-4xl md:text-5xl font-bold text-green-700 mb-4">🌳 BẢO VỆ RỪNG XANH 🌳</h1>
+            <p class="text-lg text-green-600 mb-8 italic">Hãy trả lời đúng các câu hỏi toán học để trồng thật nhiều cây xanh cho trái đất nhé!</p>
+            <div class="floating mb-8 text-8xl">🦁</div>
+            <button onclick="startGame()" class="bg-orange-500 hover:bg-orange-600 text-white text-2xl font-bold px-12 py-4 rounded-full shadow-lg transform transition hover:scale-110 active:scale-95">
+                BẮT ĐẦU CHƠI
+            </button>
+        </div>
+
+        <!-- Question Screen (Hidden by default) -->
+        <div id="quiz-screen" class="hidden">
+            <div class="glass-morphism rounded-3xl p-6 md:p-10 shadow-2xl relative">
+                <div id="question-header" class="text-sm font-bold text-green-500 mb-2 uppercase tracking-widest">Câu hỏi 1/10</div>
+                <div id="question-text" class="text-2xl md:text-3xl font-bold text-gray-800 mb-6">Đang tải câu hỏi...</div>
+                
+                <!-- Media Container -->
+                <div id="media-container" class="mb-6"></div>
+
+                <!-- Options -->
+                <div id="options-container" class="grid grid-cols-1 gap-4">
+                    <!-- Buttons generated by JS -->
+                </div>
+
+                <!-- Feedback Overlay -->
+                <div id="feedback-overlay" class="hidden absolute inset-0 flex flex-col items-center justify-center bg-white/90 rounded-3xl z-10 pop-up">
+                    <div id="feedback-icon" class="text-8xl mb-4">🌳</div>
+                    <div id="feedback-msg" class="text-4xl font-bold text-green-600">Tuyệt vời!</div>
+                    <div id="explain-text" class="mt-4 px-8 text-center text-gray-600 italic"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- End Screen (Hidden by default) -->
+        <div id="end-screen" class="hidden glass-morphism rounded-3xl p-8 text-center shadow-2xl pop-up">
+            <h2 class="text-4xl font-bold text-green-700 mb-4">KẾT THÚC HÀNH TRÌNH!</h2>
+            <div id="final-result" class="text-2xl mb-6">Bạn đã trồng được <span id="final-trees" class="font-bold text-orange-500 text-4xl">0</span> cây xanh!</div>
+            <div id="rank-badge" class="inline-block px-6 py-2 rounded-full bg-yellow-400 text-white font-bold text-xl mb-8">Dũng Sĩ Rừng Xanh</div>
+            <div class="text-8xl mb-8" id="end-emoji">🏆</div>
+            <button onclick="location.reload()" class="bg-green-600 hover:bg-green-700 text-white text-xl font-bold px-10 py-4 rounded-full shadow-lg transform transition hover:scale-110 active:scale-95">
+                CHƠI LẠI
+            </button>
+        </div>
+    </main>
+
+    <!-- Audio Elements -->
+    <audio id="audio-correct" src="https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3"></audio>
+    <audio id="audio-wrong" src="https://assets.mixkit.co/active_storage/sfx/255/255-preview.mp3"></audio>
+    <audio id="audio-finish" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3"></audio>
+
+    <script>
+        const questionData = [{"q":"Có 5 con cá trong bể, mẹ thả thêm 3 con cá nữa. Hỏi có tất cả bao nhiêu con cá?","options":["7 con cá","8 con cá","9 con cá"],"answer":1,"explain":"Thực hiện phép tính cộng: 5 + 3 = 8.","level":2,"type":"Trắc nghiệm"},{"q":"Số nào lớn hơn số 7 trong các số sau?","options":["5","6","8"],"answer":2,"explain":"Trong dãy số tự nhiên, 8 đứng sau 7 nên 8 lớn hơn 7.","level":2,"type":"Trắc nghiệm"},{"q":"Kết quả của phép tính 10 - 4 là bao nhiêu?","options":["5","6","7"],"answer":1,"explain":"Thực hiện phép tính trừ trong phạm vi 10: 10 - 4 = 6.","level":2,"type":"Trắc nghiệm"},{"q":"Điền số thích hợp vào chỗ trống: 1, 2, 3, ____, 5.","options":["2","4","6"],"answer":1,"explain":"Dãy số đếm liên tiếp từ 1 đến 5, số đứng giữa 3 và 5 là 4.","level":2,"type":"Điền khuyết"},{"q":"Phép tính nào dưới đây có kết quả bằng 9?","options":["5 + 4","6 + 2","7 + 1"],"answer":0,"explain":"Ta có: 5 + 4 = 9; 6 + 2 = 8; 7 + 1 = 8.","level":2,"type":"Trắc nghiệm"},{"q":"Trong các số 2, 5, 0, 9, số nào là số bé nhất?","options":["2","0","5"],"answer":1,"explain":"Số 0 là số bắt đầu của dãy số tự nhiên và bé hơn tất cả các số còn lại.","level":2,"type":"Trắc nghiệm"},{"q":"Chọn dấu thích hợp để điền vào chỗ chấm: 8 .... 10","options":["<",">","="],"answer":0,"explain":"8 ít hơn 10 đơn vị nên ta dùng dấu bé hơn (<).","level":2,"type":"Trắc nghiệm"},{"q":"Dãy số nào dưới đây được sắp xếp theo thứ tự từ bé đến lớn?","options":["1, 3, 2","4, 5, 6","9, 8, 7"],"answer":1,"explain":"Dãy 4, 5, 6 là dãy số tăng dần liên tiếp.","level":2,"type":"Trắc nghiệm"},{"q":"Phát biểu sau đây Đúng hay Sai: \"7 trừ 2 bằng 4\"","options":["Đúng","Sai"],"answer":1,"explain":"Thực hiện phép tính: 7 - 2 = 5. Do đó kết quả bằng 4 là Sai.","level":2,"type":"Đúng/Sai"},{"q":"Lan có 6 cái kẹo, Lan cho em 2 cái. Lan còn lại bao nhiêu cái kẹo?","options":["4 cái kẹo","3 cái kẹo","5 cái kẹo"],"answer":0,"explain":"Đây là bài toán bớt đi: 6 - 2 = 4.","level":2,"type":"Trắc nghiệm"}];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let isMuted = false;
+        let canClick = true;
+
+        const startScreen = document.getElementById('start-screen');
+        const quizScreen = document.getElementById('quiz-screen');
+        const endScreen = document.getElementById('end-screen');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const mediaContainer = document.getElementById('media-container');
+        const progressBtn = document.getElementById('progress-bar');
+        const scoreDisplay = document.getElementById('score-display');
+        const feedbackOverlay = document.getElementById('feedback-overlay');
+        const muteBtn = document.getElementById('mute-btn');
+
+        // Sounds
+        const sndCorrect = document.getElementById('audio-correct');
+        const sndWrong = document.getElementById('audio-wrong');
+        const sndFinish = document.getElementById('audio-finish');
+
+        muteBtn.addEventListener('click', () => {
+            isMuted = !isMuted;
+            muteBtn.innerHTML = isMuted ? '<i class="fas fa-volume-mute text-xl"></i>' : '<i class="fas fa-volume-up text-xl"></i>';
+        });
+
+        function playSound(audio) {
+            if (!isMuted) {
+                audio.currentTime = 0;
+                audio.play().catch(e => console.log("Audio play failed"));
+            }
+        }
+
+        function formatMath(text) {
+            if (!text) return "";
+            return text.replace(/\[F\](.*?)\/(.*?)\[\/F\]/g, '<div class="math-frac"><span class="num">$1</span><span class="den">$2</span></div>');
+        }
+
+        function startGame() {
+            startScreen.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            canClick = true;
+            feedbackOverlay.classList.add('hidden');
+            const q = questionData[currentQuestionIndex];
+            
+            // Header & Progress
+            document.getElementById('question-header').innerText = `Câu hỏi ${currentQuestionIndex + 1}/${questionData.length}`;
+            progressBtn.style.width = `${(currentQuestionIndex / questionData.length) * 100}%`;
+            
+            // Question text
+            questionText.innerHTML = formatMath(q.q);
+
+            // Media
+            mediaContainer.innerHTML = '';
+            if (q.image) {
+                mediaContainer.innerHTML += `<img src="${q.image}" class="media-content" alt="question-img">`;
+            }
+            if (q.video) {
+                mediaContainer.innerHTML += `<video src="${q.video}" controls class="media-content"></video>`;
+            }
+            if (q.audio) {
+                mediaContainer.innerHTML += `<div class="flex justify-center p-4 bg-green-100 rounded-xl"><audio src="${q.audio}" controls></audio></div>`;
+            }
+
+            // Options
+            optionsContainer.innerHTML = '';
+            q.options.forEach((opt, index) => {
+                const btn = document.createElement('button');
+                btn.className = "bg-white hover:bg-green-50 border-4 border-green-200 text-gray-700 text-xl font-semibold p-4 rounded-2xl transition-all duration-300 transform active:scale-95 text-left flex items-center gap-4";
+                btn.innerHTML = `<span class="w-10 h-10 bg-green-500 text-white rounded-full flex items-center justify-center font-bold">${String.fromCharCode(65 + index)}</span> <span>${formatMath(opt)}</span>`;
+                btn.onclick = () => checkAnswer(index, btn);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(selectedIndex, btnElement) {
+            if (!canClick) return;
+            canClick = false;
+
+            const q = questionData[currentQuestionIndex];
+            const isCorrect = selectedIndex === q.answer;
+
+            if (isCorrect) {
+                score++;
+                scoreDisplay.innerText = `Cây: ${score} 🌳`;
+                btnElement.classList.remove('border-green-200');
+                btnElement.classList.add('border-green-500', 'bg-green-100');
+                showFeedback(true, q.explain);
+                playSound(sndCorrect);
+            } else {
+                btnElement.classList.add('shake', 'border-red-500', 'bg-red-100');
+                // Show correct answer
+                const correctBtn = optionsContainer.children[q.answer];
+                correctBtn.classList.add('border-green-500', 'bg-green-100');
+                showFeedback(false, q.explain);
+                playSound(sndWrong);
+            }
+
+            setTimeout(() => {
+                currentQuestionIndex++;
+                if (currentQuestionIndex < questionData.length) {
+                    renderQuestion();
+                } else {
+                    showEndScreen();
+                }
+            }, 2500);
+        }
+
+        function showFeedback(isCorrect, explain) {
+            const feedbackIcon = document.getElementById('feedback-icon');
+            const feedbackMsg = document.getElementById('feedback-msg');
+            const explainText = document.getElementById('explain-text');
+
+            if (isCorrect) {
+                feedbackIcon.innerText = "🌳";
+                feedbackMsg.innerText = "Tuyệt vời!";
+                feedbackMsg.className = "text-4xl font-bold text-green-600";
+            } else {
+                feedbackIcon.innerText = "😢";
+                feedbackMsg.innerText = "Tiếc quá!";
+                feedbackMsg.className = "text-4xl font-bold text-red-500";
+            }
+            explainText.innerHTML = explain ? `<strong>Giải thích:</strong> ${formatMath(explain)}` : "";
+            feedbackOverlay.classList.remove('hidden');
+        }
+
+        function showEndScreen() {
+            quizScreen.classList.add('hidden');
+            endScreen.classList.remove('hidden');
+            document.getElementById('final-trees').innerText = score;
+            progressBtn.style.width = '100%';
+
+            const rankBadge = document.getElementById('rank-badge');
+            const endEmoji = document.getElementById('end-emoji');
+            
+            const percent = (score / questionData.length) * 100;
+            
+            if (percent >= 80) {
+                rankBadge.innerText = "Dũng Sĩ Rừng Xanh 🛡️";
+                rankBadge.className = "inline-block px-6 py-2 rounded-full bg-green-600 text-white font-bold text-xl mb-8";
+                endEmoji.innerText = "🦁👑";
+            } else if (percent >= 50) {
+                rankBadge.innerText = "Kiểm Lâm Tập Sự 🏹";
+                rankBadge.className = "inline-block px-6 py-2 rounded-full bg-blue-500 text-white font-bold text-xl mb-8";
+                endEmoji.innerText = "🦊";
+            } else {
+                rankBadge.innerText = "Bạn Nhỏ Yêu Thiên Nhiên 🌱";
+                rankBadge.className = "inline-block px-6 py-2 rounded-full bg-orange-400 text-white font-bold text-xl mb-8";
+                endEmoji.innerText = "🐰";
+            }
+
+            playSound(sndFinish);
+        }
+    </script>
+</body>
+</html>
