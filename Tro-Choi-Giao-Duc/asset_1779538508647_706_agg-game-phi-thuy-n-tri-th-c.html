@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Phi Thuyền Tri Thức - Space Knowledge Shooter</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-glow: #00f2ff;
+            --secondary-glow: #7000ff;
+            --danger-glow: #ff0055;
+            --success-glow: #00ff88;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #0f0c29;
+            font-family: 'Nunito', sans-serif;
+            color: white;
+            user-select: none;
+            touch-action: none;
+        }
+
+        #game-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        canvas {
+            display: block;
+            cursor: crosshair;
+        }
+
+        /* Math Fractions Styling */
+        .math-frac {
+            display: inline-flex;
+            flex-direction: column;
+            vertical-align: middle;
+            text-align: center;
+            line-height: 1.1;
+            font-family: 'Inter', sans-serif;
+            margin: 0 4px;
+        }
+        .math-frac .num {
+            border-bottom: 2px solid currentColor;
+            padding: 0 2px;
+        }
+        .math-frac .den {
+            padding: 0 2px;
+        }
+
+        /* Overlay UI */
+        #ui-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        #question-box {
+            background: rgba(15, 12, 41, 0.85);
+            border: 2px solid var(--primary-glow);
+            border-radius: 20px;
+            padding: 15px 25px;
+            max-width: 800px;
+            margin: 10px auto;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.3);
+            pointer-events: auto;
+            backdrop-filter: blur(5px);
+            animation: slideDown 0.5s ease-out;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-100px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        #question-text {
+            font-size: 1.4rem;
+            font-family: 'Fredoka One', cursive;
+            margin-bottom: 10px;
+            line-height: 1.4;
+            color: #fff;
+            text-shadow: 0 0 10px var(--primary-glow);
+        }
+
+        .media-content {
+            border-radius: 15px;
+            border: 4px solid white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            max-height: 180px;
+            object-fit: contain;
+            margin: 10px auto;
+            display: block;
+        }
+
+        #stats-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.5rem;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-shadow: 0 0 10px rgba(255,255,255,0.5);
+        }
+
+        #lives-display { color: #ff4757; }
+        #score-display { color: #feca57; }
+
+        /* Screens */
+        .screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(15, 12, 41, 0.9);
+            z-index: 100;
+            pointer-events: auto;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .hidden { display: none !important; }
+
+        h1 {
+            font-family: 'Fredoka One', cursive;
+            font-size: 4rem;
+            margin: 0;
+            background: linear-gradient(to bottom, #fff, var(--primary-glow));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 15px var(--primary-glow));
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #00f2ff, #7000ff);
+            border: none;
+            padding: 15px 40px;
+            color: white;
+            font-size: 1.5rem;
+            font-family: 'Fredoka One', cursive;
+            border-radius: 50px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 0 20px rgba(112, 0, 255, 0.5);
+        }
+
+        .btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 30px rgba(0, 242, 255, 0.8);
+        }
+
+        .feedback-correct { color: var(--success-glow); font-size: 2rem; font-weight: bold; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none; z-index: 20; opacity: 0; transition: 0.3s; }
+        .feedback-wrong { color: var(--danger-glow); font-size: 2rem; font-weight: bold; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none; z-index: 20; opacity: 0; transition: 0.3s; }
+
+        .active-feedback { opacity: 1; transform: translate(-50%, -100%); }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 2.5rem; }
+            #question-text { font-size: 1.1rem; }
+            #stats-bar { font-size: 1.2rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="game-container">
+    <canvas id="gameCanvas"></canvas>
+
+    <div id="ui-layer">
+        <div id="stats-bar">
+            <div class="stat-item" id="lives-display">❤️❤️❤️❤️❤️</div>
+            <div class="stat-item" id="score-display">0</div>
+        </div>
+
+        <div id="question-box" class="hidden">
+            <div id="media-container"></div>
+            <div id="question-text">Đang tải câu hỏi...</div>
+        </div>
+    </div>
+
+    <!-- Start Screen -->
+    <div id="start-screen" class="screen">
+        <h1>PHI THUYỀN<br>TRI THỨC</h1>
+        <p style="font-size: 1.2rem; margin: 20px;">Dùng Chuột/Cảm ứng để di chuyển và bắn quái vật mang đáp án đúng!</p>
+        <button class="btn" onclick="startGame()">BẮT ĐẦU</button>
+    </div>
+
+    <!-- Game Over Screen -->
+    <div id="game-over-screen" class="screen hidden">
+        <h1 style="background: linear-gradient(to bottom, #fff, #ff0055); -webkit-background-clip: text;">GAME OVER</h1>
+        <p id="final-score" style="font-size: 1.5rem; margin: 20px;"></p>
+        <button class="btn" onclick="location.reload()">CHƠI LẠI</button>
+    </div>
+
+    <!-- Victory Screen -->
+    <div id="victory-screen" class="screen hidden">
+        <h1 style="background: linear-gradient(to bottom, #fff, #00ff88); -webkit-background-clip: text;">CHIẾN THẮNG!</h1>
+        <p style="font-size: 1.5rem; margin: 20px;">Chúc mừng bạn đã hoàn thành tất cả thử thách!</p>
+        <p id="victory-score" style="font-size: 1.5rem; margin: 10px;"></p>
+        <button class="btn" onclick="location.reload()">CHƠI LẠI</button>
+    </div>
+
+    <div id="feedback-correct" class="feedback-correct">CHÍNH XÁC! +10</div>
+    <div id="feedback-wrong" class="feedback-wrong">SAI RỒI! -1 ❤️</div>
+</div>
+
+<script>
+    /** DATA **/
+    const rawData = [
+        {"q":"Tìm số có hai chữ số, biết chữ số hàng chục là 5 và chữ số hàng đơn vị lớn hơn chữ số hàng chục là 3 đơn vị.","options":["53","58","85"],"answer":1,"explain":"Chữ số hàng chục là 5, hàng đơn vị là 5 + 3 = 8. Vậy số đó là 58.","level":3,"type":"Trắc nghiệm"},
+        {"q":"Cho dãy số: 34, 82, 45, 19. Khi sắp xếp các số theo thứ tự từ lớn đến bé, số đứng ở vị trí thứ hai là số nào?","options":["82","45","34"],"answer":1,"explain":"Thứ tự từ lớn đến bé là: 82, 45, 34, 19. Số đứng thứ hai là 45.","level":3,"type":"Trắc nghiệm"},
+        {"q":"Tìm các số thích hợp điền vào chỗ trống sao cho: 25 + ____ < 28.","options":["1; 2","0; 1; 2","3; 4"],"answer":1,"explain":"Các kết quả có thể là 25 + 0 = 25, 25 + 1 = 26, 25 + 2 = 27. Cả ba kết quả đều bé hơn 28.","level":3,"type":"Trắc nghiệm"},
+        {"q":"Số lớn nhất có hai chữ số khác nhau là số nào?","options":["99","98","90"],"answer":1,"explain":"Số lớn nhất có hai chữ số là 99, nhưng vì đề yêu cầu hai chữ số khác nhau nên số đó là 98.","level":3,"type":"Trắc nghiệm"},
+        {"q":"Tính tổng của số lớn nhất có một chữ số và số bé nhất có hai chữ số.","options":["19","18","10"],"answer":0,"explain":"Số lớn nhất có 1 chữ số là 9, số bé nhất có 2 chữ số là 10. Ta có: 9 + 10 = 19.","level":3,"type":"Trắc nghiệm"},
+        {"q":"Số liền trước của số lớn nhất có hai chữ số là số nào?","options":["97","98","100"],"answer":1,"explain":"Số lớn nhất có hai chữ số là 99. Số liền trước của nó là 99 - 1 = 98.","level":3,"type":"Trắc nghiệm"},
+        {"q":"Tìm một số có hai chữ số giống nhau, biết số đó lớn hơn 77 và bé hơn 90.","options":["87","88","89"],"answer":1,"explain":"Trong khoảng từ 77 đến 90, chỉ có số 88 là số có hai chữ số giống nhau.","level":3,"type":"Trắc nghiệm"},
+        {"q":"Kết quả của phép tính: 40 + 50 - 20 là bao nhiêu?","options":["70","80","90"],"answer":0,"explain":"Thực hiện từ trái sang phải: 40 + 50 = 90; 90 - 20 = 70.","level":3,"type":"Trắc nghiệm"},
+        {"q":"Số 5* là số có hai chữ số. Biết 57 < 5* < 60. Những chữ số nào có thể thay vào dấu *?","options":["8; 9","7; 8","6; 7"],"answer":0,"explain":"Các số lớn hơn 57 và bé hơn 60 là 58 và 59. Vậy dấu * có thể là 8 hoặc 9.","level":3,"type":"Trắc nghiệm"},
+        {"q":"Từ ba chữ số 2, 0, 5, em có thể lập được bao nhiêu số có hai chữ số khác nhau?","options":["4 số","6 số","3 số"],"answer":0,"explain":"Các số lập được là: 20, 25, 50, 52. Chữ số 0 không thể đứng ở hàng chục nên chỉ có 4 số.","level":3,"type":"Trắc nghiệm"}
+    ];
+
+    /** UTILS **/
+    function formatFractions(text) {
+        if (!text) return "";
+        return text.replace(/\[F\](.*?)\/(.*?)\[\/F\]/g, '<div class="math-frac"><span class="num">$1</span><span class="den">$2</span></div>');
+    }
+
+    /** SOUND MANAGER **/
+    const Sound = (() => {
+        let audioCtx = null;
+        const init = () => { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); };
+
+        const playLaser = () => {
+            init();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(10, audioCtx.currentTime + 0.1);
+            gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.1);
+        };
+
+        const playCorrect = () => {
+            init();
+            const notes = [523.25, 659.25, 783.99, 1046.50];
+            notes.forEach((freq, i) => {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime + i * 0.1);
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime + i * 0.1);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + i * 0.1 + 0.2);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(audioCtx.currentTime + i * 0.1);
+                osc.stop(audioCtx.currentTime + i * 0.1 + 0.2);
+            });
+        };
+
+        const playWrong = () => {
+            init();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+            osc.frequency.linearRampToValueAtTime(50, audioCtx.currentTime + 0.3);
+            gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.3);
+        };
+
+        return { playLaser, playCorrect, playWrong };
+    })();
+
+    /** GAME ENGINE **/
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    let width, height;
+    let score = 0;
+    let lives = 5;
+    let currentQuestionIndex = 0;
+    let gameState = 'START';
+    let mouseX = 0;
+    let particles = [];
+    let enemies = [];
+    let projectiles = [];
+    let stars = [];
+    let transitionTimer = 0;
+    let canShoot = true;
+
+    function resize() {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+        initStars();
+    }
+
+    window.addEventListener('resize', resize);
+    resize();
+
+    function initStars() {
+        stars = [];
+        const layers = [
+            { count: 100, speed: 0.5, size: 1, color: '#fff' },
+            { count: 50, speed: 1.5, size: 2, color: '#00f2ff' },
+            { count: 20, speed: 3.5, size: 3, color: '#fff' }
+        ];
+        layers.forEach(layer => {
+            for (let i = 0; i < layer.count; i++) {
+                stars.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    size: layer.size,
+                    speed: layer.speed,
+                    color: layer.color,
+                    opacity: Math.random()
+                });
+            }
+        });
+    }
+
+    class Projectile {
+        constructor(x, y, targetX, targetY) {
+            this.x = x;
+            this.y = y;
+            const angle = Math.atan2(targetY - y, targetX - x);
+            this.vx = Math.cos(angle) * 15;
+            this.vy = Math.sin(angle) * 15;
+            this.active = true;
+        }
+        update() {
+            this.x += this.vx;
+            this.y += this.vy;
+            if (this.x < 0 || this.x > width || this.y < 0 || this.y > height) this.active = false;
+        }
+        draw() {
+            ctx.save();
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = '#00f2ff';
+            ctx.strokeStyle = '#00f2ff';
+            ctx.lineWidth = 4;
+            ctx.lineCap = 'round';
+            ctx.beginPath();
+            ctx.moveTo(this.x, this.y);
+            ctx.lineTo(this.x - this.vx * 0.5, this.y - this.vy * 0.5);
+            ctx.stroke();
+            ctx.restore();
+        }
+    }
+
+    class Enemy {
+        constructor(index, text, isCorrect) {
+            this.index = index;
+            this.text = text;
+            this.isCorrect = isCorrect;
+            this.radius = 45;
+            this.x = (width / 4) * (index + 1);
+            this.startY = 200 + (Math.random() * 100);
+            this.y = this.startY;
+            this.emoji = ['👽', '👾', '🚁'][index % 3];
+            this.angle = Math.random() * Math.PI * 2;
+            this.speed = 0.02 + Math.random() * 0.02;
+            this.amplitude = 50 + Math.random() * 50;
+            this.active = true;
+            this.dying = false;
+            this.deathY = 0;
+        }
+        update() {
+            if (!this.active) return;
+            if (this.dying) {
+                this.y += 10;
+                this.emoji = '💀';
+                if (this.y > height) this.active = false;
+                return;
+            }
+            this.angle += this.speed;
+            this.x += Math.sin(this.angle) * 2;
+            this.y = this.startY + Math.cos(this.angle) * this.amplitude;
+        }
+        draw() {
+            if (!this.active) return;
+            ctx.save();
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            
+            // Draw Emoji
+            ctx.font = '50px serif';
+            ctx.fillText(this.emoji, this.x, this.y);
+
+            // Label (A, B, C)
+            if (!this.dying) {
+                const label = String.fromCharCode(65 + this.index);
+                ctx.font = 'bold 20px Nunito';
+                ctx.fillStyle = 'white';
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = 'black';
+                ctx.fillText(label, this.x, this.y + 50);
+
+                // Answer Text
+                ctx.font = 'bold 18px Nunito';
+                ctx.fillText(this.text, this.x, this.y + 75);
+            }
+            ctx.restore();
+        }
+    }
+
+    class Particle {
+        constructor(x, y, color) {
+            this.x = x;
+            this.y = y;
+            this.color = color;
+            this.vx = (Math.random() - 0.5) * 10;
+            this.vy = (Math.random() - 0.5) * 10;
+            this.life = 1.0;
+        }
+        update() {
+            this.x += this.vx;
+            this.y += this.vy;
+            this.life -= 0.02;
+        }
+        draw() {
+            ctx.save();
+            ctx.globalAlpha = this.life;
+            ctx.fillStyle = this.color;
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, 3, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+        }
+    }
+
+    let playerX = width / 2;
+
+    function startGame() {
+        Sound.playLaser(); // Just to wake up context
+        document.getElementById('start-screen').classList.add('hidden');
+        document.getElementById('question-box').classList.remove('hidden');
+        gameState = 'PLAYING';
+        currentQuestionIndex = 0;
+        score = 0;
+        lives = 5;
+        loadQuestion();
+    }
+
+    function loadQuestion() {
+        if (currentQuestionIndex >= rawData.length) {
+            endGame(true);
+            return;
+        }
+        
+        const qData = rawData[currentQuestionIndex];
+        const qText = document.getElementById('question-text');
+        const mediaContainer = document.getElementById('media-container');
+        
+        qText.innerHTML = formatFractions(qData.q);
+        mediaContainer.innerHTML = '';
+
+        if (qData.image) {
+            const img = document.createElement('img');
+            img.src = qData.image;
+            img.className = 'media-content';
+            mediaContainer.appendChild(img);
+        }
+        if (qData.video) {
+            const vid = document.createElement('video');
+            vid.src = qData.video;
+            vid.autoplay = true;
+            vid.loop = true;
+            vid.muted = true;
+            vid.className = 'media-content';
+            mediaContainer.appendChild(vid);
+        }
+        if (qData.audio) {
+            const aud = document.createElement('audio');
+            aud.src = qData.audio;
+            aud.controls = true;
+            aud.className = 'media-content';
+            mediaContainer.appendChild(aud);
+        }
+
+        enemies = qData.options.map((opt, i) => new Enemy(i, opt, i === qData.answer));
+        transitionTimer = 0;
+        canShoot = true;
+        updateUI();
+    }
+
+    function updateUI() {
+        document.getElementById('score-display').innerText = score;
+        document.getElementById('lives-display').innerText = '❤️'.repeat(lives);
+    }
+
+    function endGame(victory) {
+        gameState = victory ? 'VICTORY' : 'GAMEOVER';
+        document.getElementById('question-box').classList.add('hidden');
+        if (victory) {
+            document.getElementById('victory-screen').classList.remove('hidden');
+            document.getElementById('victory-score').innerText = "Điểm số: " + score;
+        } else {
+            document.getElementById('game-over-screen').classList.remove('hidden');
+            document.getElementById('final-score').innerText = "Điểm số: " + score;
+        }
+    }
+
+    function handleShoot(clientX, clientY) {
+        if (gameState !== 'PLAYING' || !canShoot) return;
+        
+        Sound.playLaser();
+        projectiles.push(new Projectile(playerX, height - 80, clientX, clientY));
+    }
+
+    window.addEventListener('mousedown', (e) => handleShoot(e.clientX, e.clientY));
+    window.addEventListener('touchstart', (e) => {
+        const touch = e.touches[0];
+        handleShoot(touch.clientX, touch.clientY);
+    });
+
+    window.addEventListener('mousemove', (e) => { mouseX = e.clientX; });
+    window.addEventListener('touchmove', (e) => { mouseX = e.touches[0].clientX; });
+
+    function triggerFeedback(isCorrect) {
+        const id = isCorrect ? 'feedback-correct' : 'feedback-wrong';
+        const el = document.getElementById(id);
+        el.classList.add('active-feedback');
+        setTimeout(() => el.classList.remove('active-feedback'), 1000);
+    }
+
+    function gameLoop() {
+        // 1. BACKGROUND
+        const grad = ctx.createLinearGradient(0, 0, 0, height);
+        grad.addColorStop(0, '#0f0c29');
+        grad.addColorStop(0.5, '#302b63');
+        grad.addColorStop(1, '#24243e');
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, width, height);
+
+        stars.forEach(star => {
+            star.y += star.speed;
+            if (star.y > height) star.y = 0;
+            ctx.fillStyle = star.color;
+            ctx.globalAlpha = 0.3 + Math.abs(Math.sin(Date.now() * 0.001 + star.opacity)) * 0.7;
+            ctx.beginPath();
+            ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+            ctx.fill();
+        });
+        ctx.globalAlpha = 1.0;
+
+        if (gameState === 'PLAYING') {
+            // 2. PLAYER
+            playerX += (mouseX - playerX) * 0.1;
+            ctx.save();
+            ctx.font = '60px serif';
+            ctx.textAlign = 'center';
+            ctx.shadowBlur = 20;
+            ctx.shadowColor = '#00f2ff';
+            ctx.fillText('🚀', playerX, height - 60);
+            ctx.restore();
+
+            // 3. ENEMIES
+            enemies.forEach(enemy => {
+                enemy.update();
+                enemy.draw();
+            });
+
+            // 4. PROJECTILES
+            projectiles.forEach((p, pIdx) => {
+                p.update();
+                p.draw();
+
+                // Collision Check
+                enemies.forEach(enemy => {
+                    if (enemy.active && !enemy.dying) {
+                        const dist = Math.hypot(p.x - enemy.x, p.y - enemy.y);
+                        if (dist < enemy.radius) {
+                            p.active = false;
+                            handleHit(enemy);
+                        }
+                    }
+                });
+
+                if (!p.active) projectiles.splice(pIdx, 1);
+            });
+
+            // 5. PARTICLES
+            particles.forEach((part, i) => {
+                part.update();
+                part.draw();
+                if (part.life <= 0) particles.splice(i, 1);
+            });
+        }
+
+        requestAnimationFrame(gameLoop);
+    }
+
+    function handleHit(enemy) {
+        if (!canShoot) return;
+
+        if (enemy.isCorrect) {
+            Sound.playCorrect();
+            triggerFeedback(true);
+            score += 10;
+            createExplosion(enemy.x, enemy.y, '#00ff88');
+            canShoot = false; // Stop shooting during transition
+            
+            // Clear other enemies
+            enemies.forEach(e => { if(e !== enemy) e.active = false; });
+            enemy.active = false;
+
+            setTimeout(() => {
+                currentQuestionIndex++;
+                loadQuestion();
+            }, 1500);
+        } else {
+            Sound.playWrong();
+            triggerFeedback(false);
+            lives--;
+            enemy.dying = true;
+            createExplosion(enemy.x, enemy.y, '#ff0055');
+            updateUI();
+            if (lives <= 0) endGame(false);
+        }
+    }
+
+    function createExplosion(x, y, color) {
+        for (let i = 0; i < 20; i++) {
+            particles.push(new Particle(x, y, color));
+        }
+    }
+
+    gameLoop();
+</script>
+
+</body>
+</html>
