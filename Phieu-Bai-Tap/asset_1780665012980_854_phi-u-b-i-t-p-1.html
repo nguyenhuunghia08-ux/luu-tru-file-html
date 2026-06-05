@@ -1,0 +1,781 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PHIẾU BÀI TẬP 1</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; scroll-behavior: smooth; }
+        .module-card { border-top: 6px solid #4f46e5; }
+        .quiz-option { transition: all 0.2s ease-in-out; }
+        .quiz-option:hover { border-color: #818cf8; background-color: #f5f3ff; transform: translateY(-2px); }
+        .peer:checked + div { border-color: #4f46e5; background-color: #eef2ff; }
+        .peer:checked + div .radio-dot { opacity: 1; }
+        .radio-circle { transition: all 0.2s; }
+        .radio-dot { transition: opacity 0.2s; }
+        
+        /* Tối ưu cho PDF/In ấn chuyên nghiệp */
+        @media print {
+            .no-print { display: none !important; }
+            body { 
+                background: white !important; 
+                font-family: 'Times New Roman', serif !important; 
+                font-size: 12pt !important; 
+                color: black !important; 
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            #examRoot { 
+                width: 700px !important; 
+                margin: 0 !important;
+                padding: 15mm !important;
+                background: white !important;
+                box-sizing: border-box !important;
+                display: block !important;
+            }
+            
+            /* Triệt tiêu mọi layout phức tạp của Tailwind trong bản in */
+            .grid, .flex, [class*="grid-cols-"], [class*="flex-"] { 
+                display: block !important; 
+                width: 100% !important;
+                float: none !important;
+                clear: both !important;
+            }
+            
+            .module-card { 
+                display: block !important;
+                width: 100% !important;
+                margin-bottom: 25px !important;
+                border: 1px solid #000 !important;
+                position: relative !important;
+                page-break-inside: avoid !important;
+                overflow: hidden !important;
+            }
+            .module-card > div:first-child { 
+                background: #f0f0f0 !important; 
+                border-bottom: 1px solid #000 !important; 
+                padding: 12px !important;
+                font-weight: bold !important;
+            }
+            .module-card > div:last-child { padding: 15px !important; }
+            
+            .quiz-option { 
+                display: block !important;
+                width: 100% !important;
+                margin-bottom: 8px !important; 
+                padding: 10px 10px 10px 45px !important; /* Chừa lề trái cho icon */
+                border: 1px solid #eee !important;
+                position: relative !important;
+                min-height: 40px !important;
+                background: white !important;
+                box-sizing: border-box !important;
+                page-break-inside: avoid !important;
+            }
+            
+            .pdf-radio-replacement {
+                position: absolute !important;
+                left: 10px !important;
+                top: 50% !important;
+                transform: translateY(-50%) !important;
+                width: 30px !important;
+                font-size: 22pt !important;
+                line-height: 1 !important;
+                display: block !important;
+                text-align: center !important;
+            }
+            
+            .quiz-option-text {
+                display: block !important;
+                width: 100% !important;
+                font-size: 13pt !important;
+                line-height: 1.4 !important;
+            }
+            
+            h1 { font-size: 22pt !important; font-weight: bold !important; margin-bottom: 20px !important; text-align: center !important; width: 100% !important; }
+            h2 { font-size: 16pt !important; font-weight: bold !important; margin-bottom: 10px !important; }
+            
+            .text-emerald-600 { color: #15803d !important; font-weight: bold !important; }
+            .text-red-500 { color: #b91c1c !important; font-weight: bold !important; }
+            
+            img { max-height: 2.8in !important; width: auto !important; margin: 15px auto !important; display: block !important; }
+            .pdf-page-break { page-break-after: always !important; display: block !important; height: 1px; }
+            
+            /* Header in ấn tập trung ở giữa */
+            .print-header { 
+                display: block !important; 
+                border-bottom: 2px solid #000 !important; 
+                margin-bottom: 30px !important; 
+                padding-bottom: 15px !important;
+                text-align: left !important;
+            }
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body class="text-slate-800 antialiased">
+    <header class="bg-indigo-700 text-white shadow-xl sticky top-0 z-50 no-print">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="text-xl font-bold flex items-center gap-2"><i class="fa-solid fa-graduation-cap"></i> LMS Builder</div>
+            
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto p-6 md:p-12 pb-40" id="examRoot">
+        <div class="hidden print-header p-6 bg-slate-50 border-2 border-black rounded-lg mb-8">
+            <h1 class="text-3xl font-bold mb-6 text-center uppercase border-b-2 border-black pb-4">PHIẾU BÀI TẬP 1</h1>
+            <div class="grid grid-cols-2 gap-8 text-xl">
+               <div class="font-bold">Họ và Tên: <span id="printName" class="font-normal border-b border-black inline-block min-w-[200px]">................................</span></div>
+               <div class="font-bold">Lớp: <span id="printClass" class="font-normal border-b border-black inline-block min-w-[100px]">................</span></div>
+               <div class="font-bold">Thời gian: <span id="printTime" class="font-normal">................</span></div>
+               <div class="font-bold">Điểm số: <span id="printScore" class="font-normal text-2xl text-emerald-700">................</span></div>
+            </div>
+        </div>
+
+        <div class="text-center mb-12 no-print">
+            <h1 class="text-4xl md:text-6xl font-black text-slate-900 mb-4 tracking-tight">PHIẾU BÀI TẬP 1</h1>
+            <div class="inline-block px-4 py-2 bg-slate-200 rounded-full font-bold text-slate-600 no-print">
+                <i class="fa-regular fa-clock"></i> Thời gian: Không giới hạn
+            </div>
+        </div>
+
+        <div class="flex flex-col lg:flex-row gap-10 items-start">
+            <div class="flex-1 w-full" id="formArea">
+                <form id="quizForm" onsubmit="handleSubmit(event)">
+                    <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-200 mb-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Họ và Tên</label>
+                            <input type="text" id="stdName" required class="w-full border-2 border-slate-100 rounded-xl p-3 outline-none focus:border-indigo-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Lớp</label>
+                            <input type="text" id="stdClass" required class="w-full border-2 border-slate-100 rounded-xl p-3 outline-none focus:border-indigo-500">
+                        </div>
+                    </div>
+                    
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 mb-8 overflow-hidden module-card">
+          <div class="bg-slate-50 border-b border-slate-100 p-6">
+            <h2 class="text-2xl font-bold text-slate-800 flex items-center gap-3">
+              <i class="fa-solid fa-puzzle-piece text-teal-500"></i> Phần Tổng Hợp / Ngữ Pháp
+            </h2>
+          </div>
+          <div class="p-8">
+            
+            <div class="prose max-w-none text-slate-700 mb-8 whitespace-pre-wrap leading-relaxed">READ AND CHOOSE THE CORRECT ANSWER:</div>
+            
+            <div class="space-y-10">
+          <div class="scroll-mt-32 break-inside-avoid" id="q_container_id_77st1momj_1780664819566_732">
+            <div class="flex gap-4">
+              <div class="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold shrink-0">1</div>
+              <div class="flex-1">
+                <div class="text-lg font-semibold text-slate-800 mb-4 whitespace-pre-wrap">Choose the correct form of the verb: She _______ to the park every Sunday. <span class="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100 ml-2">1đ</span></div>
+                
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <label class="quiz-option relative flex items-start p-4 rounded-xl border-2 border-slate-100 bg-slate-50 cursor-pointer group">
+                <input type="radio" name="ans_id_77st1momj_1780664819566_732" value="0" class="peer sr-only">
+                <div class="w-5 h-5 rounded-full border-2 border-slate-300 mt-0.5 flex items-center justify-center shrink-0 group-hover:border-indigo-400 transition-colors radio-circle">
+                  <div class="w-2.5 h-2.5 bg-indigo-600 rounded-full opacity-0 radio-dot"></div>
+                </div>
+                <div class="ml-3 flex-1 text-slate-700 font-medium pt-0.5">
+                  <span class="font-bold text-slate-400 mr-1">A. </span> go
+                </div>
+              </label>
+              <label class="quiz-option relative flex items-start p-4 rounded-xl border-2 border-slate-100 bg-slate-50 cursor-pointer group">
+                <input type="radio" name="ans_id_77st1momj_1780664819566_732" value="1" class="peer sr-only">
+                <div class="w-5 h-5 rounded-full border-2 border-slate-300 mt-0.5 flex items-center justify-center shrink-0 group-hover:border-indigo-400 transition-colors radio-circle">
+                  <div class="w-2.5 h-2.5 bg-indigo-600 rounded-full opacity-0 radio-dot"></div>
+                </div>
+                <div class="ml-3 flex-1 text-slate-700 font-medium pt-0.5">
+                  <span class="font-bold text-slate-400 mr-1">B. </span> goes
+                </div>
+              </label>
+              <label class="quiz-option relative flex items-start p-4 rounded-xl border-2 border-slate-100 bg-slate-50 cursor-pointer group">
+                <input type="radio" name="ans_id_77st1momj_1780664819566_732" value="2" class="peer sr-only">
+                <div class="w-5 h-5 rounded-full border-2 border-slate-300 mt-0.5 flex items-center justify-center shrink-0 group-hover:border-indigo-400 transition-colors radio-circle">
+                  <div class="w-2.5 h-2.5 bg-indigo-600 rounded-full opacity-0 radio-dot"></div>
+                </div>
+                <div class="ml-3 flex-1 text-slate-700 font-medium pt-0.5">
+                  <span class="font-bold text-slate-400 mr-1">C. </span> going
+                </div>
+              </label>
+              <label class="quiz-option relative flex items-start p-4 rounded-xl border-2 border-slate-100 bg-slate-50 cursor-pointer group">
+                <input type="radio" name="ans_id_77st1momj_1780664819566_732" value="3" class="peer sr-only">
+                <div class="w-5 h-5 rounded-full border-2 border-slate-300 mt-0.5 flex items-center justify-center shrink-0 group-hover:border-indigo-400 transition-colors radio-circle">
+                  <div class="w-2.5 h-2.5 bg-indigo-600 rounded-full opacity-0 radio-dot"></div>
+                </div>
+                <div class="ml-3 flex-1 text-slate-700 font-medium pt-0.5">
+                  <span class="font-bold text-slate-400 mr-1">D. </span> gone
+                </div>
+              </label></div>
+              </div>
+            </div>
+          </div>
+          <div class="scroll-mt-32 break-inside-avoid" id="q_container_id_x9abvvmj7_1780664819566_591">
+            <div class="flex gap-4">
+              <div class="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold shrink-0">2</div>
+              <div class="flex-1">
+                <div class="text-lg font-semibold text-slate-800 mb-4 whitespace-pre-wrap">Which sentence is grammatically correct? <span class="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100 ml-2">1đ</span></div>
+                
+                
+                <div class="flex flex-col gap-3">
+              <label class="quiz-option relative flex items-start p-4 rounded-xl border-2 border-slate-100 bg-slate-50 cursor-pointer group">
+                <input type="radio" name="ans_id_x9abvvmj7_1780664819566_591" value="0" class="peer sr-only">
+                <div class="w-5 h-5 rounded-full border-2 border-slate-300 mt-0.5 flex items-center justify-center shrink-0 group-hover:border-indigo-400 transition-colors radio-circle">
+                  <div class="w-2.5 h-2.5 bg-indigo-600 rounded-full opacity-0 radio-dot"></div>
+                </div>
+                <div class="ml-3 flex-1 text-slate-700 font-medium pt-0.5">
+                  <span class="font-bold text-slate-400 mr-1">A. </span> They plays football.
+                </div>
+              </label>
+              <label class="quiz-option relative flex items-start p-4 rounded-xl border-2 border-slate-100 bg-slate-50 cursor-pointer group">
+                <input type="radio" name="ans_id_x9abvvmj7_1780664819566_591" value="1" class="peer sr-only">
+                <div class="w-5 h-5 rounded-full border-2 border-slate-300 mt-0.5 flex items-center justify-center shrink-0 group-hover:border-indigo-400 transition-colors radio-circle">
+                  <div class="w-2.5 h-2.5 bg-indigo-600 rounded-full opacity-0 radio-dot"></div>
+                </div>
+                <div class="ml-3 flex-1 text-slate-700 font-medium pt-0.5">
+                  <span class="font-bold text-slate-400 mr-1">B. </span> They play football.
+                </div>
+              </label>
+              <label class="quiz-option relative flex items-start p-4 rounded-xl border-2 border-slate-100 bg-slate-50 cursor-pointer group">
+                <input type="radio" name="ans_id_x9abvvmj7_1780664819566_591" value="2" class="peer sr-only">
+                <div class="w-5 h-5 rounded-full border-2 border-slate-300 mt-0.5 flex items-center justify-center shrink-0 group-hover:border-indigo-400 transition-colors radio-circle">
+                  <div class="w-2.5 h-2.5 bg-indigo-600 rounded-full opacity-0 radio-dot"></div>
+                </div>
+                <div class="ml-3 flex-1 text-slate-700 font-medium pt-0.5">
+                  <span class="font-bold text-slate-400 mr-1">C. </span> They is play football.
+                </div>
+              </label></div>
+              </div>
+            </div>
+          </div>
+          <div class="scroll-mt-32 break-inside-avoid" id="q_container_id_cidr9wwzg_1780664819566_177">
+            <div class="flex gap-4">
+              <div class="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold shrink-0">3</div>
+              <div class="flex-1">
+                <div class="text-lg font-semibold text-slate-800 mb-4 whitespace-pre-wrap">We use the Present Simple tense to talk about actions happening right now at this moment. <span class="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100 ml-2">1đ</span></div>
+                
+                
+                <div class="flex flex-col gap-3"></div>
+              </div>
+            </div>
+          </div>
+          <div class="scroll-mt-32 break-inside-avoid" id="q_container_id_bb47liejh_1780664819566_478">
+            <div class="flex gap-4">
+              <div class="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold shrink-0">4</div>
+              <div class="flex-1">
+                <div class="text-lg font-semibold text-slate-800 mb-4 whitespace-pre-wrap">Fill in the blank: He ________ (not/like) apples. <span class="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100 ml-2">1đ</span></div>
+                
+                
+                <input type="text" name="ans_id_bb47liejh_1780664819566_478" class="w-full border-2 border-slate-100 rounded-xl p-4 focus:border-indigo-500 outline-none transition-all text-lg font-medium" placeholder="Nhập câu trả lời...">
+              </div>
+            </div>
+          </div>
+          <div class="scroll-mt-32 break-inside-avoid" id="q_container_id_srj0qcqpn_1780664819566_524">
+            <div class="flex gap-4">
+              <div class="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold shrink-0">5</div>
+              <div class="flex-1">
+                <div class="text-lg font-semibold text-slate-800 mb-4 whitespace-pre-wrap">Điền từ vào chỗ trống: <span class="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100 ml-2">1đ</span></div>
+                
+                
+                <div class="text-lg leading-loose bg-slate-50 p-6 rounded-xl border border-slate-200">My father <input type="text" name="ans_id_srj0qcqpn_1780664819566_524_0" ondragover="event.preventDefault()" ondrop="handleDrop(event)" oninput="refreshWordBank('id_srj0qcqpn_1780664819566_524')" onclick="if(this.value) { this.value=''; refreshWordBank('id_srj0qcqpn_1780664819566_524'); }" class="inline-block border-b-2 border-slate-400 bg-transparent text-center font-bold text-indigo-700 outline-none focus:border-indigo-600 focus:bg-indigo-50/30 transition-colors mx-1 w-28 h-8 word-input" onfocus="setActiveInput(this)"> in an office. He <input type="text" name="ans_id_srj0qcqpn_1780664819566_524_1" ondragover="event.preventDefault()" ondrop="handleDrop(event)" oninput="refreshWordBank('id_srj0qcqpn_1780664819566_524')" onclick="if(this.value) { this.value=''; refreshWordBank('id_srj0qcqpn_1780664819566_524'); }" class="inline-block border-b-2 border-slate-400 bg-transparent text-center font-bold text-indigo-700 outline-none focus:border-indigo-600 focus:bg-indigo-50/30 transition-colors mx-1 w-28 h-8 word-input" onfocus="setActiveInput(this)"> his work at 8:00 AM every day.</div>
+              </div>
+            </div>
+          </div>
+          <div class="scroll-mt-32 break-inside-avoid" id="q_container_id_ucsdkricu_1780664819566_948">
+            <div class="flex gap-4">
+              <div class="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold shrink-0">6</div>
+              <div class="flex-1">
+                <div class="text-lg font-semibold text-slate-800 mb-4 whitespace-pre-wrap">Rearrange the words to make a complete sentence: <span class="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100 ml-2">1đ</span></div>
+                
+                
+                <div class="mb-4 flex flex-wrap gap-2 p-4 bg-slate-50 rounded-xl border border-slate-200 shadow-inner">
+              <span class="bg-white border-2 border-slate-100 px-3 py-1.5 rounded-lg font-bold shadow-sm">often</span><span class="text-slate-300 font-bold mx-1">-</span><span class="bg-white border-2 border-slate-100 px-3 py-1.5 rounded-lg font-bold shadow-sm">she</span><span class="text-slate-300 font-bold mx-1">-</span><span class="bg-white border-2 border-slate-100 px-3 py-1.5 rounded-lg font-bold shadow-sm">reads</span><span class="text-slate-300 font-bold mx-1">-</span><span class="bg-white border-2 border-slate-100 px-3 py-1.5 rounded-lg font-bold shadow-sm">books</span><span class="text-slate-300 font-bold mx-1">-</span><span class="bg-white border-2 border-slate-100 px-3 py-1.5 rounded-lg font-bold shadow-sm">the</span><span class="text-slate-300 font-bold mx-1">-</span><span class="bg-white border-2 border-slate-100 px-3 py-1.5 rounded-lg font-bold shadow-sm">in</span><span class="text-slate-300 font-bold mx-1">-</span><span class="bg-white border-2 border-slate-100 px-3 py-1.5 rounded-lg font-bold shadow-sm">evening</span>
+            </div><input type="text" name="ans_id_ucsdkricu_1780664819566_948" class="w-full border-2 border-slate-100 rounded-xl p-4 focus:border-indigo-500 outline-none transition-all text-lg font-medium" placeholder="Nhập câu trả lời...">
+              </div>
+            </div>
+          </div>
+          <div class="scroll-mt-32 break-inside-avoid" id="q_container_id_c59o0pg3a_1780664819566_874">
+            <div class="flex gap-4">
+              <div class="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold shrink-0">7</div>
+              <div class="flex-1">
+                <div class="text-lg font-semibold text-slate-800 mb-4 whitespace-pre-wrap">What is the correct negative form of 'I eat fish'? <span class="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100 ml-2">1đ</span></div>
+                
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <label class="quiz-option relative flex items-start p-4 rounded-xl border-2 border-slate-100 bg-slate-50 cursor-pointer group">
+                <input type="radio" name="ans_id_c59o0pg3a_1780664819566_874" value="0" class="peer sr-only">
+                <div class="w-5 h-5 rounded-full border-2 border-slate-300 mt-0.5 flex items-center justify-center shrink-0 group-hover:border-indigo-400 transition-colors radio-circle">
+                  <div class="w-2.5 h-2.5 bg-indigo-600 rounded-full opacity-0 radio-dot"></div>
+                </div>
+                <div class="ml-3 flex-1 text-slate-700 font-medium pt-0.5">
+                  <span class="font-bold text-slate-400 mr-1">A. </span> I don't eat fish.
+                </div>
+              </label>
+              <label class="quiz-option relative flex items-start p-4 rounded-xl border-2 border-slate-100 bg-slate-50 cursor-pointer group">
+                <input type="radio" name="ans_id_c59o0pg3a_1780664819566_874" value="1" class="peer sr-only">
+                <div class="w-5 h-5 rounded-full border-2 border-slate-300 mt-0.5 flex items-center justify-center shrink-0 group-hover:border-indigo-400 transition-colors radio-circle">
+                  <div class="w-2.5 h-2.5 bg-indigo-600 rounded-full opacity-0 radio-dot"></div>
+                </div>
+                <div class="ml-3 flex-1 text-slate-700 font-medium pt-0.5">
+                  <span class="font-bold text-slate-400 mr-1">B. </span> I am not eat fish.
+                </div>
+              </label>
+              <label class="quiz-option relative flex items-start p-4 rounded-xl border-2 border-slate-100 bg-slate-50 cursor-pointer group">
+                <input type="radio" name="ans_id_c59o0pg3a_1780664819566_874" value="2" class="peer sr-only">
+                <div class="w-5 h-5 rounded-full border-2 border-slate-300 mt-0.5 flex items-center justify-center shrink-0 group-hover:border-indigo-400 transition-colors radio-circle">
+                  <div class="w-2.5 h-2.5 bg-indigo-600 rounded-full opacity-0 radio-dot"></div>
+                </div>
+                <div class="ml-3 flex-1 text-slate-700 font-medium pt-0.5">
+                  <span class="font-bold text-slate-400 mr-1">C. </span> I doesn't eat fish.
+                </div>
+              </label>
+              <label class="quiz-option relative flex items-start p-4 rounded-xl border-2 border-slate-100 bg-slate-50 cursor-pointer group">
+                <input type="radio" name="ans_id_c59o0pg3a_1780664819566_874" value="3" class="peer sr-only">
+                <div class="w-5 h-5 rounded-full border-2 border-slate-300 mt-0.5 flex items-center justify-center shrink-0 group-hover:border-indigo-400 transition-colors radio-circle">
+                  <div class="w-2.5 h-2.5 bg-indigo-600 rounded-full opacity-0 radio-dot"></div>
+                </div>
+                <div class="ml-3 flex-1 text-slate-700 font-medium pt-0.5">
+                  <span class="font-bold text-slate-400 mr-1">D. </span> I no eat fish.
+                </div>
+              </label></div>
+              </div>
+            </div>
+          </div>
+          <div class="scroll-mt-32 break-inside-avoid" id="q_container_id_m0s7tiij7_1780664819566_921">
+            <div class="flex gap-4">
+              <div class="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold shrink-0">8</div>
+              <div class="flex-1">
+                <div class="text-lg font-semibold text-slate-800 mb-4 whitespace-pre-wrap">Fill in the blank: Do they ________ (live) in London? <span class="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100 ml-2">1đ</span></div>
+                
+                
+                <input type="text" name="ans_id_m0s7tiij7_1780664819566_921" class="w-full border-2 border-slate-100 rounded-xl p-4 focus:border-indigo-500 outline-none transition-all text-lg font-medium" placeholder="Nhập câu trả lời...">
+              </div>
+            </div>
+          </div>
+          <div class="scroll-mt-32 break-inside-avoid" id="q_container_id_bdd7se291_1780664819566_862">
+            <div class="flex gap-4">
+              <div class="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold shrink-0">9</div>
+              <div class="flex-1">
+                <div class="text-lg font-semibold text-slate-800 mb-4 whitespace-pre-wrap">For the subjects 'He', 'She', or 'It', we add '-s' or '-es' to the base verb in Present Simple affirmative sentences. <span class="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100 ml-2">1đ</span></div>
+                
+                
+                <div class="flex flex-col gap-3"></div>
+              </div>
+            </div>
+          </div>
+          <div class="scroll-mt-32 break-inside-avoid" id="q_container_id_bayjt871t_1780664819566_27">
+            <div class="flex gap-4">
+              <div class="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold shrink-0">10</div>
+              <div class="flex-1">
+                <div class="text-lg font-semibold text-slate-800 mb-4 whitespace-pre-wrap">Rearrange the words to make a complete sentence: <span class="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100 ml-2">1đ</span></div>
+                
+                
+                <div class="mb-4 flex flex-wrap gap-2 p-4 bg-slate-50 rounded-xl border border-slate-200 shadow-inner">
+              <span class="bg-white border-2 border-slate-100 px-3 py-1.5 rounded-lg font-bold shadow-sm">you</span><span class="text-slate-300 font-bold mx-1">-</span><span class="bg-white border-2 border-slate-100 px-3 py-1.5 rounded-lg font-bold shadow-sm">do</span><span class="text-slate-300 font-bold mx-1">-</span><span class="bg-white border-2 border-slate-100 px-3 py-1.5 rounded-lg font-bold shadow-sm">speak</span><span class="text-slate-300 font-bold mx-1">-</span><span class="bg-white border-2 border-slate-100 px-3 py-1.5 rounded-lg font-bold shadow-sm">English</span><span class="text-slate-300 font-bold mx-1">-</span><span class="bg-white border-2 border-slate-100 px-3 py-1.5 rounded-lg font-bold shadow-sm">?</span>
+            </div><input type="text" name="ans_id_bayjt871t_1780664819566_27" class="w-full border-2 border-slate-100 rounded-xl p-4 focus:border-indigo-500 outline-none transition-all text-lg font-medium" placeholder="Nhập câu trả lời...">
+              </div>
+            </div>
+          </div></div></div></div>
+                    <div class="mt-12 text-center no-print" id="submitWrap">
+                        <button type="submit" class="bg-emerald-500 hover:bg-emerald-400 text-white text-xl font-black py-5 px-16 rounded-full shadow-xl transition transform hover:-translate-y-1">
+                            NỘP BÀI
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <aside class="hidden lg:block w-72 sticky top-28 no-print">
+                <div class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="bg-indigo-600 text-white p-4 font-bold text-center">BẢNG CÂU HỎI</div>
+                    <div class="p-4 grid grid-cols-4 gap-2 h-96 overflow-y-auto" id="desktopNavContainer">
+                        <button type="button" onclick="scrollToQ('id_77st1momj_1780664819566_732')" class="btn-nav-id_77st1momj_1780664819566_732 w-full aspect-square rounded-xl font-bold border-2 border-slate-100 bg-slate-50 text-slate-400 hover:border-indigo-200 transition-all flex items-center justify-center">1</button><button type="button" onclick="scrollToQ('id_x9abvvmj7_1780664819566_591')" class="btn-nav-id_x9abvvmj7_1780664819566_591 w-full aspect-square rounded-xl font-bold border-2 border-slate-100 bg-slate-50 text-slate-400 hover:border-indigo-200 transition-all flex items-center justify-center">2</button><button type="button" onclick="scrollToQ('id_cidr9wwzg_1780664819566_177')" class="btn-nav-id_cidr9wwzg_1780664819566_177 w-full aspect-square rounded-xl font-bold border-2 border-slate-100 bg-slate-50 text-slate-400 hover:border-indigo-200 transition-all flex items-center justify-center">3</button><button type="button" onclick="scrollToQ('id_bb47liejh_1780664819566_478')" class="btn-nav-id_bb47liejh_1780664819566_478 w-full aspect-square rounded-xl font-bold border-2 border-slate-100 bg-slate-50 text-slate-400 hover:border-indigo-200 transition-all flex items-center justify-center">4</button><button type="button" onclick="scrollToQ('id_srj0qcqpn_1780664819566_524')" class="btn-nav-id_srj0qcqpn_1780664819566_524 w-full aspect-square rounded-xl font-bold border-2 border-slate-100 bg-slate-50 text-slate-400 hover:border-indigo-200 transition-all flex items-center justify-center">5</button><button type="button" onclick="scrollToQ('id_ucsdkricu_1780664819566_948')" class="btn-nav-id_ucsdkricu_1780664819566_948 w-full aspect-square rounded-xl font-bold border-2 border-slate-100 bg-slate-50 text-slate-400 hover:border-indigo-200 transition-all flex items-center justify-center">6</button><button type="button" onclick="scrollToQ('id_c59o0pg3a_1780664819566_874')" class="btn-nav-id_c59o0pg3a_1780664819566_874 w-full aspect-square rounded-xl font-bold border-2 border-slate-100 bg-slate-50 text-slate-400 hover:border-indigo-200 transition-all flex items-center justify-center">7</button><button type="button" onclick="scrollToQ('id_m0s7tiij7_1780664819566_921')" class="btn-nav-id_m0s7tiij7_1780664819566_921 w-full aspect-square rounded-xl font-bold border-2 border-slate-100 bg-slate-50 text-slate-400 hover:border-indigo-200 transition-all flex items-center justify-center">8</button><button type="button" onclick="scrollToQ('id_bdd7se291_1780664819566_862')" class="btn-nav-id_bdd7se291_1780664819566_862 w-full aspect-square rounded-xl font-bold border-2 border-slate-100 bg-slate-50 text-slate-400 hover:border-indigo-200 transition-all flex items-center justify-center">9</button><button type="button" onclick="scrollToQ('id_bayjt871t_1780664819566_27')" class="btn-nav-id_bayjt871t_1780664819566_27 w-full aspect-square rounded-xl font-bold border-2 border-slate-100 bg-slate-50 text-slate-400 hover:border-indigo-200 transition-all flex items-center justify-center">10</button>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </main>
+
+    <div class="fixed bottom-6 right-6 lg:hidden no-print z-50">
+        <button onclick="toggleMobileNav()" class="w-14 h-14 bg-indigo-600 text-white rounded-full shadow-2xl flex items-center justify-center text-2xl">
+            <i class="fa-solid fa-list-check"></i>
+        </button>
+    </div>
+    
+    <div id="mobileNavModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] hidden no-print items-center justify-center p-4">
+        <div class="bg-white w-full max-w-sm rounded-[2rem] overflow-hidden shadow-2xl">
+            <div class="bg-indigo-600 p-5 text-white font-bold flex justify-between items-center">
+                <span class="flex items-center gap-2"><i class="fa-solid fa-list-check"></i> BẢNG CÂU HỎI</span>
+                <button onclick="toggleMobileNav()" class="p-2 hover:bg-white/10 rounded-lg transition"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="p-6 grid grid-cols-5 gap-2 max-h-[60vh] overflow-y-auto">
+                <button type="button" onclick="scrollToQ('id_77st1momj_1780664819566_732')" class="btn-nav-id_77st1momj_1780664819566_732 w-full aspect-square rounded-xl font-bold border-2 border-slate-100 bg-slate-50 text-slate-400 hover:border-indigo-200 transition-all flex items-center justify-center">1</button><button type="button" onclick="scrollToQ('id_x9abvvmj7_1780664819566_591')" class="btn-nav-id_x9abvvmj7_1780664819566_591 w-full aspect-square rounded-xl font-bold border-2 border-slate-100 bg-slate-50 text-slate-400 hover:border-indigo-200 transition-all flex items-center justify-center">2</button><button type="button" onclick="scrollToQ('id_cidr9wwzg_1780664819566_177')" class="btn-nav-id_cidr9wwzg_1780664819566_177 w-full aspect-square rounded-xl font-bold border-2 border-slate-100 bg-slate-50 text-slate-400 hover:border-indigo-200 transition-all flex items-center justify-center">3</button><button type="button" onclick="scrollToQ('id_bb47liejh_1780664819566_478')" class="btn-nav-id_bb47liejh_1780664819566_478 w-full aspect-square rounded-xl font-bold border-2 border-slate-100 bg-slate-50 text-slate-400 hover:border-indigo-200 transition-all flex items-center justify-center">4</button><button type="button" onclick="scrollToQ('id_srj0qcqpn_1780664819566_524')" class="btn-nav-id_srj0qcqpn_1780664819566_524 w-full aspect-square rounded-xl font-bold border-2 border-slate-100 bg-slate-50 text-slate-400 hover:border-indigo-200 transition-all flex items-center justify-center">5</button><button type="button" onclick="scrollToQ('id_ucsdkricu_1780664819566_948')" class="btn-nav-id_ucsdkricu_1780664819566_948 w-full aspect-square rounded-xl font-bold border-2 border-slate-100 bg-slate-50 text-slate-400 hover:border-indigo-200 transition-all flex items-center justify-center">6</button><button type="button" onclick="scrollToQ('id_c59o0pg3a_1780664819566_874')" class="btn-nav-id_c59o0pg3a_1780664819566_874 w-full aspect-square rounded-xl font-bold border-2 border-slate-100 bg-slate-50 text-slate-400 hover:border-indigo-200 transition-all flex items-center justify-center">7</button><button type="button" onclick="scrollToQ('id_m0s7tiij7_1780664819566_921')" class="btn-nav-id_m0s7tiij7_1780664819566_921 w-full aspect-square rounded-xl font-bold border-2 border-slate-100 bg-slate-50 text-slate-400 hover:border-indigo-200 transition-all flex items-center justify-center">8</button><button type="button" onclick="scrollToQ('id_bdd7se291_1780664819566_862')" class="btn-nav-id_bdd7se291_1780664819566_862 w-full aspect-square rounded-xl font-bold border-2 border-slate-100 bg-slate-50 text-slate-400 hover:border-indigo-200 transition-all flex items-center justify-center">9</button><button type="button" onclick="scrollToQ('id_bayjt871t_1780664819566_27')" class="btn-nav-id_bayjt871t_1780664819566_27 w-full aspect-square rounded-xl font-bold border-2 border-slate-100 bg-slate-50 text-slate-400 hover:border-indigo-200 transition-all flex items-center justify-center">10</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="loader" class="fixed inset-0 bg-white/95 z-[9999] flex flex-col items-center justify-center hidden">
+        <div class="w-16 h-16 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mb-4"></div>
+        <h2 class="text-2xl font-bold text-slate-800">Đang nộp bài...</h2>
+    </div>
+
+    <script>
+        const GRADING = JSON.parse(decodeURIComponent(escape(atob("eyJpZF83N3N0MW1vbWpfMTc4MDY2NDgxOTU2Nl83MzIiOnsidHlwZSI6Im1jcTQiLCJwb2ludHMiOjEsInRleHQiOiJDaG9vc2UgdGhlIGNvcnJlY3QgZm9ybSBvZiB0aGUgdmVyYjogU2hlIF9fX19fX18gdG8gdGhlIHBhcmsgZXZlcnkgU3VuZGF5LiIsImNvcnJlY3RWYWx1ZSI6IjEifSwiaWRfeDlhYnZ2bWo3XzE3ODA2NjQ4MTk1NjZfNTkxIjp7InR5cGUiOiJtY3EzIiwicG9pbnRzIjoxLCJ0ZXh0IjoiV2hpY2ggc2VudGVuY2UgaXMgZ3JhbW1hdGljYWxseSBjb3JyZWN0PyIsImNvcnJlY3RWYWx1ZSI6IjEifSwiaWRfY2lkcjl3d3pnXzE3ODA2NjQ4MTk1NjZfMTc3Ijp7InR5cGUiOiJ0ZiIsInBvaW50cyI6MSwidGV4dCI6IldlIHVzZSB0aGUgUHJlc2VudCBTaW1wbGUgdGVuc2UgdG8gdGFsayBhYm91dCBhY3Rpb25zIGhhcHBlbmluZyByaWdodCBub3cgYXQgdGhpcyBtb21lbnQuIiwiY29ycmVjdFZhbHVlIjoiRmFsc2UifSwiaWRfYmI0N2xpZWpoXzE3ODA2NjQ4MTk1NjZfNDc4Ijp7InR5cGUiOiJmaWxsIiwicG9pbnRzIjoxLCJ0ZXh0IjoiRmlsbCBpbiB0aGUgYmxhbms6IEhlIF9fX19fX19fIChub3QvbGlrZSkgYXBwbGVzLiIsImNvcnJlY3RWYWx1ZSI6ImRvZXMgbm90IGxpa2UifSwiaWRfc3JqMHFjcXBuXzE3ODA2NjQ4MTk1NjZfNTI0Ijp7InR5cGUiOiJjbG96ZSIsInBvaW50cyI6MSwidGV4dCI6IsSQaeG7gW4gdOG7qyB2w6BvIGNo4buXIHRy4buRbmc6IiwiY29ycmVjdFdvcmRzIjpbIndvcmtzIiwic3RhcnRzIl19LCJpZF91Y3Nka3JpY3VfMTc4MDY2NDgxOTU2Nl85NDgiOnsidHlwZSI6InJlb3JkZXIiLCJwb2ludHMiOjEsInRleHQiOiJSZWFycmFuZ2UgdGhlIHdvcmRzIHRvIG1ha2UgYSBjb21wbGV0ZSBzZW50ZW5jZToiLCJjb3JyZWN0VmFsdWUiOiJTaGUgb2Z0ZW4gcmVhZHMgYm9va3MgaW4gdGhlIGV2ZW5pbmcuIn0sImlkX2M1OW8wcGczYV8xNzgwNjY0ODE5NTY2Xzg3NCI6eyJ0eXBlIjoibWNxNCIsInBvaW50cyI6MSwidGV4dCI6IldoYXQgaXMgdGhlIGNvcnJlY3QgbmVnYXRpdmUgZm9ybSBvZiAnSSBlYXQgZmlzaCc/IiwiY29ycmVjdFZhbHVlIjoiMCJ9LCJpZF9tMHM3dGlpajdfMTc4MDY2NDgxOTU2Nl85MjEiOnsidHlwZSI6ImZpbGwiLCJwb2ludHMiOjEsInRleHQiOiJGaWxsIGluIHRoZSBibGFuazogRG8gdGhleSBfX19fX19fXyAobGl2ZSkgaW4gTG9uZG9uPyIsImNvcnJlY3RWYWx1ZSI6ImxpdmUifSwiaWRfYmRkN3NlMjkxXzE3ODA2NjQ4MTk1NjZfODYyIjp7InR5cGUiOiJ0ZiIsInBvaW50cyI6MSwidGV4dCI6IkZvciB0aGUgc3ViamVjdHMgJ0hlJywgJ1NoZScsIG9yICdJdCcsIHdlIGFkZCAnLXMnIG9yICctZXMnIHRvIHRoZSBiYXNlIHZlcmIgaW4gUHJlc2VudCBTaW1wbGUgYWZmaXJtYXRpdmUgc2VudGVuY2VzLiIsImNvcnJlY3RWYWx1ZSI6IlRydWUifSwiaWRfYmF5anQ4NzF0XzE3ODA2NjQ4MTk1NjZfMjciOnsidHlwZSI6InJlb3JkZXIiLCJwb2ludHMiOjEsInRleHQiOiJSZWFycmFuZ2UgdGhlIHdvcmRzIHRvIG1ha2UgYSBjb21wbGV0ZSBzZW50ZW5jZToiLCJjb3JyZWN0VmFsdWUiOiJEbyB5b3Ugc3BlYWsgRW5nbGlzaD8ifX0="))));
+        const WEBHOOK = "https://script.google.com/macros/s/AKfycby7-DgKYwOFjIELfSbXBZZD4Xv-sj8KkURXM-n77IE5fNHy7nQMmKChN0RHCwRkIS6m/exec";
+        const EXAM_TITLE = "PHIẾU BÀI TẬP 1";
+        const qList = ["id_77st1momj_1780664819566_732","id_x9abvvmj7_1780664819566_591","id_cidr9wwzg_1780664819566_177","id_bb47liejh_1780664819566_478","id_srj0qcqpn_1780664819566_524","id_ucsdkricu_1780664819566_948","id_c59o0pg3a_1780664819566_874","id_m0s7tiij7_1780664819566_921","id_bdd7se291_1780664819566_862","id_bayjt871t_1780664819566_27"];
+        let timeLeft = 900;
+        let isSubmitted = false;
+
+        let activeInput = null;
+        function setActiveInput(el) {
+            activeInput = el;
+            document.querySelectorAll('.word-input').forEach(i => i.classList.remove('border-indigo-600', 'bg-indigo-50/10'));
+            el.classList.add('border-indigo-600', 'bg-indigo-50/10');
+        }
+
+        function refreshWordBank(qid) {
+            if (isSubmitted) return;
+            const inputs = Array.from(document.querySelectorAll('input[name^="ans_' + qid + '_"]'));
+            const studentWords = inputs.map(i => i.value.trim()).filter(Boolean);
+            const bank = document.querySelector('.word-bank-container[data-qid="' + qid + '"]');
+            if (!bank) return;
+            const items = Array.from(bank.querySelectorAll('.word-bank-item'));
+            items.forEach(item => item.classList.remove('opacity-30', 'grayscale', 'pointer-events-none', 'used'));
+            const tempStudent = [...studentWords];
+            items.forEach(item => {
+                const idx = tempStudent.indexOf(item.innerText);
+                if (idx > -1) {
+                    item.classList.add('opacity-30', 'grayscale', 'pointer-events-none', 'used');
+                    tempStudent.splice(idx, 1);
+                }
+            });
+            updateNavStatus();
+        }
+
+        function handleDragStart(ev) {
+            if (isSubmitted) return;
+            ev.dataTransfer.setData("text", ev.target.innerText);
+            ev.dataTransfer.setData("id", ev.target.id);
+        }
+
+        function handleDrop(ev) {
+            if (isSubmitted) return;
+            ev.preventDefault();
+            const data = ev.dataTransfer.getData("text");
+            const wordId = ev.dataTransfer.getData("id");
+            const wordEl = document.getElementById(wordId);
+            const qid = ev.target.name.split('_')[1];
+            
+            if (wordEl && !wordEl.classList.contains('used')) {
+                ev.target.value = data;
+                ev.target.dispatchEvent(new Event('input', { bubbles: true }));
+                refreshWordBank(qid);
+            }
+        }
+
+        function handleWordClick(el, qid) {
+            if (el.classList.contains('used')) return;
+
+            if (!activeInput || !activeInput.name.startsWith('ans_' + qid)) {
+                const inputs = Array.from(document.querySelectorAll('input[name^="ans_' + qid + '_"]'));
+                const empty = inputs.find(i => !i.value.trim());
+                if (empty) {
+                    activeInput = empty;
+                } else {
+                    return;
+                }
+            }
+            
+            activeInput.value = el.innerText;
+            activeInput.dispatchEvent(new Event('input', { bubbles: true }));
+            refreshWordBank(qid);
+
+            const inputs = Array.from(document.querySelectorAll('input[name^="ans_' + qid + '_"]'));
+            const currentIndex = inputs.indexOf(activeInput);
+            if (currentIndex < inputs.length - 1) {
+                setActiveInput(inputs[currentIndex + 1]);
+                inputs[currentIndex + 1].focus();
+            } else {
+                activeInput = null;
+            }
+        }
+
+        if (false) {
+            const timerInterval = setInterval(() => {
+                if (timeLeft <= 0 || isSubmitted) {
+                    if (isSubmitted) clearInterval(timerInterval);
+                    return;
+                }
+                timeLeft--;
+                const m = Math.floor(timeLeft / 60);
+                const s = timeLeft % 60;
+                const timerEl = document.getElementById('timer');
+                if (timerEl) timerEl.innerText = (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+                if (timeLeft === 0) document.getElementById('quizForm').requestSubmit();
+            }, 1000);
+        }
+
+        function scrollToQ(id) {
+            const el = document.getElementById('q_container_' + id);
+            if (el) {
+                const y = el.getBoundingClientRect().top + window.pageYOffset - 120;
+                window.scrollTo({ top: y, behavior: 'smooth' });
+                el.classList.add('bg-indigo-50');
+                setTimeout(() => el.classList.remove('bg-indigo-50'), 1000);
+                const modal = document.getElementById('mobileNavModal');
+                if (modal && !modal.classList.contains('hidden')) {
+                    toggleMobileNav();
+                }
+            }
+        }
+
+        function toggleMobileNav() {
+            const modal = document.getElementById('mobileNavModal');
+            if (modal) {
+                modal.classList.toggle('hidden');
+                modal.classList.toggle('flex');
+            }
+        }
+
+        function updateNavStatus(results = null) {
+            qList.forEach(id => {
+                const btns = document.querySelectorAll('.btn-nav-' + id);
+                let statusClass = 'bg-slate-50 text-slate-400 border-slate-100';
+                
+                if (results && results[id] !== undefined) {
+                    statusClass = results[id] ? 'bg-emerald-500 text-white border-emerald-500' : 'bg-red-500 text-white border-red-500';
+                } else {
+                    let isAnswered = false;
+                    const radios = document.querySelectorAll('input[name="ans_' + id + '"][type="radio"]');
+                    if (radios.length > 0) {
+                        isAnswered = Array.from(radios).some(r => r.checked);
+                    } else if (document.querySelector('select[name="ans_' + id + '"]')) {
+                        isAnswered = document.querySelector('select[name="ans_' + id + '"]').value !== '';
+                    } else if (document.querySelector('textarea[name="ans_' + id + '"]')) {
+                        isAnswered = document.querySelector('textarea[name="ans_' + id + '"]').value.trim() !== '';
+                    } else {
+                        const inputs = Array.from(document.querySelectorAll('[name^="ans_' + id + '"]'));
+                        isAnswered = inputs.some(i => i.value && i.value.trim() !== '');
+                    }
+                    
+                    if (isAnswered) {
+                        statusClass = 'bg-indigo-600 text-white border-indigo-600';
+                    }
+                }
+                
+                btns.forEach(btn => {
+                    btn.className = `btn-nav-${id} w-full aspect-square rounded-xl font-bold border-2 transition-all flex items-center justify-center ${statusClass}`;
+                });
+            });
+        }
+
+        const quizForm = document.getElementById('quizForm');
+        if (quizForm) {
+            quizForm.addEventListener('input', () => updateNavStatus());
+            quizForm.addEventListener('change', () => updateNavStatus());
+        }
+
+        async function handleSubmit(e) {
+            e.preventDefault();
+            if (isSubmitted) return;
+            isSubmitted = true;
+            document.getElementById('loader').classList.remove('hidden');
+            
+            const formData = new FormData(e.target);
+            let totalPoints = 0;
+            let maxPoints = 0;
+            const qResults = {};
+            const payload = {
+                'Họ_Tên': document.getElementById('stdName').value,
+                'Lớp': document.getElementById('stdClass').value,
+                'Thời_Gian': new Date().toLocaleString('vi-VN'),
+                'Tên_Đề': EXAM_TITLE
+            };
+
+            // Disable all inputs
+            const allInputs = e.target.querySelectorAll('input, select, textarea, button[type="submit"]');
+            allInputs.forEach(input => input.disabled = true);
+            document.querySelectorAll('.word-bank-item').forEach(item => {
+                item.classList.add('pointer-events-none', 'opacity-50');
+            });
+
+            for (const id of qList) {
+                const rule = GRADING[id];
+                const qContainer = document.getElementById('q_container_' + id);
+                maxPoints += rule.points;
+                let studentAns = '';
+                let isCorrect = false;
+
+                if (['match', 'matchimg', 'cloze', 'wordbank', 'wordfill'].includes(rule.type)) {
+                    const inputs = Array.from(e.target.querySelectorAll('input[name^="ans_' + id + '_"]'));
+                    const studentArr = inputs.map(i => i.value.trim());
+                    studentAns = studentArr.join(' | ');
+                    
+                    if (rule.type === 'cloze' || rule.type === 'wordbank') {
+                        isCorrect = studentArr.every((v, i) => {
+                            const correctPart = (rule.correctWords[i] || '');
+                            const possible = correctPart.split('/').map(a => a.trim().toLowerCase());
+                            const res = possible.includes(v.toLowerCase());
+                            
+                            inputs[i].classList.add(res ? 'text-emerald-600' : 'text-red-500');
+                            inputs[i].classList.add(res ? 'border-emerald-500' : 'border-red-500');
+                            if (!res) {
+                                const hint = document.createElement('span');
+                                hint.className = 'text-[10px] text-emerald-600 font-bold ml-1 block italic';
+                                hint.innerText = '(' + correctPart + ')';
+                                inputs[i].after(hint);
+                            }
+                            return res;
+                        });
+                    } else if (rule.type === 'wordfill') {
+                        isCorrect = studentArr.every((v, i) => {
+                            const correct = (rule.correctLetters[i] || '').toUpperCase();
+                            const res = v.toUpperCase() === correct;
+                            inputs[i].classList.add(res ? 'text-emerald-600' : 'text-red-500');
+                            inputs[i].classList.add(res ? 'border-emerald-500' : 'border-red-500');
+                            if (!res) inputs[i].value = v + ' (' + correct + ')';
+                            return res;
+                        });
+                    } else {
+                        isCorrect = studentArr.every((v, i) => {
+                            const correct = rule.correctRights[i];
+                            const res = v === correct;
+                            inputs[i].classList.add(res ? 'border-emerald-500' : 'border-red-500');
+                            if (!res) {
+                                const hint = document.createElement('div');
+                                hint.className = 'text-xs text-emerald-600 font-bold mt-1';
+                                hint.innerText = 'Đúng: ' + correct;
+                                inputs[i].after(hint);
+                            }
+                            return res;
+                        });
+                    }
+                } else if (['mcq4', 'mcq3', 'tfng', 'tf', 'yn', 'tickcross'].includes(rule.type)) {
+                    const selectedRadio = e.target.querySelector('input[name="ans_' + id + '"]:checked');
+                    const correctIdx = parseInt(rule.correctValue);
+                    const radios = e.target.querySelectorAll('input[name="ans_' + id + '"]');
+                    
+                    if (selectedRadio) {
+                        const val = selectedRadio.value;
+                        const parentLabel = selectedRadio.closest('.quiz-option');
+                        studentAns = parentLabel ? (parentLabel.querySelector('.flex-1')?.textContent || '').replace(/^[A-Z].s+/, '').trim() : val;
+                        isCorrect = String(val) === String(rule.correctValue);
+                    } else {
+                        studentAns = "Trống";
+                        isCorrect = false;
+                    }
+
+                    radios.forEach((radio, idx) => {
+                        const parentLabel = radio.closest('.quiz-option');
+                        if (parentLabel) {
+                            if (idx === correctIdx) parentLabel.classList.add('border-emerald-500', 'bg-emerald-50');
+                            if (radio.checked && idx !== correctIdx) parentLabel.classList.add('border-red-500', 'bg-red-50');
+                        }
+                    });
+
+                    if (!isCorrect) {
+                        const correctLabel = radios[correctIdx] ? radios[correctIdx].closest('.quiz-option') : null;
+                        const correctText = correctLabel ? (correctLabel.querySelector('.flex-1')?.textContent || '').replace(/^[A-Z].s+/, '').trim() : 'N/A';
+                        studentAns += ' (Đúng là: ' + correctText + ')';
+                    }
+                } else if (rule.type === 'dropdown') {
+                    studentAns = (formData.get('ans_' + id) || '').toString().trim();
+                    const select = e.target.querySelector('select[name="ans_' + id + '"]');
+                    isCorrect = studentAns.toLowerCase() === rule.correctValue.toLowerCase();
+                    select.classList.add(isCorrect ? 'border-emerald-500' : 'border-red-500');
+                    if (!isCorrect) {
+                        const hint = document.createElement('div');
+                        hint.className = 'text-sm text-emerald-600 font-bold mt-2';
+                        hint.innerText = 'Đúng: ' + rule.correctValue;
+                        select.after(hint);
+                    }
+                } else if (rule.type === 'essay') {
+                    studentAns = (formData.get('ans_' + id) || '').toString().trim();
+                    isCorrect = false;
+                } else {
+                    studentAns = (formData.get('ans_' + id) || '').toString().trim();
+                    const correctVal = (rule.correctValue || '');
+                    const possible = correctVal.split('/').map(a => a.trim().toLowerCase());
+                    isCorrect = possible.includes(studentAns.toLowerCase());
+                    const input = e.target.querySelector('input[name="ans_' + id + '"]');
+                    if (input) {
+                        input.classList.add(isCorrect ? 'border-emerald-500' : 'border-red-500');
+                        if (!isCorrect) {
+                            const hint = document.createElement('div');
+                            hint.className = 'text-sm text-emerald-600 font-bold mt-2';
+                            hint.innerText = 'Đáp án: ' + correctVal;
+                            input.after(hint);
+                        }
+                    }
+                }
+
+                if (isCorrect) totalPoints += Number(rule.points || 0);
+                qResults[id] = isCorrect;
+                
+                const statusIcon = isCorrect ? '✅' : '❌';
+                const questionSummary = '[Câu ' + (qList.indexOf(id) + 1) + '] ' + rule.text + ' | Trả lời: ' + studentAns;
+                payload['Câu_' + (qList.indexOf(id) + 1)] = statusIcon + ' ' + questionSummary;
+                payload['Câu_' + (qList.indexOf(id) + 1) + '_Status'] = isCorrect ? 'CORRECT' : 'WRONG';
+
+                if (qContainer) {
+                    qContainer.classList.add(isCorrect ? 'bg-emerald-50/20' : 'bg-red-50/20');
+                }
+            }
+
+            updateNavStatus(qResults);
+            const scoreText = totalPoints + ' / ' + maxPoints;
+            payload['Điểm_Số'] = scoreText;
+            const scorePercent = maxPoints > 0 ? Math.round((totalPoints / maxPoints) * 100) : 0;
+
+            // Cập nhật thông tin vào Header in ấn để PDF đẹp hơn
+            const printName = document.getElementById('printName');
+            const printClass = document.getElementById('printClass');
+            const printTime = document.getElementById('printTime');
+            const printScore = document.getElementById('printScore');
+            if (printName) printName.innerText = payload['Họ_Tên'];
+            if (printClass) printClass.innerText = payload['Lớp'];
+            if (printTime) printTime.innerText = payload['Thời_Gian'];
+            if (printScore) printScore.innerText = scoreText;
+
+            // PDF logic removed - handled by server template
+
+            try {
+                if (WEBHOOK) {
+                    await fetch(WEBHOOK, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'text/plain' },
+                        body: JSON.stringify(payload)
+                    });
+                }
+                
+                document.getElementById('loader').classList.add('hidden');
+                document.getElementById('submitWrap').innerHTML = '                     <div class="bg-white p-10 rounded-[2.5rem] border-4 border-indigo-600 shadow-2xl flex flex-col md:flex-row items-center gap-10 text-left animate-in fade-in zoom-in duration-500 mb-20">                         <div class="relative w-40 h-40 shrink-0">                             <svg class="w-full h-full transform -rotate-90">                                 <circle cx="80" cy="80" r="74" stroke="#e2e8f0" stroke-width="12" fill="transparent" />                                 <circle cx="80" cy="80" r="74" stroke="#10b981" stroke-width="12" fill="transparent"                                     id="circle-score" stroke-linecap="round" />                             </svg>                             <div class="absolute inset-0 flex flex-col items-center justify-center">                                 <span class="text-4xl font-black text-slate-800">' + scorePercent + '%</span>                                 <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Hoàn thành</span>                             </div>                         </div>                         <div class="flex-1">                             <div class="flex items-center gap-3 mb-2">                                 <span class="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-black uppercase tracking-widest">Hệ thống ghi nhận</span>                                 <span class="text-slate-300">|</span>                                 <span class="text-slate-500 font-medium">' + new Date().toLocaleTimeString('vi-VN') + '</span>                             </div>                             <h2 class="text-3xl font-black text-slate-900 mb-4 uppercase">BÀI LÀM ĐÃ ĐƯỢC GỬI THÀNH CÔNG!</h2>                             <div class="grid grid-cols-2 gap-4 mb-6">                                 <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">                                     <p class="text-[10px] font-black text-slate-400 uppercase mb-1">Điểm tại chỗ</p>                                     <p class="text-2xl font-black text-indigo-600">' + totalPoints + ' <span class="text-slate-300 text-lg">/ ' + maxPoints + '</span></p>                                 </div>                                 <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">                                     <p class="text-[10px] font-black text-slate-400 uppercase mb-1">Trạng thái minh chứng</p>                                     <p class="text-2xl font-black text-emerald-500">Đã cập nhật</p>                                 </div>                             </div>                             <div class="flex flex-wrap gap-3">                                 <button onclick="window.close();" class="bg-slate-800 hover:bg-slate-700 text-white px-8 py-3 rounded-2xl font-bold transition flex items-center gap-2 shadow-lg">                                     <i class="fa-solid fa-right-from-bracket"></i> THOÁT                                 </button>                             </div>                         </div>                     </div>                 ';
+                
+                const circle = document.getElementById('circle-score');
+                if (circle) {
+                    const radius = 74;
+                    const circumference = 2 * Math.PI * radius;
+                    circle.style.strokeDasharray = circumference;
+                    circle.style.strokeDashoffset = circumference - (circumference * scorePercent / 100);
+                }
+                document.body.classList.add('no-print');
+                document.getElementById('submitWrap').scrollIntoView({ behavior: 'smooth' });
+            } catch (err) {
+                document.getElementById('loader').classList.add('hidden');
+                console.error(err);
+                alert('Đã có lỗi khi xử lý kết quả. Vui lòng thử lại.');
+            }
+        }
+    </script>
+</body>
+</html>
