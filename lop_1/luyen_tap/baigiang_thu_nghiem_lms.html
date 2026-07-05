@@ -1,0 +1,1506 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>THỬ NGHIỆM - EduQuest LMS</title>
+  
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Font Setup -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+  
+  <style>
+    /* Custom CSS to polish standalone experience */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+
+    /* Fullscreen custom styles for interactive video card */
+    #video-card-container:fullscreen {
+      width: 100vw !important;
+      height: 100vh !important;
+      max-width: none !important;
+      background-color: #0f172a !important; /* slate-900 */
+      color: #f8fafc !important; /* white-ish */
+      padding: 24px !important;
+      margin: 0 !important;
+      border: none !important;
+      border-radius: 0 !important;
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: space-between !important;
+      gap: 16px !important;
+    }
+    
+    #video-card-container:fullscreen #video-frame-wrapper {
+      flex: 1 1 auto !important;
+      width: 100% !important;
+      height: 0 !important; /* Let flexbox expand it */
+      max-height: calc(100vh - 120px) !important;
+      background-color: #020617 !important; /* deep cinema bg */
+      border-color: #1e293b !important;
+      border-radius: 12px !important;
+    }
+    
+    #video-card-container:fullscreen .text-slate-800,
+    #video-card-container:fullscreen h4 {
+      color: #f8fafc !important;
+    }
+    
+    #video-card-container:fullscreen .text-slate-600 {
+      color: #cbd5e1 !important;
+    }
+
+    #video-card-container:fullscreen .text-slate-500 {
+      color: #94a3b8 !important;
+    }
+
+    #video-card-container:fullscreen .bg-white {
+      background-color: #1e293b !important;
+      border-color: #334155 !important;
+    }
+    
+    #video-card-container:fullscreen #timeline-bar {
+      background-color: #1e293b !important;
+      border-color: #334155 !important;
+    }
+
+    #video-card-container:fullscreen #label-current-time,
+    #video-card-container:fullscreen #label-total-duration {
+      color: #f8fafc !important;
+    }
+
+    /* Webkit Fullscreen compatibility */
+    #video-card-container:-webkit-full-screen {
+      width: 100vw !important;
+      height: 100vh !important;
+      max-width: none !important;
+      background-color: #0f172a !important;
+      color: #f8fafc !important;
+      padding: 24px !important;
+      margin: 0 !important;
+      border: none !important;
+      border-radius: 0 !important;
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: space-between !important;
+      gap: 16px !important;
+    }
+    
+    #video-card-container:-webkit-full-screen #video-frame-wrapper {
+      flex: 1 1 auto !important;
+      width: 100% !important;
+      height: 0 !important;
+      max-height: calc(100vh - 120px) !important;
+      background-color: #020617 !important;
+      border-color: #1e293b !important;
+      border-radius: 12px !important;
+    }
+    
+    #video-card-container:-webkit-full-screen .text-slate-800,
+    #video-card-container:-webkit-full-screen h4 {
+      color: #f8fafc !important;
+    }
+    
+    #video-card-container:-webkit-full-screen .text-slate-600 {
+      color: #cbd5e1 !important;
+    }
+
+    #video-card-container:-webkit-full-screen .text-slate-500 {
+      color: #94a3b8 !important;
+    }
+
+    #video-card-container:-webkit-full-screen .bg-white {
+      background-color: #1e293b !important;
+      border-color: #334155 !important;
+    }
+    
+    #video-card-container:-webkit-full-screen #timeline-bar {
+      background-color: #1e293b !important;
+      border-color: #334155 !important;
+    }
+
+    #video-card-container:-webkit-full-screen #label-current-time,
+    #video-card-container:-webkit-full-screen #label-total-duration {
+      color: #f8fafc !important;
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900 font-sans min-h-screen flex flex-col">
+
+  <!-- Main Header -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-20 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-2.5">
+        <div class="p-2 bg-indigo-600 rounded-xl text-white shadow-md">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+          </svg>
+        </div>
+        <div>
+          <h1 class="text-sm font-bold text-slate-900 md:text-base">EduQuest LMS</h1>
+          <p class="text-[9px] font-bold text-indigo-600 uppercase tracking-wide">Bài giảng tương tác Video Xuất bản</p>
+        </div>
+      </div>
+      <div id="student-badge-container" class="hidden flex items-center gap-2">
+        <span class="text-xs text-slate-500 font-medium">Học sinh:</span>
+        <span id="badge-student-name" class="text-xs font-bold text-indigo-700 bg-indigo-50 border border-indigo-200 px-2.5 py-1 rounded-lg"></span>
+      </div>
+    </div>
+  </header>
+
+  <!-- SCREEN 1: REGISTER -->
+  <main id="screen-register" class="flex-1 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl border border-slate-200 p-8 shadow-xl max-w-md w-full space-y-6">
+      <div class="text-center space-y-2">
+        <span class="text-[10px] font-bold text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded-full uppercase tracking-wider">Cổng ghi danh học tập</span>
+        <h2 class="text-2xl font-bold text-slate-800 leading-snug">THỬ NGHIỆM</h2>
+        <p class="text-xs text-slate-400">Vui lòng nhập thông tin của bạn bên dưới để hệ thống ghi nhận kết quả làm bài tập tích hợp trong video.</p>
+      </div>
+
+      <form id="register-form" onsubmit="startClassroom(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Họ và tên học viên <span class="text-rose-500">*</span></label>
+          <input
+            id="input-student-name"
+            type="text"
+            required
+            placeholder="Ví dụ: Nguyễn Văn A"
+            class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 font-medium"
+          />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Mã số học sinh (Không bắt buộc)</label>
+          <input
+            id="input-student-id"
+            type="text"
+            placeholder="Ví dụ: HS-2026-001"
+            class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 font-medium"
+          />
+        </div>
+        <div class="p-3.5 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-800 space-y-1">
+          <div class="flex items-center gap-1.5 font-bold uppercase text-amber-900">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-amber-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <span>Lưu ý quan trọng</span>
+          </div>
+          <p class="leading-relaxed font-semibold">
+            PHẢI XEM HẾT VIDEO THÌ HỆ THỐNG MỚI TÍNH ĐIỂM, NẾU THOÁT ĐỘT NGỘT THÌ HỆ THỐNG KHÔNG TÍNH ĐIỂM
+          </p>
+        </div>
+
+        <!-- Local File / Protocol Warning (Only visible on file:// protocol for YouTube videos) -->
+        <div id="local-file-warning" class="hidden p-3.5 bg-rose-50 border border-rose-200 rounded-xl text-xs text-rose-800 space-y-1">
+          <div class="flex items-center gap-1.5 font-bold uppercase text-rose-900">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-rose-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <span>Lưu ý kỹ thuật (file://)</span>
+          </div>
+          <p class="leading-relaxed font-semibold">
+            Bạn đang mở file HTML trực tiếp từ máy tính. Trình duyệt có thể chặn phát video YouTube do chính sách bảo mật (CORS/Origin).
+          </p>
+          <div class="pt-1.5 space-y-1.5 text-rose-700 font-medium">
+            <p><strong>Cách khắc phục:</strong></p>
+            <ul class="list-disc pl-4 space-y-0.5">
+              <li>Tải file HTML này lên các dịch vụ hosting miễn phí (như <strong>GitHub Pages, Netlify, Vercel</strong>) để chạy dưới dạng đường dẫn web <code>https://</code> bảo mật.</li>
+              <li>Hoặc mở bằng một máy chủ ảo local (Ví dụ: extension <strong>Live Server</strong> trên VS Code, hoặc chạy lệnh <code>python -m http.server 8000</code>).</li>
+            </ul>
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition-all shadow-md flex items-center justify-center gap-1.5 cursor-pointer text-sm"
+        >
+          Bắt đầu học ngay
+        </button>
+      </form>
+    </div>
+  </main>
+
+  <!-- SCREEN 2: CLASSROOM -->
+  <main id="screen-classroom" class="hidden flex-1 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full space-y-4">
+    <!-- Center column: Video player -->
+    <div class="space-y-4">
+      <div id="video-card-container" class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-4">
+        <div class="flex justify-between items-center border-b border-slate-100 pb-2.5">
+          <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">THỬ NGHIỆM</span>
+          <span class="text-xs font-semibold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-full">
+            YouTube API
+          </span>
+        </div>
+
+        <!-- Video Frame Wrapper -->
+        <div id="video-frame-wrapper" class="relative aspect-video rounded-2xl overflow-hidden shadow-lg bg-slate-950 border border-slate-200/50 flex items-center justify-center">
+          
+          <!-- YouTube Video Player Placeholder -->
+          <div id="yt-player-placeholder" class="w-full h-full "></div>
+          
+          <!-- Local Video File Selector / Player -->
+          <div id="local-player-wrapper" class="w-full h-full flex flex-col items-center justify-center p-6 hidden">
+            <div id="local-file-picker" class="text-center space-y-3 ">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 text-slate-400 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+              </svg>
+              <div class="space-y-1">
+                <p class="text-xs font-bold text-slate-300">Bài giảng này sử dụng tệp tin từ máy tính: <span class="text-indigo-400">https://www.youtube.com/watch?v=bpZFzP7acLs&list=RDPlg9DCmiIM4&index=16</span></p>
+                <p class="text-[10px] text-slate-400">Vui lòng tải tệp video tương ứng từ thiết bị của bạn để phát đồng bộ.</p>
+              </div>
+              <label class="inline-block py-2 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-lg cursor-pointer transition-colors shadow">
+                Chọn tệp tin video
+                <input type="file" accept="video/*" class="hidden" onchange="loadLocalVideoFile(event)" />
+              </label>
+            </div>
+            <video id="local-video" class="hidden w-full h-full"  playsinline ontimeupdate="onLocalVideoTimeUpdate()" onplay="onLocalVideoPlay()" onpause="onLocalVideoPause()"></video>
+          </div>
+
+          <!-- Question Overlay Dialog -->
+          <div id="question-overlay" class="hidden absolute inset-0 bg-slate-950/80 backdrop-blur-md z-30 flex items-center justify-center p-4">
+            <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden border border-slate-200 flex flex-col max-h-full">
+              <!-- Overlay Header -->
+              <div class="px-5 py-3 bg-indigo-50 border-b border-indigo-100/50 flex items-center justify-between">
+                <span id="overlay-badge" class="text-xs font-bold text-indigo-700 uppercase tracking-wider flex items-center gap-1.5">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span id="overlay-type-label">Câu hỏi tương tác</span>
+                </span>
+                <button
+                  id="overlay-skip-btn"
+                  onclick="skipOverlayQuestion()"
+                  class="text-xs text-slate-500 hover:text-slate-800 font-medium transition-colors cursor-pointer"
+                >
+                  Bỏ qua câu hỏi &gt;
+                </button>
+              </div>
+
+              <!-- Overlay Body -->
+              <div class="p-6 overflow-y-auto space-y-5">
+                <!-- Question Text -->
+                <h4 id="overlay-question-text" class="text-lg font-bold text-slate-800 leading-snug"></h4>
+                
+                <!-- Input Controls Area -->
+                <div id="overlay-inputs"></div>
+
+                <!-- Grading Feedback Area -->
+                <div id="overlay-feedback" class="hidden p-4 rounded-xl border space-y-3">
+                  <div class="flex items-center gap-2">
+                    <span id="feedback-icon-placeholder"></span>
+                    <span id="feedback-headline" class="font-bold text-base"></span>
+                  </div>
+                  <div class="space-y-1 text-xs font-medium border-b border-dashed border-slate-200 pb-3">
+                    <p class="text-slate-600">Bạn chọn: <span id="feedback-student-answer" class="font-semibold text-slate-800"></span></p>
+                    <p id="feedback-correct-answer-wrapper" class="text-slate-600">Đáp án đúng: <span id="feedback-correct-answer" class="font-semibold text-emerald-700"></span></p>
+                  </div>
+                  <div id="feedback-explanation-wrapper" class="space-y-1">
+                    <p class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Giải thích đáp án:</p>
+                    <p id="feedback-explanation" class="text-xs leading-relaxed text-slate-600"></p>
+                  </div>
+                </div>
+
+                <!-- Submit Button Container -->
+                <button
+                  id="overlay-submit-btn"
+                  onclick="submitOverlayAnswer()"
+                  class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition-all shadow-md flex items-center justify-center gap-1.5 cursor-pointer text-sm"
+                >
+                  Xác nhận câu trả lời
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Custom Scrubber Timeline -->
+        <div class="space-y-2.5 pt-1">
+          <div id="timeline-bar" class="relative h-5 bg-slate-100 border border-slate-200 rounded-lg cursor-pointer overflow-visible" onclick="scrubTo(event)">
+            <!-- Progress Fill -->
+            <div id="timeline-progress" class="absolute left-0 top-0 bottom-0 bg-indigo-500/15 rounded-l-lg transition-all" style="width: 0%"></div>
+            
+            <!-- Pin Dots container -->
+            <div id="timeline-pins" class="absolute inset-0 overflow-visible pointer-events-none"></div>
+
+            <!-- Active Pointer line -->
+            <div id="timeline-pointer" class="absolute top-0 bottom-0 w-0.5 bg-indigo-600 pointer-events-none" style="left: 0%"></div>
+          </div>
+
+          <!-- Scrub Buttons Row -->
+          <div class="flex items-center justify-between text-xs font-semibold text-slate-600">
+            <div class="flex items-center gap-3">
+              <button
+                id="play-pause-btn"
+                onclick="togglePlayPause()"
+                class="p-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full transition-colors cursor-pointer shadow-sm"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                </svg>
+              </button>
+              <div class="font-mono text-slate-700 bg-slate-100 px-3 py-1 rounded-md">
+                <span id="label-current-time">00:00</span> / <span id="label-total-duration">00:00</span>
+              </div>
+            </div>
+            <span class="hidden md:inline text-[11px] font-bold text-slate-400 italic">Bài học sẽ tự động dừng tại mỗi ghim vàng mốc câu hỏi.</span>
+            <button
+              id="fullscreen-btn"
+              onclick="toggleFullscreen()"
+              class="p-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-full transition-colors cursor-pointer shadow-sm flex items-center justify-center"
+              title="Phóng to toàn màn hình"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5v-4m0 4h-4m4 0l-5-5" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right column: Lesson details and live dashboard (Hidden to focus purely on video) -->
+    <div class="space-y-6 hidden">
+      <!-- Lesson Description Details -->
+      <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm space-y-4">
+        <h4 class="font-bold text-slate-800 text-sm uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-100 pb-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+          </svg>
+          Hồ sơ bài học tương tác
+        </h4>
+        <div class="space-y-2.5 text-xs text-slate-600">
+          <p class="flex justify-between"><span class="font-medium text-slate-400">Học liệu chính:</span> <span class="font-semibold text-slate-800 truncate max-w-[180px]">https://www.youtube.com/watch?v=bpZFzP7acLs&list=RDPlg9DCmiIM4&index=16</span></p>
+          <p class="flex justify-between"><span class="font-medium text-slate-400">Nguồn dữ liệu:</span> <span class="font-semibold text-slate-800">YouTube Iframe API</span></p>
+          <p class="flex justify-between"><span class="font-medium text-slate-400">Tổng số câu hỏi:</span> <span class="font-semibold text-indigo-700">2 câu hỏi tương tác</span></p>
+          <p class="flex justify-between"><span class="font-medium text-slate-400">Chế độ bỏ qua:</span> <span class="font-semibold text-slate-800">Không cho phép (Bắt buộc trả lời)</span></p>
+        </div>
+      </div>
+
+      <!-- Pending interactive checkpoints list -->
+      <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm space-y-3">
+        <h4 class="font-bold text-slate-800 text-sm uppercase tracking-wider flex items-center gap-1.5">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+          </svg>
+          Danh sách mốc tương tác (2)
+        </h4>
+
+        <div id="checkpoint-ledger" class="space-y-2 max-h-[300px] overflow-y-auto pr-1"></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- SCREEN 3: RESULT REPORT -->
+  <main id="screen-result" class="hidden flex-1 max-w-2xl mx-auto px-4 py-12 w-full space-y-8">
+    <div class="bg-white rounded-2xl border border-slate-200 p-8 shadow-xl text-center space-y-6">
+      <div class="space-y-2">
+        <span class="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full uppercase tracking-wider">Hoàn thành bài giảng tuyệt vời! 🎉</span>
+        <h2 class="text-3xl font-extrabold text-slate-800 leading-tight">Kết quả học tập cá nhân</h2>
+        <p class="text-xs text-slate-400">Hệ thống đã ghi nhận học bạ video tương tác của bạn thành công.</p>
+      </div>
+
+      <!-- Scoreboard widget circles -->
+      <div class="grid grid-cols-2 gap-4 max-w-sm mx-auto">
+        <div class="p-4 bg-slate-50 border border-slate-100 rounded-2xl space-y-1">
+          <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Điểm số đạt được</p>
+          <p id="result-score" class="text-3xl font-black text-indigo-600">0%</p>
+        </div>
+        <div class="p-4 bg-slate-50 border border-slate-100 rounded-2xl space-y-1">
+          <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Đúng / Tổng số</p>
+          <p id="result-ratio" class="text-3xl font-black text-emerald-600">0 / 0</p>
+        </div>
+      </div>
+
+      <!-- Google Sheets Synchronization Status Banner -->
+      <div id="google-sheets-sync-status" class="hidden text-xs p-3.5 rounded-xl border flex items-center justify-center gap-2.5 transition-all"></div>
+
+      <!-- Response list timeline ledger -->
+      <div class="text-left space-y-3.5 pt-4 border-t border-slate-100">
+        <h4 class="font-bold text-slate-800 text-sm uppercase tracking-wider">Bảng điểm giải trình câu hỏi</h4>
+        <div class="border border-slate-200 rounded-xl overflow-hidden shadow-sm bg-white">
+          <div class="max-h-[320px] overflow-y-auto overflow-x-auto">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr class="bg-slate-50 border-b border-slate-200 text-slate-600 font-semibold sticky top-0 z-10 shadow-sm">
+                  <th class="p-3 text-center w-16">Mốc</th>
+                  <th class="p-3">Dạng đề</th>
+                  <th class="p-3">Nội dung câu hỏi</th>
+                  <th class="p-3">Đã chọn</th>
+                  <th class="p-3">Đáp án đúng</th>
+                  <th class="p-3 text-center w-20">Trạng thái</th>
+                </tr>
+              </thead>
+              <tbody id="result-details-tbody" class="divide-y divide-slate-100 text-slate-700">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-white border-t border-slate-100 py-5 mt-auto text-center text-[10px] text-slate-400 font-medium">
+    &copy; 2026 EduQuest LMS. Được xuất bản từ công cụ Soạn Giáo án Video Tương tác của giáo viên.
+  </footer>
+
+  <!-- EMBEDDED ENGINE & DATA -->
+  <script>
+    // Embedded JSON project config safely decoded from base64
+    const project = JSON.parse(decodeURIComponent(escape(atob("eyJpZCI6InByb2plY3QtMTc4MzI1ODc1Njk2NSIsInRpdGxlIjoiVEjhu6wgTkdISeG7hk0iLCJ2aWRlb1NvdXJjZSI6InlvdXR1YmUiLCJ2aWRlb1VybCI6Imh0dHBzOi8vd3d3LnlvdXR1YmUuY29tL3dhdGNoP3Y9YnBaRnpQN2FjTHMmbGlzdD1SRFBsZzlEQ21pSU00JmluZGV4PTE2IiwicXVlc3Rpb25zIjpbeyJpZCI6InEtMTc4MzI2MDU1ODg2Mi0zODYiLCJ0eXBlIjoibXVsdGlwbGUtY2hvaWNlIiwidGltZXN0YW1wIjo0LCJxdWVzdGlvbiI6IkLDgEkgSMOBVCBUw4pOIEfDjD8iLCJvcHRpb25zIjpbIlMiLCJWIl0sImNvcnJlY3RPcHRpb25zIjpbMF19LHsiaWQiOiJxLTE3ODMyNjA1NzYzNzgtMjQyIiwidHlwZSI6Im11bHRpcGxlLWNob2ljZSIsInRpbWVzdGFtcCI6MTIsInF1ZXN0aW9uIjoiQktLS0hLSSIsIm9wdGlvbnMiOlsiUyIsIkYiXSwiY29ycmVjdE9wdGlvbnMiOlswXX1dLCJhbGxvd1NraXAiOmZhbHNlLCJnb29nbGVTaGVldFVybCI6Imh0dHBzOi8vc2NyaXB0Lmdvb2dsZS5jb20vbWFjcm9zL3MvQUtmeWNieFczZW43UXl5Ni1pU29BWWl5YWJzY2xxNHFRUGd2UE5CWjRrTy01SkRXUlJqM3JPRzZ1cHp4bU40Y2Fsc0Y0a2o1eFEvZXhlYyIsImNyZWF0ZWRBdCI6MTc4MzI1ODc1Njk2NX0="))));
+    
+    // Core state management
+    let currentScreen = 'register';
+    let studentName = '';
+    let studentId = '';
+    let hasSubmittedSheet = false;
+    let isSubmittingSheet = false;
+    let playing = false;
+    let currentTime = 0;
+    let duration = 0;
+    let answeredQuestionIds = [];
+    let responses = []; // Element schema: { questionId, questionText, timestamp, questionType, studentAnswer, isCorrect, correctAnswer }
+    let activeOverlayQuestion = null;
+    let lastCheckTime = -1;
+    let localFileObjectUrl = null;
+
+    // References
+    const localVideo = document.getElementById('local-video');
+    let ytPlayer = null;
+
+    // Check for local file protocol issue (YouTube Iframe API restrictions on file://)
+    document.addEventListener('DOMContentLoaded', () => {
+      if (window.location.protocol === 'file:' && project.videoSource === 'youtube') {
+        const warningEl = document.getElementById('local-file-warning');
+        if (warningEl) {
+          warningEl.classList.remove('hidden');
+        }
+      }
+    });
+
+    // Format utility
+    function formatTime(seconds) {
+      if (isNaN(seconds) || seconds === null) return '00:00';
+      const m = Math.floor(seconds / 60);
+      const s = Math.floor(seconds % 60);
+      return (m < 10 ? '0' + m : m) + ':' + (s < 10 ? '0' + s : s);
+    }
+
+    // Extraction helper for Youtube API in local script (robust non-regex parser)
+    function getYoutubeVideoId(url) {
+      if (!url) return '';
+      try {
+        if (url.includes('/shorts/')) {
+          const parts = url.split('/shorts/');
+          if (parts[1]) {
+            return parts[1].split(/[?#&]/)[0];
+          }
+        }
+        if (url.includes('youtu.be/')) {
+          const parts = url.split('youtu.be/');
+          if (parts[1]) {
+            return parts[1].split(/[?#&]/)[0];
+          }
+        }
+        if (url.includes('youtube.com/')) {
+          if (url.includes('v=')) {
+            const parts = url.split('v=');
+            if (parts[1]) {
+              return parts[1].split(/[?#&]/)[0];
+            }
+          }
+          if (url.includes('/embed/')) {
+            const parts = url.split('/embed/');
+            if (parts[1]) {
+              return parts[1].split(/[?#&]/)[0];
+            }
+          }
+        }
+      } catch (e) {
+        console.error("Error parsing YT video URL:", e);
+      }
+      return '';
+    }
+
+    // Initialize Classroom setup
+    function startClassroom(e) {
+      e.preventDefault();
+      const nameInput = document.getElementById('input-student-name').value.trim();
+      const idInput = document.getElementById('input-student-id').value.trim();
+      
+      if (!nameInput) return;
+      
+      studentName = nameInput;
+      studentId = idInput || 'LMS-' + Math.floor(1000 + Math.random() * 9000);
+
+      // Transition screen
+      document.getElementById('screen-register').classList.add('hidden');
+      document.getElementById('screen-classroom').classList.remove('hidden');
+      
+      // Update badge
+      document.getElementById('student-badge-container').classList.remove('hidden');
+      document.getElementById('badge-student-name').innerText = studentName + ' (' + studentId + ')';
+
+      // Load players
+      if (project.videoSource === 'youtube') {
+        initYoutubePlayer();
+      } else {
+        initLocalPlayer();
+      }
+
+      renderCheckpoints();
+      updateScrubberPins();
+    }
+
+    // YT player loader
+    function initYoutubePlayer() {
+      const vId = getYoutubeVideoId(project.videoUrl);
+      if (!vId) {
+        document.getElementById('yt-player-placeholder').innerHTML = 
+          '<div style="display:flex; flex-direction:column; align-items:center; justify-content:center; background-color:#0f172a; color:#fff; height:100%; text-align:center; padding:2rem; width:100%;">' +
+            '<svg style="width:3rem; height:3rem; color:#475569; margin-bottom:1rem;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">' +
+              '<path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z" />' +
+            '</svg>' +
+            '<h4 style="font-weight:bold; font-size:1rem; margin-bottom:0.5rem; color:#e2e8f0; font-family:sans-serif;">Chưa cấu hình video bài học</h4>' +
+            '<p style="font-size:0.875rem; color:#94a3b8; max-w-md; margin:0; line-height:1.5; font-family:sans-serif;">' +
+              'Bài học này chưa được liên kết video YouTube. Vui lòng quay lại trang biên soạn của giáo viên và nhập liên kết video YouTube hợp lệ.' +
+            '</p>' +
+          '</div>';
+        return;
+      }
+      // YouTube Player IFrame API is loaded dynamically, but wait to make sure YT is defined
+      if (window.YT && window.YT.Player) {
+        createYtInstance();
+      } else {
+        // Tag already injected at bottom, poll until loaded
+        const checkYtInterval = setInterval(() => {
+          if (window.YT && window.YT.Player) {
+            createYtInstance();
+            clearInterval(checkYtInterval);
+          }
+        }, 100);
+      }
+    }
+
+    function createYtInstance() {
+      const vId = getYoutubeVideoId(project.videoUrl);
+      const playerVars = {
+        playsinline: 1,
+        controls: 1,
+        rel: 0,
+        fs: 0,
+        modestbranding: 1
+      };
+      if (window.location.protocol && window.location.protocol.indexOf('http') === 0) {
+        playerVars.origin = window.location.origin;
+      }
+
+      ytPlayer = new YT.Player('yt-player-placeholder', {
+        height: '100%',
+        width: '100%',
+        videoId: vId,
+        playerVars: playerVars,
+        events: {
+          onReady: (event) => {
+            try {
+              duration = ytPlayer.getDuration() || 0;
+              document.getElementById('label-total-duration').innerText = formatTime(duration);
+              updateScrubberPins();
+              setInterval(tick, 250);
+            } catch (err) {
+              console.error(err);
+            }
+          },
+          onStateChange: (event) => {
+            if (event.data === YT.PlayerState.PLAYING) {
+              playing = true;
+            } else {
+              playing = false;
+            }
+            updatePlaybackControls();
+          },
+          onError: (event) => {
+            console.error("YouTube Player Error:", event.data);
+            let errMsg = "Không thể phát video này. ";
+            if (event.data === 2) errMsg += "ID video không hợp lệ.";
+            else if (event.data === 5) errMsg += "Lỗi trình phát HTML5.";
+            else if (event.data === 100) errMsg += "Video không tìm thấy hoặc đã bị xóa.";
+            else if (event.data === 101 || event.data === 150) errMsg += "Chủ sở hữu video không cho phép phát trên các trang web nhúng.";
+            else errMsg += "Vui lòng kiểm tra lại đường dẫn video.";
+            
+            // Render a clean, embedded overlay inside the player instead of using an aggressive browser alert popup
+            const wrapper = document.getElementById('video-frame-wrapper');
+            if (wrapper) {
+              const errorOverlay = document.createElement('div');
+              errorOverlay.id = 'yt-error-overlay';
+              errorOverlay.style.position = 'absolute';
+              errorOverlay.style.inset = '0';
+              errorOverlay.style.display = 'flex';
+              errorOverlay.style.flexDirection = 'column';
+              errorOverlay.style.alignItems = 'center';
+              errorOverlay.style.justifyContent = 'center';
+              errorOverlay.style.backgroundColor = 'rgba(15, 23, 42, 0.95)';
+              errorOverlay.style.color = '#fff';
+              errorOverlay.style.textAlign = 'center';
+              errorOverlay.style.padding = '2rem';
+              errorOverlay.style.zIndex = '40';
+              
+              errorOverlay.innerHTML = 
+                '<svg style="width:3rem; height:3rem; color:#f87171; margin-bottom:1rem;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">' +
+                  '<path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />' +
+                '</svg>' +
+                '<h4 style="font-weight:bold; font-size:1rem; margin-bottom:0.5rem; color:#fca5a5; font-family:sans-serif;">Không thể phát video</h4>' +
+                '<p style="font-size:0.875rem; color:#cbd5e1; max-w-md; margin-bottom:1.25rem; line-height:1.5; font-family:sans-serif;">' + errMsg + '</p>' +
+                '<a href="https://www.youtube.com/watch?v=bpZFzP7acLs&list=RDPlg9DCmiIM4&index=16" target="_blank" rel="noopener noreferrer" style="background-color:#4f46e5; color:#fff; font-size:0.75rem; font-weight:bold; padding:0.5rem 1rem; border-radius:0.5rem; text-decoration:none; display:inline-flex; align-items:center; gap:0.5rem; transition: background-color 0.2s; font-family:sans-serif;">' +
+                  '<span>Xem trực tiếp trên YouTube</span>' +
+                  '<svg style="width:1rem; height:1rem;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">' +
+                    '<path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />' +
+                  '</svg>' +
+                '</a>';
+              wrapper.appendChild(errorOverlay);
+            }
+          }
+        }
+      });
+    }
+
+    function initLocalPlayer() {
+      // Local player relies on file picker, but direct player has url predefined.
+      if (project.videoSource === 'direct') {
+        localFileObjectUrl = project.videoUrl;
+        localVideo.onloadedmetadata = () => {
+          duration = localVideo.duration || 0;
+          document.getElementById('label-total-duration').innerText = formatTime(duration);
+          updateScrubberPins();
+        };
+      }
+      setInterval(tick, 250);
+    }
+
+    function loadLocalVideoFile(e) {
+      if (e.target.files && e.target.files.length > 0) {
+        const file = e.target.files[0];
+        localFileObjectUrl = URL.createObjectURL(file);
+        
+        localVideo.src = localFileObjectUrl;
+        localVideo.classList.remove('hidden');
+        document.getElementById('local-file-picker').classList.add('hidden');
+        
+        localVideo.load();
+        
+        localVideo.onloadedmetadata = () => {
+          duration = localVideo.duration || 0;
+          document.getElementById('label-total-duration').innerText = formatTime(duration);
+          updateScrubberPins();
+        };
+      }
+    }
+
+    // Video events for Local player
+    function onLocalVideoTimeUpdate() {
+      // Polled by tick anyway
+    }
+    function onLocalVideoPlay() {
+      playing = true;
+      updatePlaybackControls();
+    }
+    function onLocalVideoPause() {
+      playing = false;
+      updatePlaybackControls();
+    }
+
+    // Video Control actions
+    function togglePlayPause() {
+      if (activeOverlayQuestion) return; // Cannot resume while answering
+      
+      try {
+        if (project.videoSource === 'youtube' && ytPlayer) {
+          if (playing) {
+            if (typeof ytPlayer.pauseVideo === 'function') ytPlayer.pauseVideo();
+          } else {
+            if (typeof ytPlayer.playVideo === 'function') ytPlayer.playVideo();
+          }
+        } else if (project.videoSource === 'local' || project.videoSource === 'direct') {
+          if (!localFileObjectUrl) {
+            alert("Vui lòng chọn tệp tin video từ thiết bị của bạn trước.");
+            return;
+          }
+          if (playing) {
+            localVideo.pause();
+          } else {
+            localVideo.play();
+          }
+        }
+      } catch (err) {
+        console.warn("Lỗi điều khiển phát/tạm dừng:", err);
+      }
+    }
+
+    function pauseVideo() {
+      try {
+        if (project.videoSource === 'youtube' && ytPlayer) {
+          if (typeof ytPlayer.pauseVideo === 'function') ytPlayer.pauseVideo();
+        } else if ((project.videoSource === 'local' || project.videoSource === 'direct') && localFileObjectUrl) {
+          localVideo.pause();
+        }
+      } catch (err) {
+        console.warn("Lỗi tạm dừng video:", err);
+      }
+      playing = false;
+      updatePlaybackControls();
+    }
+
+    function playVideo() {
+      try {
+        if (project.videoSource === 'youtube' && ytPlayer) {
+          if (typeof ytPlayer.playVideo === 'function') ytPlayer.playVideo();
+        } else if ((project.videoSource === 'local' || project.videoSource === 'direct') && localFileObjectUrl) {
+          localVideo.play();
+        }
+      } catch (err) {
+        console.warn("Lỗi phát video:", err);
+      }
+      playing = true;
+      updatePlaybackControls();
+    }
+
+    // Seek helper for scrubbing or clicking ledger
+    function seekVideoTo(seconds) {
+      try {
+        if (project.videoSource === 'youtube' && ytPlayer) {
+          if (typeof ytPlayer.seekTo === 'function') {
+            ytPlayer.seekTo(seconds, true);
+          }
+        } else if ((project.videoSource === 'local' || project.videoSource === 'direct') && localFileObjectUrl) {
+          localVideo.currentTime = seconds;
+        }
+      } catch (err) {
+        console.warn("Lỗi tua video:", err);
+      }
+    }
+
+    function scrubTo(e) {
+      if (duration <= 0) return;
+      const rect = document.getElementById('timeline-bar').getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const pct = clickX / rect.width;
+      const seekSecs = pct * duration;
+      seekVideoTo(seekSecs);
+    }
+
+    function updatePlaybackControls() {
+      const btn = document.getElementById('play-pause-btn');
+      if (playing) {
+        btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>`;
+      } else {
+        btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+        </svg>`;
+      }
+    }
+
+    function toggleFullscreen() {
+      const container = document.getElementById('video-card-container');
+      if (!container) return;
+
+      if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+        if (container.requestFullscreen) {
+          container.requestFullscreen();
+        } else if (container.webkitRequestFullscreen) {
+          container.webkitRequestFullscreen();
+        } else if (container.msRequestFullscreen) {
+          container.msRequestFullscreen();
+        }
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+        }
+      }
+    }
+
+    function onFullscreenChange() {
+      const isFullscreen = document.fullscreenElement || document.webkitFullscreenElement;
+      const btn = document.getElementById('fullscreen-btn');
+      if (!btn) return;
+
+      if (isFullscreen) {
+        btn.title = "Thu nhỏ màn hình";
+        btn.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 14h5v5m0-5L4 19m16-5h-5v5m0-5l5 5M4 10h5V5m0 5L4 5m16 5h-5V5m0 5l5-5" />
+          </svg>
+        `;
+        btn.classList.remove('bg-slate-100', 'hover:bg-slate-200', 'text-slate-700');
+        btn.classList.add('bg-slate-800', 'hover:bg-slate-700', 'text-white');
+      } else {
+        btn.title = "Phóng to toàn màn hình";
+        btn.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5v-4m0 4h-4m4 0l-5-5" />
+          </svg>
+        `;
+        btn.classList.add('bg-slate-100', 'hover:bg-slate-200', 'text-slate-700');
+        btn.classList.remove('bg-slate-800', 'hover:bg-slate-700', 'text-white');
+      }
+    }
+
+    document.addEventListener('fullscreenchange', onFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', onFullscreenChange);
+
+    if (localVideo) {
+      localVideo.addEventListener('click', () => {
+        togglePlayPause();
+      });
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.code === 'Space' && currentScreen === 'classroom') {
+        const activeEl = document.activeElement;
+        if (activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA' || activeEl.tagName === 'BUTTON')) {
+          return;
+        }
+        e.preventDefault();
+        togglePlayPause();
+      }
+    });
+
+    // Render scrubber pin locations on the timeline
+    function updateScrubberPins() {
+      if (duration <= 0) return;
+      const pinContainer = document.getElementById('timeline-pins');
+      pinContainer.innerHTML = '';
+      
+      project.questions.forEach((q) => {
+        const pct = (q.timestamp / duration) * 100;
+        const pin = document.createElement('div');
+        pin.className = 'absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-3 h-3 bg-amber-500 hover:bg-indigo-600 border border-white rounded-sm transform rotate-45 cursor-pointer transition-all shadow-sm';
+        pin.style.left = pct + '%';
+        pin.title = formatTime(q.timestamp) + ' - Click để xem';
+        pin.onclick = (e) => {
+          e.stopPropagation();
+          seekVideoTo(q.timestamp);
+        };
+        pinContainer.appendChild(pin);
+      });
+    }
+
+    // Render right-hand list of questions
+    function renderCheckpoints() {
+      const ledger = document.getElementById('checkpoint-ledger');
+      ledger.innerHTML = '';
+
+      if (project.questions.length === 0) {
+        ledger.innerHTML = `<div class="p-6 text-center border border-dashed border-slate-200 rounded-xl bg-slate-50">
+          <p class="text-xs text-slate-400 italic">Giao án video này không có câu hỏi nào.</p>
+        </div>`;
+        return;
+      }
+
+      project.questions.forEach((q) => {
+        const isDone = answeredQuestionIds.includes(q.id);
+        const qTypeLabel = q.type === 'multiple-choice' ? 'Trắc nghiệm' : q.type === 'true-false' ? 'Đúng/Sai' : q.type === 'fill-blank' ? 'Điền khuyết' : 'Trả lời ngắn';
+        const card = document.createElement('div');
+        card.onclick = () => seekVideoTo(q.timestamp);
+        card.className = `p-3 border rounded-xl cursor-pointer transition-all flex items-start gap-3 justify-between ${
+          isDone ? 'bg-emerald-50/50 border-emerald-100' : 'bg-slate-50 hover:bg-indigo-50/40 border-slate-100'
+        }`;
+
+        card.innerHTML = `
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-1.5 mb-1 flex-wrap">
+              <span class="text-[9px] font-bold font-mono px-1.5 py-0.5 rounded ${
+                isDone ? 'bg-emerald-100 text-emerald-800' : 'bg-indigo-100 text-indigo-700'
+              }">
+                ${formatTime(q.timestamp)}
+              </span>
+              <span class="text-[9px] font-bold text-slate-400 uppercase">${qTypeLabel}</span>
+              ${isDone ? '<span class="text-[9px] font-bold text-emerald-600 bg-emerald-50 px-1 py-0.2 rounded">✓ Đã làm</span>' : ''}
+            </div>
+            <p class="text-xs font-semibold text-slate-700 truncate">${q.question}</p>
+          </div>
+        `;
+        ledger.appendChild(card);
+      });
+    }
+
+    // Timer Loop tick running at 250ms interval
+    function tick() {
+      if (activeOverlayQuestion) return; // Prevent checking while answering
+
+      try {
+        if (project.videoSource === 'youtube' && ytPlayer) {
+          if (typeof ytPlayer.getCurrentTime === 'function') {
+            currentTime = ytPlayer.getCurrentTime();
+          }
+          if (typeof ytPlayer.getDuration === 'function') {
+            const ytDur = ytPlayer.getDuration();
+            if (ytDur > 0 && ytDur !== duration) {
+              duration = ytDur;
+              document.getElementById('label-total-duration').innerText = formatTime(duration);
+              updateScrubberPins();
+            }
+          }
+        } else if ((project.videoSource === 'local' || project.videoSource === 'direct') && localFileObjectUrl) {
+          currentTime = localVideo.currentTime;
+          if (localVideo.duration && localVideo.duration !== duration) {
+            duration = localVideo.duration;
+            document.getElementById('label-total-duration').innerText = formatTime(duration);
+            updateScrubberPins();
+          }
+        }
+      } catch (err) {
+        console.warn("Lỗi đồng bộ thời gian:", err);
+      }
+
+      // Update timer labels and scrubber bar
+      document.getElementById('label-current-time').innerText = formatTime(currentTime);
+      if (duration > 0) {
+        const pct = (currentTime / duration) * 100;
+        document.getElementById('timeline-progress').style.width = pct + '%';
+        document.getElementById('timeline-pointer').style.left = pct + '%';
+      }
+
+      // Trigger quiz check
+      const currentSec = Math.floor(currentTime);
+      const pendingQuiz = project.questions.find((q) => {
+        return currentSec >= q.timestamp && !answeredQuestionIds.includes(q.id);
+      });
+
+      if (pendingQuiz) {
+        pauseVideo();
+        openQuestionOverlay(pendingQuiz);
+      }
+
+      // Auto check end of lesson to finalize
+      if (duration > 0 && currentTime >= duration - 1.5 && answeredQuestionIds.length === project.questions.length && !activeOverlayQuestion) {
+        finalizeLesson();
+      }
+    }
+
+    // Overlay logic variables
+    let tempSelectedOptions = []; // MCQ state
+    let tempTfValue = null; // TrueFalse state
+
+    function openQuestionOverlay(q) {
+      activeOverlayQuestion = q;
+      tempSelectedOptions = [];
+      tempTfValue = null;
+
+      const overlay = document.getElementById('question-overlay');
+      const qText = document.getElementById('overlay-question-text');
+      const qTypeBadge = document.getElementById('overlay-type-label');
+      const skipBtn = document.getElementById('overlay-skip-btn');
+      const submitBtn = document.getElementById('overlay-submit-btn');
+      const feedback = document.getElementById('overlay-feedback');
+      const inputs = document.getElementById('overlay-inputs');
+
+      // Clear feedback
+      feedback.classList.add('hidden');
+      
+      // Update Skip button (disabled as requested)
+      skipBtn.classList.add('hidden');
+
+      // Restore submit button label
+      submitBtn.innerText = 'Xác nhận câu trả lời';
+      submitBtn.onclick = submitOverlayAnswer;
+
+      // Question text setup
+      if (q.type === 'fill-blank') {
+        const parts = q.question.split('[blank]');
+        qText.innerHTML = `<div class="flex flex-wrap items-center gap-2 leading-relaxed text-slate-800 text-base">
+          ${parts[0]}
+          <input
+            id="fb-text-input"
+            type="text"
+            placeholder="..."
+            class="px-2 py-0.5 text-center font-bold border-b-2 bg-slate-50 text-indigo-700 outline-none w-28 focus:border-indigo-500 rounded-md"
+          />
+          ${parts[1] || ''}
+        </div>`;
+        qTypeBadge.innerText = 'Điền khuyết câu văn';
+        inputs.innerHTML = '';
+      } else {
+        qText.innerText = q.question;
+        
+        // Input options setup
+        if (q.type === 'multiple-choice') {
+          qTypeBadge.innerText = 'Câu hỏi Trắc nghiệm';
+          let optsHtml = '<div class="space-y-2">';
+          q.options.forEach((opt, idx) => {
+            optsHtml += `
+              <button
+                type="button"
+                id="mc-opt-${idx}"
+                onclick="toggleMcOption(${idx})"
+                class="w-full p-3 text-left text-xs font-semibold rounded-xl border border-slate-200 hover:border-slate-300 bg-white text-slate-700 flex items-center gap-3 cursor-pointer transition-all"
+              >
+                <div id="mc-box-${idx}" class="w-4 h-4 rounded border border-slate-300 flex items-center justify-center font-bold text-[9px] text-white"></div>
+                <span>${opt}</span>
+              </button>
+            `;
+          });
+          optsHtml += '</div>';
+          inputs.innerHTML = optsHtml;
+        } else if (q.type === 'true-false') {
+          qTypeBadge.innerText = 'Câu hỏi Đúng / Sai';
+          inputs.innerHTML = `
+            <div class="grid grid-cols-2 gap-3">
+              <button
+                id="tf-btn-true"
+                onclick="setTfVal(true)"
+                class="p-4 text-center font-bold text-sm rounded-xl border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 cursor-pointer transition-all"
+              >
+                ĐÚNG
+              </button>
+              <button
+                id="tf-btn-false"
+                onclick="setTfVal(false)"
+                class="p-4 text-center font-bold text-sm rounded-xl border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 cursor-pointer transition-all"
+              >
+                SAI
+              </button>
+            </div>
+          `;
+        } else if (q.type === 'short-answer') {
+          qTypeBadge.innerText = 'Tự luận ngắn';
+          inputs.innerHTML = `
+            <textarea
+              id="sa-textarea-input"
+              rows="3"
+              placeholder="Nhập câu trả lời ngắn của bạn tại đây..."
+              class="w-full px-3 py-2 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500 bg-slate-50 focus:bg-white"
+            ></textarea>
+          `;
+        }
+      }
+
+      overlay.classList.remove('hidden');
+    }
+
+    // Interaction setters
+    function toggleMcOption(idx) {
+      const idxPos = tempSelectedOptions.indexOf(idx);
+      const box = document.getElementById('mc-box-' + idx);
+      const btn = document.getElementById('mc-opt-' + idx);
+
+      if (idxPos >= 0) {
+        tempSelectedOptions.splice(idxPos, 1);
+        box.classList.remove('bg-indigo-600', 'border-indigo-600');
+        box.innerText = '';
+        btn.classList.remove('border-indigo-500', 'bg-indigo-50', 'text-indigo-800');
+      } else {
+        tempSelectedOptions.push(idx);
+        box.classList.add('bg-indigo-600', 'border-indigo-600');
+        box.innerText = '✓';
+        btn.classList.add('border-indigo-500', 'bg-indigo-50', 'text-indigo-800');
+      }
+    }
+
+    function setTfVal(val) {
+      tempTfValue = val;
+      const trueBtn = document.getElementById('tf-btn-true');
+      const falseBtn = document.getElementById('tf-btn-false');
+
+      if (val === true) {
+        trueBtn.className = 'p-4 text-center font-bold text-sm rounded-xl border border-emerald-500 bg-emerald-50 text-emerald-800 ring-2 ring-emerald-200 cursor-pointer transition-all';
+        falseBtn.className = 'p-4 text-center font-bold text-sm rounded-xl border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 cursor-pointer transition-all';
+      } else {
+        trueBtn.className = 'p-4 text-center font-bold text-sm rounded-xl border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 cursor-pointer transition-all';
+        falseBtn.className = 'p-4 text-center font-bold text-sm rounded-xl border border-rose-500 bg-rose-50 text-rose-800 ring-2 ring-rose-200 cursor-pointer transition-all';
+      }
+    }
+
+    // Submit evaluation
+    function submitOverlayAnswer() {
+      if (!activeOverlayQuestion) return;
+
+      let isCorrect = false;
+      let sAnswer = '';
+      let cAnswer = '';
+
+      if (activeOverlayQuestion.type === 'multiple-choice') {
+        if (tempSelectedOptions.length === 0) {
+          alert("Vui lòng tích chọn câu trả lời.");
+          return;
+        }
+        const sortedSel = [...tempSelectedOptions].sort();
+        const sortedCor = [...activeOverlayQuestion.correctOptions].sort();
+        isCorrect = sortedSel.length === sortedCor.length && sortedSel.every((v, i) => v === sortedCor[i]);
+        
+        sAnswer = tempSelectedOptions.map(idx => activeOverlayQuestion.options[idx]).join(', ');
+        cAnswer = activeOverlayQuestion.correctOptions.map(idx => activeOverlayQuestion.options[idx]).join(', ');
+
+      } else if (activeOverlayQuestion.type === 'true-false') {
+        if (tempTfValue === null) {
+          alert("Vui lòng chọn Đúng hoặc Sai.");
+          return;
+        }
+        isCorrect = tempTfValue === activeOverlayQuestion.correctValue;
+        sAnswer = tempTfValue ? 'ĐÚNG' : 'SAI';
+        cAnswer = activeOverlayQuestion.correctValue ? 'ĐÚNG' : 'SAI';
+
+      } else if (activeOverlayQuestion.type === 'fill-blank') {
+        const input = document.getElementById('fb-text-input');
+        const ans = input.value.trim();
+        if (!ans) {
+          alert("Vui lòng điền câu trả lời vào ô trống.");
+          return;
+        }
+        isCorrect = activeOverlayQuestion.acceptableAnswers.includes(ans.toLowerCase());
+        sAnswer = ans;
+        cAnswer = activeOverlayQuestion.acceptableAnswers[0];
+        
+        // Lock fill blank input
+        input.disabled = true;
+        input.classList.add(isCorrect ? 'bg-emerald-50' : 'bg-rose-50');
+
+      } else if (activeOverlayQuestion.type === 'short-answer') {
+        const textarea = document.getElementById('sa-textarea-input');
+        const ans = textarea.value.trim();
+        if (!ans) {
+          alert("Vui lòng nhập nội dung tự luận.");
+          return;
+        }
+        isCorrect = activeOverlayQuestion.keywords.some(kw => ans.toLowerCase().includes(kw.toLowerCase()));
+        sAnswer = ans;
+        cAnswer = "Yêu cầu chứa từ khóa: " + activeOverlayQuestion.keywords.join(', ');
+        textarea.disabled = true;
+      }
+
+      // Record responses log
+      responses.push({
+        questionId: activeOverlayQuestion.id,
+        questionText: activeOverlayQuestion.question,
+        timestamp: activeOverlayQuestion.timestamp,
+        questionType: activeOverlayQuestion.type,
+        studentAnswer: sAnswer,
+        isCorrect: isCorrect,
+        correctAnswer: cAnswer
+      });
+
+      // Show Feedback Overlay
+      const feedback = document.getElementById('overlay-feedback');
+      const fIcon = document.getElementById('feedback-icon-placeholder');
+      const fHeadline = document.getElementById('feedback-headline');
+      const fStudent = document.getElementById('feedback-student-answer');
+      const fCorrectWrapper = document.getElementById('feedback-correct-answer-wrapper');
+      const fCorrect = document.getElementById('feedback-correct-answer');
+      const fExplWrapper = document.getElementById('feedback-explanation-wrapper');
+      const fExpl = document.getElementById('feedback-explanation');
+
+      feedback.className = isCorrect 
+        ? 'p-4 rounded-xl border border-emerald-200 bg-emerald-50 text-emerald-800 space-y-2'
+        : 'p-4 rounded-xl border border-rose-200 bg-rose-50/70 text-rose-800 space-y-2';
+
+      fIcon.innerHTML = isCorrect
+        ? `<svg class="w-6 h-6 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>`
+        : `<svg class="w-6 h-6 text-rose-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>`;
+
+      fHeadline.innerText = isCorrect ? 'Chính xác tuyệt vời! 🎉' : 'Chưa chính xác rồi! ❌';
+      fStudent.innerText = sAnswer;
+      
+      if (isCorrect) {
+        fCorrectWrapper.classList.add('hidden');
+      } else {
+        fCorrectWrapper.classList.remove('hidden');
+        fCorrect.innerText = cAnswer;
+      }
+
+      if (activeOverlayQuestion.explanation) {
+        fExplWrapper.classList.remove('hidden');
+        fExpl.innerText = activeOverlayQuestion.explanation;
+      } else {
+        fExplWrapper.classList.add('hidden');
+      }
+
+      feedback.classList.remove('hidden');
+
+      // Update submit buttons to next/continue lesson
+      const skipBtn = document.getElementById('overlay-skip-btn');
+      skipBtn.classList.add('hidden');
+
+      const submitBtn = document.getElementById('overlay-submit-btn');
+      submitBtn.innerText = 'Tiếp tục bài giảng Video';
+      submitBtn.onclick = continueLesson;
+
+      // Add to answered list
+      answeredQuestionIds.push(activeOverlayQuestion.id);
+      renderCheckpoints();
+    }
+
+    // Skip question action (FIXED AND STABLE)
+    function skipOverlayQuestion() {
+      if (!activeOverlayQuestion) return;
+
+      // Log responses with skipped values
+      responses.push({
+        questionId: activeOverlayQuestion.id,
+        questionText: activeOverlayQuestion.question,
+        timestamp: activeOverlayQuestion.timestamp,
+        questionType: activeOverlayQuestion.type,
+        studentAnswer: '(Bỏ qua)',
+        isCorrect: false,
+        correctAnswer: activeOverlayQuestion.type === 'multiple-choice'
+          ? activeOverlayQuestion.correctOptions.map(idx => activeOverlayQuestion.options[idx]).join(', ')
+          : activeOverlayQuestion.type === 'true-false'
+          ? (activeOverlayQuestion.correctValue ? 'ĐÚNG' : 'SAI')
+          : activeOverlayQuestion.type === 'fill-blank'
+          ? activeOverlayQuestion.acceptableAnswers[0]
+          : 'Yêu cầu từ khóa: ' + activeOverlayQuestion.keywords.join(', ')
+      });
+
+      answeredQuestionIds.push(activeOverlayQuestion.id);
+      renderCheckpoints();
+      continueLesson();
+    }
+
+    function continueLesson() {
+      document.getElementById('question-overlay').classList.add('hidden');
+      activeOverlayQuestion = null;
+      playVideo();
+    }
+
+    // Final result dashboard compilation
+    function finalizeLesson() {
+      if (currentScreen === 'result') return;
+      currentScreen = 'result';
+      pauseVideo();
+      
+      // Calculate grade scores
+      const correctCount = responses.filter(r => r.isCorrect).length;
+      const totalCount = project.questions.length;
+      const scorePercentage = totalCount > 0 ? Math.round((correctCount / totalCount) * 100) : 100;
+
+      // Render stats
+      document.getElementById('result-score').innerText = scorePercentage + '%';
+      document.getElementById('result-ratio').innerText = correctCount + ' / ' + totalCount;
+
+      // Render details table
+      const tbody = document.getElementById('result-details-tbody');
+      tbody.innerHTML = '';
+
+      responses.forEach((resp) => {
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-slate-50/50';
+
+        const qTypeLabel = resp.questionType === 'multiple-choice' ? 'Trắc nghiệm' : resp.questionType === 'true-false' ? 'Đúng/Sai' : resp.questionType === 'fill-blank' ? 'Điền từ' : 'Tự luận';
+        
+        tr.innerHTML = `
+          <td class="p-3 text-center font-mono font-bold text-slate-500">
+            ${formatTime(resp.timestamp)}
+          </td>
+          <td class="p-3 font-semibold text-indigo-700">
+            ${qTypeLabel}
+          </td>
+          <td class="p-3 font-medium max-w-xs truncate" title="${resp.questionText.replace(/"/g, '&quot;')}">
+            ${resp.questionText}
+          </td>
+          <td class="p-3 max-w-[120px] truncate" title="${(resp.studentAnswer || '').replace(/"/g, '&quot;')}">
+            ${resp.studentAnswer || '<span class="text-slate-400 italic">Không trả lời</span>'}
+          </td>
+          <td class="p-3 max-w-[120px] truncate font-medium text-slate-600" title="${(resp.correctAnswer || '').replace(/"/g, '&quot;')}">
+            ${resp.correctAnswer}
+          </td>
+          <td class="p-3 text-center">
+            <span class="inline-flex justify-center">
+              ${resp.isCorrect 
+                ? '<svg class="w-5 h-5 text-emerald-500 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>' 
+                : '<svg class="w-5 h-5 text-rose-500 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>'
+              }
+            </span>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      // Switch screen
+      document.getElementById('screen-classroom').classList.add('hidden');
+      document.getElementById('screen-result').classList.remove('hidden');
+
+      // Sync results to Google Sheet if configured
+      submitToGoogleSheets();
+    }
+
+    function submitToGoogleSheets(force = false) {
+      if (!force && (isSubmittingSheet || hasSubmittedSheet)) return;
+      
+      const sheetUrl = project.googleSheetUrl;
+      const syncContainer = document.getElementById('google-sheets-sync-status');
+      if (!sheetUrl || !sheetUrl.trim()) {
+        if (syncContainer) syncContainer.classList.add('hidden');
+        return;
+      }
+
+      if (!syncContainer) return;
+
+      isSubmittingSheet = true;
+
+      syncContainer.classList.remove('hidden');
+      syncContainer.className = "text-xs p-3.5 rounded-xl border border-blue-200 bg-blue-50 text-blue-800 flex items-center justify-center gap-2.5";
+      syncContainer.innerHTML = 
+        '<svg class="animate-spin h-4 w-4 text-indigo-600" fill="none" viewBox="0 0 24 24" style="animation: spin 1s linear infinite;">' +
+          '<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>' +
+          '<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>' +
+        '</svg>' +
+        '<span class="font-medium">Đang tự động đồng bộ điểm số của học sinh lên Google Sheets...</span>' +
+        '<style>@keyframes spin { to { transform: rotate(360deg); } }</style>';
+
+      const correctCount = responses.filter(r => r.isCorrect).length;
+      const totalCount = project.questions.length;
+      const scorePercentage = totalCount > 0 ? Math.round((correctCount / totalCount) * 100) : 100;
+
+      const payload = {
+        studentId: studentId,
+        studentName: studentName,
+        projectTitle: project.title,
+        score: scorePercentage,
+        correctAnswers: correctCount,
+        totalQuestions: totalCount,
+        completedAt: Date.now(),
+        responses: responses.map(r => ({
+          time: formatTime(r.timestamp),
+          question: r.questionText,
+          answer: r.studentAnswer,
+          isCorrect: r.isCorrect ? 'ĐÚNG' : 'SAI',
+          correctAnswer: r.correctAnswer
+        }))
+      };
+
+      fetch(sheetUrl, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {
+          'Content-Type': 'text/plain'
+        },
+        body: JSON.stringify(payload)
+      })
+      .then(() => {
+        isSubmittingSheet = false;
+        hasSubmittedSheet = true;
+        syncContainer.className = "text-xs p-3.5 rounded-xl border border-emerald-200 bg-emerald-50 text-emerald-800 flex items-center justify-center gap-2.5";
+        syncContainer.innerHTML = 
+          '<svg style="width:1rem; height:1rem; color:#10b981;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">' +
+            '<path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />' +
+          '</svg>' +
+          '<span class="font-semibold text-emerald-800">✓ Đồng bộ thành công! Kết quả học tập đã được lưu tự động vào Google Sheets của Giáo viên.</span>';
+      })
+      .catch((err) => {
+        isSubmittingSheet = false;
+        console.error("Lỗi gửi điểm Google Sheets:", err);
+        syncContainer.className = "text-xs p-3.5 rounded-xl border border-rose-200 bg-rose-50 text-rose-850 flex items-center justify-center gap-2.5 cursor-pointer hover:bg-rose-100 transition-all";
+        syncContainer.innerHTML = 
+          '<svg style="width:1rem; height:1rem; color:#ef4444;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">' +
+            '<path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />' +
+          '</svg>' +
+          '<span class="font-medium text-rose-800">Lỗi kết nối. Không thể tự động gửi điểm về Google Sheets. Click vào đây để thử lại.</span>';
+        syncContainer.onclick = function() { submitToGoogleSheets(true); };
+      });
+    }
+
+    function restartLesson() {
+      answeredQuestionIds = [];
+      responses = [];
+      activeOverlayQuestion = null;
+      currentTime = 0;
+      seekVideoTo(0);
+      currentScreen = 'classroom';
+      hasSubmittedSheet = false;
+      isSubmittingSheet = false;
+      
+      document.getElementById('screen-result').classList.add('hidden');
+      document.getElementById('screen-classroom').classList.remove('hidden');
+      
+      renderCheckpoints();
+      playVideo();
+    }
+
+    // Export certificate report text file download helper
+    function downloadResultCertificate() {
+      const correctCount = responses.filter(r => r.isCorrect).length;
+      const totalCount = project.questions.length;
+      const scoreVal = totalCount > 0 ? Math.round((correctCount / totalCount) * 100) : 100;
+      const dateString = new Date().toLocaleString('vi-VN');
+
+      let text = `==================================================
+           CHỨNG CHỈ HOÀN THÀNH BÀI HỌC TƯƠNG TÁC
+==================================================
+
+Tiêu đề bài học: ${project.title}
+Học viên: ${studentName}
+Mã số học viên: ${studentId}
+Thời gian hoàn thành: ${dateString}
+
+--------------------------------------------------
+KẾT QUẢ ĐẠT ĐƯỢC:
+- Điểm số: ${scoreVal}%
+- Số câu đúng: ${correctCount} / ${totalCount} câu hỏi tương tác
+
+--------------------------------------------------
+CHI TIẾT BÀI LÀM:
+`;
+
+      responses.forEach((r, idx) => {
+        text += `\n${idx + 1}. [${formatTime(r.timestamp)}] ${r.questionText}
+   - Loại câu hỏi: ${r.questionType}
+   - Bạn chọn: ${r.studentAnswer}
+   - Đánh giá: ${r.isCorrect ? 'CHÍNH XÁC (✓)' : 'CHƯA ĐÚNG (✗)'}
+   - Đáp án đúng: ${r.correctAnswer}\n`;
+      });
+
+      text += `\n==================================================
+Tự động xuất bản bởi hệ thống EduQuest LMS.
+Xác thực học bạ điện tử an toàn.
+==================================================`;
+
+      const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.href = URL.createObjectURL(blob);
+      downloadAnchor.download = `ChungNhan_${studentName.replace(/\s+/g, '_')}_${project.title.replace(/\s+/g, '_')}.txt`;
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      document.body.removeChild(downloadAnchor);
+    }
+  </script>
+
+  <!-- YouTube Player Iframe Async script -->
+  <script src="https://www.youtube.com/iframe_api"></script>
+</body>
+</html>
