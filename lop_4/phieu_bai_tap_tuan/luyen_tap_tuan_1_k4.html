@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Bài Tập Tiếng Anh Tương Tác - Khối 4: Starter</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+    .word-btn {
+      transition: all 0.15s ease-in-out;
+    }
+    .word-btn:hover {
+      transform: translateY(-2px);
+    }
+    .word-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      transform: none;
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-b from-sky-50 via-blue-50 to-indigo-50 min-h-screen py-8 px-4 sm:px-6">
+
+  <div class="max-w-3xl mx-auto bg-white rounded-3xl shadow-xl border border-sky-100 overflow-hidden">
+    
+    <div class="bg-gradient-to-r from-sky-500 via-blue-600 to-indigo-600 px-6 py-8 text-white text-center">
+      <div class="inline-block bg-white/20 backdrop-blur-sm px-4 py-1 rounded-full text-xs sm:text-sm font-semibold tracking-wide uppercase mb-2">
+        Global Success 4
+      </div>
+      <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight">BÀI TẬP TIẾNG ANH TƯƠNG TÁC - KHỐI 4</h1>
+      <p class="text-sky-100 text-base sm:text-lg mt-1 font-medium">STARTER: CLASSROOM & OUTDOOR ACTIVITIES (15 câu)</p>
+    </div>
+
+    <div class="p-6 sm:p-8 space-y-8">
+
+      <!-- Form Thông Tin Học Sinh Bắt Buộc -->
+      <div id="studentCard" class="bg-blue-50/70 border-2 border-dashed border-blue-200 rounded-2xl p-5 sm:p-6 transition-all">
+        <h3 class="text-blue-900 font-bold text-lg mb-3 flex items-center gap-2">
+          <span>📝</span> Thông tin học sinh làm bài
+        </h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label for="studentName" class="block text-sm font-bold text-slate-700 mb-1">
+              Họ và tên của em <span class="text-red-500">*</span>
+            </label>
+            <input type="text" id="studentName" placeholder="Nhập họ và tên của em..." 
+              class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-slate-800 text-sm font-medium transition" />
+            <span id="nameError" class="text-red-500 text-xs hidden font-medium mt-1">Vui lòng nhập họ và tên trước khi nộp bài!</span>
+          </div>
+          <div>
+            <label for="studentClass" class="block text-sm font-bold text-slate-700 mb-1">
+              Lớp <span class="text-red-500">*</span>
+            </label>
+            <input type="text" id="studentClass" placeholder="Ví dụ: 4A1" 
+              class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-slate-800 text-sm font-medium transition" />
+            <span id="classError" class="text-red-500 text-xs hidden font-medium mt-1">Vui lòng nhập lớp học!</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Result Banner Modal (Ẩn trước khi nộp) -->
+      <div id="resultBox" class="hidden bg-gradient-to-r from-emerald-500 to-teal-600 rounded-2xl p-6 text-white text-center shadow-lg transform transition">
+        <div class="text-3xl mb-1">🎉</div>
+        <h2 class="text-2xl font-black">KẾT QUẢ BÀI LÀM CỦA EM</h2>
+        <div class="mt-3 flex justify-center gap-6 text-base font-semibold">
+          <p>Học sinh: <span id="resName" class="underline underline-offset-2"></span></p>
+          <p>Lớp: <span id="resClass" class="underline underline-offset-2"></span></p>
+        </div>
+        <div class="mt-4 inline-flex items-baseline gap-2 bg-white/20 backdrop-blur-sm px-6 py-3 rounded-2xl">
+          <span class="text-4xl font-extrabold" id="resScore">0</span>
+          <span class="text-xl font-bold">/ 10 ĐIỂM</span>
+          <span class="text-sm text-emerald-100 ml-2" id="resCorrectCount">(Đúng 0/15 câu)</span>
+        </div>
+        <p id="resFeedback" class="mt-3 text-emerald-50 text-sm font-medium"></p>
+      </div>
+
+      <!-- PART 1 -->
+      <div>
+        <div class="flex items-center gap-3 bg-sky-100 text-sky-900 px-4 py-2.5 rounded-xl font-bold text-base mb-4 border-l-4 border-sky-600">
+          <span>PART 1</span>
+          <span>•</span>
+          <span class="text-sm font-semibold">MULTIPLE CHOICE & KHOANH CHỌN (Câu 1 - 5)</span>
+        </div>
+
+        <div class="space-y-4">
+          <!-- Câu 1 -->
+          <div class="q-card bg-slate-50 border border-slate-200 rounded-2xl p-4 transition-all" data-qid="q1">
+            <p class="font-bold text-slate-800 text-sm sm:text-base">
+              <span class="text-blue-600">Câu 1:</span> Sit ______, please!
+            </p>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mt-3">
+              <label class="mcq-label flex items-center gap-2 p-2.5 bg-white border border-slate-200 rounded-xl cursor-pointer hover:border-blue-400 hover:bg-blue-50/50 transition text-sm">
+                <input type="radio" name="q1" value="A" class="accent-blue-600" />
+                <span class="font-bold text-slate-500">A.</span> down
+              </label>
+              <label class="mcq-label flex items-center gap-2 p-2.5 bg-white border border-slate-200 rounded-xl cursor-pointer hover:border-blue-400 hover:bg-blue-50/50 transition text-sm">
+                <input type="radio" name="q1" value="B" class="accent-blue-600" />
+                <span class="font-bold text-slate-500">B.</span> up
+              </label>
+              <label class="mcq-label flex items-center gap-2 p-2.5 bg-white border border-slate-200 rounded-xl cursor-pointer hover:border-blue-400 hover:bg-blue-50/50 transition text-sm">
+                <input type="radio" name="q1" value="C" class="accent-blue-600" />
+                <span class="font-bold text-slate-500">C.</span> in
+              </label>
+              <label class="mcq-label flex items-center gap-2 p-2.5 bg-white border border-slate-200 rounded-xl cursor-pointer hover:border-blue-400 hover:bg-blue-50/50 transition text-sm">
+                <input type="radio" name="q1" value="D" class="accent-blue-600" />
+                <span class="font-bold text-slate-500">D.</span> on
+              </label>
+            </div>
+            <div class="explanation-box hidden text-xs font-semibold mt-2 pt-2 border-t border-slate-200"></div>
+          </div>
+
+          <!-- Câu 2 -->
+          <div class="q-card bg-slate-50 border border-slate-200 rounded-2xl p-4 transition-all" data-qid="q2">
+            <p class="font-bold text-slate-800 text-sm sm:text-base">
+              <span class="text-blue-600">Câu 2:</span> What are they doing? – They're ______.
+            </p>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mt-3">
+              <label class="mcq-label flex items-center gap-2 p-2.5 bg-white border border-slate-200 rounded-xl cursor-pointer hover:border-blue-400 hover:bg-blue-50/50 transition text-sm">
+                <input type="radio" name="q2" value="A" class="accent-blue-600" />
+                <span class="font-bold text-slate-500">A.</span> swimming
+              </label>
+              <label class="mcq-label flex items-center gap-2 p-2.5 bg-white border border-slate-200 rounded-xl cursor-pointer hover:border-blue-400 hover:bg-blue-50/50 transition text-sm">
+                <input type="radio" name="q2" value="B" class="accent-blue-600" />
+                <span class="font-bold text-slate-500">B.</span> swim
+              </label>
+              <label class="mcq-label flex items-center gap-2 p-2.5 bg-white border border-slate-200 rounded-xl cursor-pointer hover:border-blue-400 hover:bg-blue-50/50 transition text-sm">
+                <input type="radio" name="q2" value="C" class="accent-blue-600" />
+                <span class="font-bold text-slate-500">C.</span> swims
+              </label>
+              <label class="mcq-label flex items-center gap-2 p-2.5 bg-white border border-slate-200 rounded-xl cursor-pointer hover:border-blue-400 hover:bg-blue-50/50 transition text-sm">
+                <input type="radio" name="q2" value="D" class="accent-blue-600" />
+                <span class="font-bold text-slate-500">D.</span> swam
+              </label>
+            </div>
+            <div class="explanation-box hidden text-xs font-semibold mt-2 pt-2 border-t border-slate-200"></div>
+          </div>
+
+          <!-- Câu 3 -->
+          <div class="q-card bg-slate-50 border border-slate-200 rounded-2xl p-4 transition-all" data-qid="q3">
+            <p class="font-bold text-slate-800 text-sm sm:text-base">
+              <span class="text-blue-600">Câu 3:</span> Come ______, please!
+            </p>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mt-3">
+              <label class="mcq-label flex items-center gap-2 p-2.5 bg-white border border-slate-200 rounded-xl cursor-pointer hover:border-blue-400 hover:bg-blue-50/50 transition text-sm">
+                <input type="radio" name="q3" value="A" class="accent-blue-600" />
+                <span class="font-bold text-slate-500">A.</span> in
+              </label>
+              <label class="mcq-label flex items-center gap-2 p-2.5 bg-white border border-slate-200 rounded-xl cursor-pointer hover:border-blue-400 hover:bg-blue-50/50 transition text-sm">
+                <input type="radio" name="q3" value="B" class="accent-blue-600" />
+                <span class="font-bold text-slate-500">B.</span> on
+              </label>
+              <label class="mcq-label flex items-center gap-2 p-2.5 bg-white border border-slate-200 rounded-xl cursor-pointer hover:border-blue-400 hover:bg-blue-50/50 transition text-sm">
+                <input type="radio" name="q3" value="C" class="accent-blue-600" />
+                <span class="font-bold text-slate-500">C.</span> at
+              </label>
+              <label class="mcq-label flex items-center gap-2 p-2.5 bg-white border border-slate-200 rounded-xl cursor-pointer hover:border-blue-400 hover:bg-blue-50/50 transition text-sm">
+                <input type="radio" name="q3" value="D" class="accent-blue-600" />
+                <span class="font-bold text-slate-500">D.</span> to
+              </label>
+            </div>
+            <div class="explanation-box hidden text-xs font-semibold mt-2 pt-2 border-t border-slate-200"></div>
+          </div>
+
+          <!-- Câu 4 -->
+          <div class="q-card bg-slate-50 border border-slate-200 rounded-2xl p-4 transition-all" data-qid="q4">
+            <p class="font-bold text-slate-800 text-sm sm:text-base">
+              <span class="text-blue-600">Câu 4:</span> ______ aloud, please!
+            </p>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mt-3">
+              <label class="mcq-label flex items-center gap-2 p-2.5 bg-white border border-slate-200 rounded-xl cursor-pointer hover:border-blue-400 hover:bg-blue-50/50 transition text-sm">
+                <input type="radio" name="q4" value="A" class="accent-blue-600" />
+                <span class="font-bold text-slate-500">A.</span> Read
+              </label>
+              <label class="mcq-label flex items-center gap-2 p-2.5 bg-white border border-slate-200 rounded-xl cursor-pointer hover:border-blue-400 hover:bg-blue-50/50 transition text-sm">
+                <input type="radio" name="q4" value="B" class="accent-blue-600" />
+                <span class="font-bold text-slate-500">B.</span> Jump
+              </label>
+              <label class="mcq-label flex items-center gap-2 p-2.5 bg-white border border-slate-200 rounded-xl cursor-pointer hover:border-blue-400 hover:bg-blue-50/50 transition text-sm">
+                <input type="radio" name="q4" value="C" class="accent-blue-600" />
+                <span class="font-bold text-slate-500">C.</span> Fly
+              </label>
+              <label class="mcq-label flex items-center gap-2 p-2.5 bg-white border border-slate-200 rounded-xl cursor-pointer hover:border-blue-400 hover:bg-blue-50/50 transition text-sm">
+                <input type="radio" name="q4" value="D" class="accent-blue-600" />
+                <span class="font-bold text-slate-500">D.</span> Kick
+              </label>
+            </div>
+            <div class="explanation-box hidden text-xs font-semibold mt-2 pt-2 border-t border-slate-200"></div>
+          </div>
+
+          <!-- Câu 5 -->
+          <div class="q-card bg-slate-50 border border-slate-200 rounded-2xl p-4 transition-all" data-qid="q5">
+            <p class="font-bold text-slate-800 text-sm sm:text-base">
+              <span class="text-blue-600">Câu 5:</span> Look at Minh. His hobby is ______.
+            </p>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mt-3">
+              <label class="mcq-label flex items-center gap-2 p-2.5 bg-white border border-slate-200 rounded-xl cursor-pointer hover:border-blue-400 hover:bg-blue-50/50 transition text-sm">
+                <input type="radio" name="q5" value="A" class="accent-blue-600" />
+                <span class="font-bold text-slate-500">A.</span> swimming
+              </label>
+              <label class="mcq-label flex items-center gap-2 p-2.5 bg-white border border-slate-200 rounded-xl cursor-pointer hover:border-blue-400 hover:bg-blue-50/50 transition text-sm">
+                <input type="radio" name="q5" value="B" class="accent-blue-600" />
+                <span class="font-bold text-slate-500">B.</span> run
+              </label>
+              <label class="mcq-label flex items-center gap-2 p-2.5 bg-white border border-slate-200 rounded-xl cursor-pointer hover:border-blue-400 hover:bg-blue-50/50 transition text-sm">
+                <input type="radio" name="q5" value="C" class="accent-blue-600" />
+                <span class="font-bold text-slate-500">C.</span> jump
+              </label>
+              <label class="mcq-label flex items-center gap-2 p-2.5 bg-white border border-slate-200 rounded-xl cursor-pointer hover:border-blue-400 hover:bg-blue-50/50 transition text-sm">
+                <input type="radio" name="q5" value="D" class="accent-blue-600" />
+                <span class="font-bold text-slate-500">D.</span> fly
+              </label>
+            </div>
+            <div class="explanation-box hidden text-xs font-semibold mt-2 pt-2 border-t border-slate-200"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PART 2 -->
+      <div>
+        <div class="flex items-center gap-3 bg-teal-100 text-teal-900 px-4 py-2.5 rounded-xl font-bold text-base mb-4 border-l-4 border-teal-600">
+          <span>PART 2</span>
+          <span>•</span>
+          <span class="text-sm font-semibold">READING & MULTIPLE CHOICE (Câu 6 - 10)</span>
+        </div>
+
+        <!-- Reading Passage -->
+        <div class="bg-amber-50 border-2 border-amber-200/80 rounded-2xl p-4 sm:p-5 text-amber-950 font-medium text-sm sm:text-base leading-relaxed mb-5 shadow-sm">
+          <div class="font-bold text-amber-800 text-xs uppercase tracking-wider mb-1 flex items-center gap-1.5">
+            <span>📖</span> ĐOẠN VĂN ĐỌC HIỂU (READING PASSAGE)
+          </div>
+          "Welcome to our class! In the classroom, we open our books and read aloud with our teacher. At break time, we do outdoor activities in the school yard. Look at Minh! His hobby is swimming. Ben and Lucy like roller skating. We jump up high and have lots of fun."
+        </div>
+
+        <div class="space-y-4">
+          <!-- Câu 6 -->
+          <div class="q-card bg-slate-50 border border-slate-200 rounded-2xl p-4 transition-all" data-qid="q6">
+            <p class="font-bold text-slate-800 text-sm sm:text-base">
+              <span class="text-teal-600">Câu 6:</span> In the classroom, the pupils open their ______.
+            </p>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mt-3">
+              <label class="mcq-label flex items-center gap-2 p-2.5 bg-white border border-slate-200 rounded-xl cursor-pointer hover:border-teal-400 hover:bg-teal-50/50 transition text-sm">
+                <input type="radio" name="q6" value="A" class="accent-teal-600" />
+                <span class="font-bold text-slate-500">A.</span> books
+              </label>
+              <label class="mcq-label flex items-center gap-2 p-2.5 bg-white border border-slate-200 rounded-xl cursor-pointer hover:border-teal-400 hover:bg-teal-50/50 transition text-sm">
+                <input type="radio" name="q6" value="B" class="accent-teal-600" />
+                <span class="font-bold text-slate-500">B.</span> pens
+              </label>
+              <label class="mcq-label flex items-center gap-2 p-2.5 bg-white border border-slate-200 rounded-xl cursor-pointer hover:border-teal-400 hover:bg-teal-50/50 transition text-sm">
+                <input type="radio" name="q6" value="C" class="accent-teal-600" />
+                <span class="font-bold text-slate-500">C.</span> desks
+              </label>
+              <label class="mcq-label flex items-center gap-2 p-2.5 bg-white border border-slate-200 rounded-xl cursor-pointer hover:border-teal-400 hover:bg-teal-50/50 transition text-sm">
+                <input type="radio" name="q6" value="D" class="accent-teal-600" />
+                <span class="font-bold text-slate-500">D.</span> bags
+              </label>
+            </div>
+            <div class="explanation-box hidden text-xs font-semibold mt-2 pt-2 border-t border-slate-200"></div>
+          </div>
+
+          <!-- Câu 7 -->
+          <div class="q-card bg-slate-50 border border-slate-200 rounded-2xl p-4 transition-all" data-qid="q7">
+            <p class="font-bold text-slate-800 text-sm sm:text-base">
+              <span class="text-teal-600">Câu 7:</span> What is Minh's hobby?
+            </p>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 mt-3">
+              <label class="mcq-label flex items-center gap-2 p-2.5 bg-white border border-slate-200 rounded-xl cursor-pointer hover:border-teal-400 hover:bg-teal-50/50 transition text-sm">
+                <input type="radio" name="q7" value="A" class="accent-teal-600" />
+                <span class="font-bold text-slate-500">A.</span> Swimming
+              </label>
+              <label class="mcq-label flex items-center gap-2 p-2.5 bg-white border border-slate-200 rounded-xl cursor-pointer hover:border-teal-400 hover:bg-teal-50/50 transition text-sm">
+                <input type="radio" name="q7" value="B" class="accent-teal-600" />
+                <span class="font-bold text-slate-500">B.</span> Skipping
+              </label>
+              <label class="mcq-label flex items-center gap-2 p-2.5 bg-white border border-slate-200 rounded-xl cursor-pointer hover:border-teal-400 hover:bg-teal-50/50 transition text-sm">
+                <input type="radio" name="q7" value="C" class="accent-teal-600" />
+                <span class="font-bold text-slate-500">C.</span> Running
+              </label>
+              <label class="mcq-label flex items-center gap-2 p-2.5 bg-white border border-slate-200 rounded-xl cursor-pointer hover:border-teal-400 hover:bg-teal-50/50 transition text-sm">
+                <input type="radio" name="q7" value="D" class="accent-teal-600" />
+                <span class="font-bold text-slate-500">D.</span> Roller skating
+              </label>
+            </div>
+            <div class="explanation-box hidden text-xs font-semibold mt-2 pt-2 border-t border-slate-200"></div>
+          </div>
+
+          <!-- Câu 8 (Tách riêng trắc nghiệm) -->
+          <div class="q-card bg-slate-50 border border-slate-200 rounded-2xl p-4 transition-all" data-qid="q8">
+            <p class="font-bold text-slate-800 text-sm sm:text-base">
+              <span class="text-teal-600">Câu 8:</span> What do Ben and Lucy like?
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mt-3">
+              <label class="mcq-label flex items-center gap-2 p-2.5 bg-white border border-slate-200 rounded-xl cursor-pointer hover:border-teal-400 hover:bg-teal-50/50 transition text-sm">
+                <input type="radio" name="q8" value="A" class="accent-teal-600" />
+                <span class="font-bold text-slate-500">A.</span> Roller skating
+              </label>
+              <label class="mcq-label flex items-center gap-2 p-2.5 bg-white border border-slate-200 rounded-xl cursor-pointer hover:border-teal-400 hover:bg-teal-50/50 transition text-sm">
+                <input type="radio" name="q8" value="B" class="accent-teal-600" />
+                <span class="font-bold text-slate-500">B.</span> Swimming
+              </label>
+              <label class="mcq-label flex items-center gap-2 p-2.5 bg-white border border-slate-200 rounded-xl cursor-pointer hover:border-teal-400 hover:bg-teal-50/50 transition text-sm">
+                <input type="radio" name="q8" value="C" class="accent-teal-600" />
+                <span class="font-bold text-slate-500">C.</span> Reading books
+              </label>
+              <label class="mcq-label flex items-center gap-2 p-2.5 bg-white border border-slate-200 rounded-xl cursor-pointer hover:border-teal-400 hover:bg-teal-50/50 transition text-sm">
+                <input type="radio" name="q8" value="D" class="accent-teal-600" />
+                <span class="font-bold text-slate-500">D.</span> Flying kites
+              </label>
+            </div>
+            <div class="explanation-box hidden text-xs font-semibold mt-2 pt-2 border-t border-slate-200"></div>
+          </div>
+
+          <!-- Câu 9 (Tách riêng trắc nghiệm) -->
+          <div class="q-card bg-slate-50 border border-slate-200 rounded-2xl p-4 transition-all" data-qid="q9">
+            <p class="font-bold text-slate-800 text-sm sm:text-base">
+              <span class="text-teal-600">Câu 9:</span> Where do the pupils do outdoor activities?
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mt-3">
+              <label class="mcq-label flex items-center gap-2 p-2.5 bg-white border border-slate-200 rounded-xl cursor-pointer hover:border-teal-400 hover:bg-teal-50/50 transition text-sm">
+                <input type="radio" name="q9" value="A" class="accent-teal-600" />
+                <span class="font-bold text-slate-500">A.</span> In the school yard
+              </label>
+              <label class="mcq-label flex items-center gap-2 p-2.5 bg-white border border-slate-200 rounded-xl cursor-pointer hover:border-teal-400 hover:bg-teal-50/50 transition text-sm">
+                <input type="radio" name="q9" value="B" class="accent-teal-600" />
+                <span class="font-bold text-slate-500">B.</span> In the classroom
+              </label>
+              <label class="mcq-label flex items-center gap-2 p-2.5 bg-white border border-slate-200 rounded-xl cursor-pointer hover:border-teal-400 hover:bg-teal-50/50 transition text-sm">
+                <input type="radio" name="q9" value="C" class="accent-teal-600" />
+                <span class="font-bold text-slate-500">C.</span> At home
+              </label>
+              <label class="mcq-label flex items-center gap-2 p-2.5 bg-white border border-slate-200 rounded-xl cursor-pointer hover:border-teal-400 hover:bg-teal-50/50 transition text-sm">
+                <input type="radio" name="q9" value="D" class="accent-teal-600" />
+                <span class="font-bold text-slate-500">D.</span> In the music room
+              </label>
+            </div>
+            <div class="explanation-box hidden text-xs font-semibold mt-2 pt-2 border-t border-slate-200"></div>
+          </div>
+
+          <!-- Câu 10: Input hoàn thành câu -->
+          <div class="q-card bg-slate-50 border border-slate-200 rounded-2xl p-4 transition-all" data-qid="q10">
+            <p class="font-bold text-slate-800 text-sm sm:text-base mb-2">
+              <span class="text-teal-600">Câu 10:</span> Điền từ còn thiếu dựa vào bài đọc:
+            </p>
+            <div class="flex items-center gap-2 mt-2 flex-wrap">
+              <span class="text-sm font-semibold text-slate-700">In the school yard, the pupils jump up</span>
+              <input type="text" id="input-q10" placeholder="gõ 1 từ..." 
+                class="px-3 py-1.5 rounded-lg border border-slate-300 text-sm font-bold text-blue-800 focus:outline-none focus:ring-2 focus:ring-teal-500 w-28" />
+              <span class="text-sm font-semibold text-slate-700">.</span>
+            </div>
+            <div class="explanation-box hidden text-xs font-semibold mt-2 pt-2 border-t border-slate-200"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PART 3 -->
+      <div>
+        <div class="flex items-center gap-3 bg-indigo-100 text-indigo-900 px-4 py-2.5 rounded-xl font-bold text-base mb-4 border-l-4 border-indigo-600">
+          <span>PART 3</span>
+          <span>•</span>
+          <span class="text-sm font-semibold">WRITING & SẮP XẾP CÂU (Câu 11 - 15)</span>
+        </div>
+
+        <div class="space-y-4">
+          <!-- Câu 11: Word Ordering -->
+          <div class="q-card bg-slate-50 border border-slate-200 rounded-2xl p-4 transition-all" data-qid="q11">
+            <p class="font-bold text-slate-800 text-sm sm:text-base">
+              <span class="text-indigo-600">Câu 11 (Bấm chọn từ sắp xếp câu):</span> 
+            </p>
+            <div class="mt-2 text-xs text-slate-500 font-medium">Bấm vào các từ bên dưới theo đúng thứ tự:</div>
+            
+            <div class="mt-2 min-h-[44px] p-2 bg-white border-2 border-dashed border-indigo-200 rounded-xl flex flex-wrap items-center gap-1.5" id="order-box-11">
+              <span class="text-slate-400 text-xs italic placeholder-txt">Câu của em sẽ xuất hiện ở đây...</span>
+            </div>
+            
+            <div class="flex flex-wrap gap-2 mt-2.5" id="bank-11">
+              <button type="button" class="word-btn px-3 py-1.5 bg-indigo-50 border border-indigo-200 text-indigo-800 rounded-lg text-sm font-bold shadow-sm" data-word="Stand">Stand</button>
+              <button type="button" class="word-btn px-3 py-1.5 bg-indigo-50 border border-indigo-200 text-indigo-800 rounded-lg text-sm font-bold shadow-sm" data-word="up,">up,</button>
+              <button type="button" class="word-btn px-3 py-1.5 bg-indigo-50 border border-indigo-200 text-indigo-800 rounded-lg text-sm font-bold shadow-sm" data-word="please!">please!</button>
+              <button type="button" class="clear-btn px-3 py-1.5 bg-rose-50 border border-rose-200 text-rose-700 rounded-lg text-xs font-bold hover:bg-rose-100 transition ml-auto" data-target="11">Xóa xếp lại</button>
+            </div>
+            <div class="explanation-box hidden text-xs font-semibold mt-2 pt-2 border-t border-slate-200"></div>
+          </div>
+
+          <!-- Câu 12: Word Ordering -->
+          <div class="q-card bg-slate-50 border border-slate-200 rounded-2xl p-4 transition-all" data-qid="q12">
+            <p class="font-bold text-slate-800 text-sm sm:text-base">
+              <span class="text-indigo-600">Câu 12 (Bấm chọn từ sắp xếp câu):</span> 
+            </p>
+            <div class="mt-2 text-xs text-slate-500 font-medium">Bấm vào các từ bên dưới theo đúng thứ tự:</div>
+            
+            <div class="mt-2 min-h-[44px] p-2 bg-white border-2 border-dashed border-indigo-200 rounded-xl flex flex-wrap items-center gap-1.5" id="order-box-12">
+              <span class="text-slate-400 text-xs italic placeholder-txt">Câu của em sẽ xuất hiện ở đây...</span>
+            </div>
+            
+            <div class="flex flex-wrap gap-2 mt-2.5" id="bank-12">
+              <button type="button" class="word-btn px-3 py-1.5 bg-indigo-50 border border-indigo-200 text-indigo-800 rounded-lg text-sm font-bold shadow-sm" data-word="What">What</button>
+              <button type="button" class="word-btn px-3 py-1.5 bg-indigo-50 border border-indigo-200 text-indigo-800 rounded-lg text-sm font-bold shadow-sm" data-word="are">are</button>
+              <button type="button" class="word-btn px-3 py-1.5 bg-indigo-50 border border-indigo-200 text-indigo-800 rounded-lg text-sm font-bold shadow-sm" data-word="they">they</button>
+              <button type="button" class="word-btn px-3 py-1.5 bg-indigo-50 border border-indigo-200 text-indigo-800 rounded-lg text-sm font-bold shadow-sm" data-word="doing?">doing?</button>
+              <button type="button" class="clear-btn px-3 py-1.5 bg-rose-50 border border-rose-200 text-rose-700 rounded-lg text-xs font-bold hover:bg-rose-100 transition ml-auto" data-target="12">Xóa xếp lại</button>
+            </div>
+            <div class="explanation-box hidden text-xs font-semibold mt-2 pt-2 border-t border-slate-200"></div>
+          </div>
+
+          <!-- Câu 13 -->
+          <div class="q-card bg-slate-50 border border-slate-200 rounded-2xl p-4 transition-all" data-qid="q13">
+            <p class="font-bold text-slate-800 text-sm sm:text-base">
+              <span class="text-indigo-600">Câu 13:</span> Điền 01 từ thích hợp vào ô trống:
+            </p>
+            <div class="flex items-center gap-2 mt-2 flex-wrap">
+              <span class="text-sm font-medium text-slate-700">Open your</span>
+              <input type="text" id="input-q13" placeholder="gõ 1 từ..." 
+                class="px-3 py-1.5 rounded-lg border border-slate-300 text-sm font-bold text-blue-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 w-28" />
+              <span class="text-sm font-medium text-slate-700">, please!</span>
+            </div>
+            <div class="explanation-box hidden text-xs font-semibold mt-2 pt-2 border-t border-slate-200"></div>
+          </div>
+
+          <!-- Câu 14 -->
+          <div class="q-card bg-slate-50 border border-slate-200 rounded-2xl p-4 transition-all" data-qid="q14">
+            <p class="font-bold text-slate-800 text-sm sm:text-base">
+              <span class="text-indigo-600">Câu 14:</span> Điền 01 từ thích hợp vào ô trống:
+            </p>
+            <div class="flex items-center gap-2 mt-2 flex-wrap">
+              <span class="text-sm font-medium text-slate-700">Say</span>
+              <input type="text" id="input-q14" placeholder="gõ 1 từ..." 
+                class="px-3 py-1.5 rounded-lg border border-slate-300 text-sm font-bold text-blue-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 w-32" />
+              <span class="text-sm font-medium text-slate-700">, please! See you tomorrow.</span>
+            </div>
+            <div class="explanation-box hidden text-xs font-semibold mt-2 pt-2 border-t border-slate-200"></div>
+          </div>
+
+          <!-- Câu 15 -->
+          <div class="q-card bg-slate-50 border border-slate-200 rounded-2xl p-4 transition-all" data-qid="q15">
+            <p class="font-bold text-slate-800 text-sm sm:text-base">
+              <span class="text-indigo-600">Câu 15:</span> Điền 01 từ thích hợp vào ô trống:
+            </p>
+            <div class="flex items-center gap-2 mt-2 flex-wrap">
+              <span class="text-sm font-medium text-slate-700">Kick it hard. Fly it in the</span>
+              <input type="text" id="input-q15" placeholder="gõ 1 từ..." 
+                class="px-3 py-1.5 rounded-lg border border-slate-300 text-sm font-bold text-blue-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 w-28" />
+              <span class="text-sm font-medium text-slate-700">.</span>
+            </div>
+            <div class="explanation-box hidden text-xs font-semibold mt-2 pt-2 border-t border-slate-200"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
+        <button id="btnSubmit" type="button" 
+          class="w-full sm:w-auto px-8 py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-black text-lg rounded-2xl shadow-lg hover:shadow-xl transition transform active:scale-95">
+          🚀 NỘP BÀI CHẤM ĐIỂM
+        </button>
+
+        <!-- Nút Thoát: Mặc định ẩn, chỉ hiện sau khi nộp bài -->
+        <button id="btnExit" type="button" style="display: none;" 
+          class="w-full sm:w-auto px-8 py-3.5 bg-slate-600 hover:bg-slate-700 text-white font-bold text-lg rounded-2xl shadow-md transition transform active:scale-95">
+          🚪 THOÁT
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    const orderingAnswers = { 11: [], 12: [] };
+
+    // Set up Word Ordering
+    function setupWordOrdering(qNum) {
+      const bank = document.getElementById(`bank-${qNum}`);
+      const buttons = bank.querySelectorAll('.word-btn');
+
+      buttons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const word = btn.getAttribute('data-word');
+          orderingAnswers[qNum].push(word);
+          btn.disabled = true;
+          renderOrderBox(qNum);
+        });
+      });
+    }
+
+    function renderOrderBox(qNum) {
+      const box = document.getElementById(`order-box-${qNum}`);
+      const words = orderingAnswers[qNum];
+      if (words.length === 0) {
+        box.innerHTML = `<span class="text-slate-400 text-xs italic placeholder-txt">Câu của em sẽ xuất hiện ở đây...</span>`;
+      } else {
+        box.innerHTML = words.map(w => `<span class="px-2.5 py-1 bg-indigo-600 text-white rounded-lg text-sm font-bold shadow-sm">${w}</span>`).join('');
+      }
+    }
+
+    document.querySelectorAll('.clear-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const qNum = btn.getAttribute('data-target');
+        orderingAnswers[qNum] = [];
+        const bank = document.getElementById(`bank-${qNum}`);
+        bank.querySelectorAll('.word-btn').forEach(b => b.disabled = false);
+        renderOrderBox(qNum);
+      });
+    });
+
+    setupWordOrdering(11);
+    setupWordOrdering(12);
+
+    // Đáp án chuẩn
+    const correctAnswers = {
+      q1: 'A',
+      q2: 'A',
+      q3: 'A',
+      q4: 'A',
+      q5: 'A',
+      q6: 'A',
+      q7: 'A',
+      q8: 'A',
+      q9: 'A',
+      q10: 'high',
+      q11: 'Stand up, please!',
+      q12: 'What are they doing?',
+      q13: 'books',
+      q14: 'goodbye',
+      q15: 'sky'
+    };
+
+    // Nộp bài và chấm điểm
+    document.getElementById('btnSubmit').addEventListener('click', function() {
+      const nameInput = document.getElementById('studentName');
+      const classInput = document.getElementById('studentClass');
+      const nameError = document.getElementById('nameError');
+      const classError = document.getElementById('classError');
+
+      const nameVal = nameInput.value.trim();
+      const classVal = classInput.value.trim();
+
+      let hasError = false;
+      if (!nameVal) {
+        nameError.classList.remove('hidden');
+        hasError = true;
+      } else {
+        nameError.classList.add('hidden');
+      }
+
+      if (!classVal) {
+        classError.classList.remove('hidden');
+        hasError = true;
+      } else {
+        classError.classList.add('hidden');
+      }
+
+      if (hasError) {
+        document.getElementById('studentCard').scrollIntoView({ behavior: 'smooth' });
+        return;
+      }
+
+      let correctCount = 0;
+
+      // Chấm MCQ từ Câu 1 đến Câu 9
+      for (let i = 1; i <= 9; i++) {
+        const selected = document.querySelector(`input[name="q${i}"]:checked`);
+        const card = document.querySelector(`[data-qid="q${i}"]`);
+        const explain = card.querySelector('.explanation-box');
+        explain.classList.remove('hidden');
+
+        if (selected && selected.value === correctAnswers[`q${i}`]) {
+          correctCount++;
+          card.classList.add('border-emerald-500', 'bg-emerald-50/50');
+          explain.className = 'explanation-box text-xs font-bold text-emerald-700 mt-2 pt-2 border-t border-emerald-200';
+          explain.textContent = '✓ Chính xác!';
+        } else {
+          card.classList.add('border-rose-400', 'bg-rose-50/50');
+          explain.className = 'explanation-box text-xs font-bold text-rose-700 mt-2 pt-2 border-t border-rose-200';
+          explain.textContent = `✗ Chưa đúng. Đáp án đúng: ${correctAnswers[`q${i}`]}`;
+        }
+      }
+
+      // Chấm Câu 10 (Điền từ)
+      const card10 = document.querySelector('[data-qid="q10"]');
+      const val10 = document.getElementById('input-q10').value.trim().toLowerCase();
+      const exp10 = card10.querySelector('.explanation-box');
+      exp10.classList.remove('hidden');
+      if (val10 === 'high') {
+        correctCount++;
+        card10.classList.add('border-emerald-500', 'bg-emerald-50/50');
+        exp10.className = 'explanation-box text-xs font-bold text-emerald-700 mt-2 pt-2 border-t border-emerald-200';
+        exp10.textContent = '✓ Chính xác: jump up high!';
+      } else {
+        card10.classList.add('border-rose-400', 'bg-rose-50/50');
+        exp10.className = 'explanation-box text-xs font-bold text-rose-700 mt-2 pt-2 border-t border-rose-200';
+        exp10.textContent = '✗ Chưa đúng. Đáp án đúng: high';
+      }
+
+      // Chấm Câu 11 (Xếp từ)
+      const card11 = document.querySelector('[data-qid="q11"]');
+      const str11 = orderingAnswers[11].join(' ').trim();
+      const exp11 = card11.querySelector('.explanation-box');
+      exp11.classList.remove('hidden');
+      if (str11 === 'Stand up, please!') {
+        correctCount++;
+        card11.classList.add('border-emerald-500', 'bg-emerald-50/50');
+        exp11.className = 'explanation-box text-xs font-bold text-emerald-700 mt-2 pt-2 border-t border-emerald-200';
+        exp11.textContent = '✓ Chính xác: Stand up, please!';
+      } else {
+        card11.classList.add('border-rose-400', 'bg-rose-50/50');
+        exp11.className = 'explanation-box text-xs font-bold text-rose-700 mt-2 pt-2 border-t border-rose-200';
+        exp11.textContent = '✗ Chưa đúng. Thứ tự đúng: Stand up, please!';
+      }
+
+      // Chấm Câu 12 (Xếp từ)
+      const card12 = document.querySelector('[data-qid="q12"]');
+      const str12 = orderingAnswers[12].join(' ').trim();
+      const exp12 = card12.querySelector('.explanation-box');
+      exp12.classList.remove('hidden');
+      if (str12 === 'What are they doing?') {
+        correctCount++;
+        card12.classList.add('border-emerald-500', 'bg-emerald-50/50');
+        exp12.className = 'explanation-box text-xs font-bold text-emerald-700 mt-2 pt-2 border-t border-emerald-200';
+        exp12.textContent = '✓ Chính xác: What are they doing?';
+      } else {
+        card12.classList.add('border-rose-400', 'bg-rose-50/50');
+        exp12.className = 'explanation-box text-xs font-bold text-rose-700 mt-2 pt-2 border-t border-rose-200';
+        exp12.textContent = '✗ Chưa đúng. Thứ tự đúng: What are they doing?';
+      }
+
+      // Chấm Câu 13
+      const card13 = document.querySelector('[data-qid="q13"]');
+      const val13 = document.getElementById('input-q13').value.trim().toLowerCase();
+      const exp13 = card13.querySelector('.explanation-box');
+      exp13.classList.remove('hidden');
+      if (val13 === 'books') {
+        correctCount++;
+        card13.classList.add('border-emerald-500', 'bg-emerald-50/50');
+        exp13.className = 'explanation-box text-xs font-bold text-emerald-700 mt-2 pt-2 border-t border-emerald-200';
+        exp13.textContent = '✓ Chính xác: Open your books, please!';
+      } else {
+        card13.classList.add('border-rose-400', 'bg-rose-50/50');
+        exp13.className = 'explanation-box text-xs font-bold text-rose-700 mt-2 pt-2 border-t border-rose-200';
+        exp13.textContent = '✗ Chưa đúng. Từ cần điền là: books';
+      }
+
+      // Chấm Câu 14
+      const card14 = document.querySelector('[data-qid="q14"]');
+      const val14 = document.getElementById('input-q14').value.trim().toLowerCase();
+      const exp14 = card14.querySelector('.explanation-box');
+      exp14.classList.remove('hidden');
+      if (val14 === 'goodbye') {
+        correctCount++;
+        card14.classList.add('border-emerald-500', 'bg-emerald-50/50');
+        exp14.className = 'explanation-box text-xs font-bold text-emerald-700 mt-2 pt-2 border-t border-emerald-200';
+        exp14.textContent = '✓ Chính xác: Say goodbye, please!';
+      } else {
+        card14.classList.add('border-rose-400', 'bg-rose-50/50');
+        exp14.className = 'explanation-box text-xs font-bold text-rose-700 mt-2 pt-2 border-t border-rose-200';
+        exp14.textContent = '✗ Chưa đúng. Từ cần điền là: goodbye';
+      }
+
+      // Chấm Câu 15
+      const card15 = document.querySelector('[data-qid="q15"]');
+      const val15 = document.getElementById('input-q15').value.trim().toLowerCase();
+      const exp15 = card15.querySelector('.explanation-box');
+      exp15.classList.remove('hidden');
+      if (val15 === 'sky') {
+        correctCount++;
+        card15.classList.add('border-emerald-500', 'bg-emerald-50/50');
+        exp15.className = 'explanation-box text-xs font-bold text-emerald-700 mt-2 pt-2 border-t border-emerald-200';
+        exp15.textContent = '✓ Chính xác: Fly it in the sky!';
+      } else {
+        card15.classList.add('border-rose-400', 'bg-rose-50/50');
+        exp15.className = 'explanation-box text-xs font-bold text-rose-700 mt-2 pt-2 border-t border-rose-200';
+        exp15.textContent = '✗ Chưa đúng. Từ cần điền là: sky';
+      }
+
+      // Tính điểm theo thang 10
+      const finalScore = ((correctCount / 15) * 10).toFixed(1);
+
+      // Khóa tương tác
+      document.querySelectorAll('input').forEach(inp => inp.disabled = true);
+      document.querySelectorAll('button:not(#btnExit)').forEach(btn => btn.disabled = true);
+
+      // Hiển thị kết quả
+      const resBox = document.getElementById('resultBox');
+      document.getElementById('resName').textContent = nameVal;
+      document.getElementById('resClass').textContent = classVal;
+      document.getElementById('resScore').textContent = finalScore;
+      document.getElementById('resCorrectCount').textContent = `(Đúng ${correctCount}/15 câu)`;
+
+      let feedback = '';
+      if (correctCount >= 13) {
+        feedback = '🌟 Xuất sắc! Em đã nhận biết rất chính xác các hoạt động trong lớp và ngoài trời của Unit Starter!';
+      } else if (correctCount >= 10) {
+        feedback = '👏 Rất tốt! Em hãy xem lại các câu chưa đúng để nhớ sâu hơn nhé!';
+      } else {
+        feedback = '💪 Cố gắng lên nhé! Em hãy đọc lại các khẩu lệnh quen thuộc để làm bài tốt hơn lần sau!';
+      }
+      document.getElementById('resFeedback').textContent = feedback;
+      resBox.classList.remove('hidden');
+
+      // Ẩn nút Nộp, hiện nút Thoát
+      document.getElementById('btnSubmit').style.display = 'none';
+      const exitBtn = document.getElementById('btnExit');
+      exitBtn.style.display = 'block';
+
+      // Cuộn lên xem kết quả
+      resBox.scrollIntoView({ behavior: 'smooth' });
+    });
+
+    // Nút Thoát: Reload và làm mới
+    document.getElementById('btnExit').addEventListener('click', function() {
+      location.reload();
+    });
+  </script>
+
+</body>
+</html>
