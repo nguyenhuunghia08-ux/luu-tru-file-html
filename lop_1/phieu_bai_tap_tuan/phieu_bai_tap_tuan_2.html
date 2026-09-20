@@ -894,41 +894,79 @@
         }
 
         isSubmitted = true;
-        clearInterval(timerInterval); // Dừng đồng hồ
+        clearInterval(timerInterval);
         let correctCount = 0;
+        let details = []; // Mảng chứa chi tiết 20 câu hỏi để gửi về GG Sheet
 
         // Grade Part 1
         for(let i=1; i<=5; i++) {
             const selected = document.querySelector(`input[name="q${i}"]:checked`);
             const qBlock = document.getElementById(`q${i}`);
+            const qText = qBlock.querySelector('.q-text').innerText.trim();
             const expBox = document.getElementById(`exp-q${i}`);
             
-            if(selected && selected.value === ANSWER_KEY[`q${i}`]) {
+            let studentAnsText = "Chưa trả lời";
+            if(selected) studentAnsText = selected.parentElement.innerText.trim();
+            
+            const correctLetter = ANSWER_KEY[`q${i}`];
+            const correctLabel = Array.from(qBlock.querySelectorAll('.option-label')).find(l => l.querySelector('input').value === correctLetter);
+            const correctAnsText = correctLabel ? correctLabel.innerText.trim() : correctLetter;
+
+            let isCorrect = false;
+            if(selected && selected.value === correctLetter) {
                 correctCount++;
+                isCorrect = true;
                 qBlock.classList.add('correct');
-                expBox.innerHTML = `<strong>Giải thích:</strong> ${EXPLANATIONS[`q${i}`]}`;
             } else {
                 qBlock.classList.add('incorrect');
                 const p = document.createElement('div');
                 p.className = 'correct-answer-label';
-                p.innerText = `Đáp án đúng: ${ANSWER_KEY[`q${i}`]}`;
+                p.innerText = `Đáp án đúng: ${correctLetter}`;
                 qBlock.insertBefore(p, expBox);
-                expBox.innerHTML = `<strong>Giải thích:</strong> ${EXPLANATIONS[`q${i}`]}`;
             }
+            expBox.innerHTML = `<strong>Giải thích:</strong> ${EXPLANATIONS[`q${i}`]}`;
+
+            details.push({
+                questionPrompt: qText,
+                studentAnswer: studentAnsText,
+                correctAnswer: correctAnsText,
+                isCorrect: isCorrect
+            });
         }
 
         // Grade Part 2 (Matching)
         let matchFeedbackHTML = `<div style="padding:10px; background:white; border-radius:10px; border:2px dashed #bdc3c7;"><b>Kiểm tra Nối & Giải thích:</b><br>`;
         [6,7,8,9,10].forEach(num => {
-            const userAns = pairs[num.toString()];
-            const correctAns = ANSWER_KEY[`m${num}`];
-            if(userAns === correctAns) {
+            const btnA = document.querySelector(`.item-a[data-id="${num}"]`);
+            const qText = `Nối: ${btnA.innerText.trim()}`;
+            
+            const userAnsId = pairs[num.toString()];
+            let studentAnsText = "Chưa nối";
+            if (userAnsId) {
+                const btnB = document.querySelector(`.item-b[data-id="${userAnsId}"]`);
+                if (btnB) studentAnsText = btnB.innerText.trim();
+            }
+
+            const correctAnsId = ANSWER_KEY[`m${num}`];
+            const correctBtnB = document.querySelector(`.item-b[data-id="${correctAnsId}"]`);
+            const correctAnsText = correctBtnB ? correctBtnB.innerText.trim() : correctAnsId;
+
+            let isCorrect = false;
+            if(userAnsId === correctAnsId) {
                 correctCount++;
+                isCorrect = true;
                 matchFeedbackHTML += `<div style="margin-bottom:8px;"><span style="color:var(--success)">✔️ Câu ${num}: Đúng</span><br><small style="color:#555;"><i>${EXPLANATIONS[`m${num}`]}</i></small></div>`;
             } else {
                 document.getElementById('match-section').classList.add('incorrect');
-                matchFeedbackHTML += `<div style="margin-bottom:8px;"><span style="color:var(--danger)">❌ Câu ${num}: Sai (Đáp án đúng: Nối với ${correctAns})</span><br><small style="color:#555;"><i>${EXPLANATIONS[`m${num}`]}</i></small></div>`;
+                matchFeedbackHTML += `<div style="margin-bottom:8px;"><span style="color:var(--danger)">❌ Câu ${num}: Sai (Đáp án đúng: Nối với ${correctAnsId})</span><br><small style="color:#555;"><i>${EXPLANATIONS[`m${num}`]}</i></small></div>`;
             }
+
+            details.push({
+                questionPrompt: qText,
+                studentAnswer: studentAnsText,
+                correctAnswer: correctAnsText,
+                isCorrect: isCorrect
+            });
         });
         matchFeedbackHTML += `</div>`;
         document.getElementById('match-feedback').innerHTML = matchFeedbackHTML;
@@ -937,35 +975,45 @@
         [11,12,13,14,15,16,17,18,19,20].forEach(num => {
             const ansBox = document.getElementById(`ans-${num}`);
             const buttons = ansBox.querySelectorAll('button');
-            const userStr = Array.from(buttons).map(b => b.innerText.trim()).join(' ');
+            let userStr = Array.from(buttons).map(b => b.innerText.trim()).join(' ');
+            if(!userStr) userStr = "Chưa làm";
+
             const qBlock = document.getElementById(`q${num}`);
+            const qText = qBlock.querySelector('.q-text').innerText.replace('Bấm xếp câu:', 'Xếp câu:').trim();
             const expBox = document.getElementById(`exp-q${num}`);
+            const correctAnsStr = ANSWER_KEY[`w${num}`];
             
-            if(userStr === ANSWER_KEY[`w${num}`]) {
+            let isCorrect = false;
+            if(userStr === correctAnsStr) {
                 correctCount++;
+                isCorrect = true;
                 qBlock.classList.add('correct');
-                expBox.innerHTML = `<strong>Giải thích:</strong> ${EXPLANATIONS[`w${num}`]}`;
             } else {
                 qBlock.classList.add('incorrect');
                 const p = document.createElement('div');
                 p.className = 'correct-answer-label';
-                p.innerText = `Đáp án đúng: ${ANSWER_KEY[`w${num}`]}`;
+                p.innerText = `Đáp án đúng: ${correctAnsStr}`;
                 qBlock.insertBefore(p, expBox);
-                expBox.innerHTML = `<strong>Giải thích:</strong> ${EXPLANATIONS[`w${num}`]}`;
             }
+            expBox.innerHTML = `<strong>Giải thích:</strong> ${EXPLANATIONS[`w${num}`]}`;
+
+            details.push({
+                questionPrompt: qText,
+                studentAnswer: userStr,
+                correctAnswer: correctAnsStr,
+                isCorrect: isCorrect
+            });
         });
 
-        // Calculate and Show Results
         const score = ((correctCount / 20) * 10).toFixed(1);
         
         document.getElementById('student-display').innerHTML = `Học sinh: <b>${name}</b> - Lớp: <b>${sClass}</b><br>Thời gian hoàn thành: <b>${formatTime(timePassed)}</b>`;
         document.getElementById('correct-count').innerText = correctCount;
         document.getElementById('final-score').innerText = score;
         
-        // Gửi kết quả về Google Sheets qua Apps Script
+        // Gửi dữ liệu về Google Sheets
         const scriptURL = 'https://script.google.com/macros/s/AKfycbxmk21YRkwkumnvhDfXSHZ7_EJ4PPz4HHBBItOUNBTxrRigOkN-rnbFcBkkI2ARUqCtVg/exec';
         
-        // Đóng gói dữ liệu dạng JSON chuẩn khớp 100% với Code Apps Script của StepUp Edu
         const payload = {
             "Họ_Tên": name,
             "Lớp": sClass,
@@ -973,15 +1021,15 @@
             "Số_Câu_Đúng": correctCount,
             "totalQuestions": 20,
             "Thời_Gian_Làm_Bài": formatTime(timePassed),
-            "Tên_Đề": "Phiếu Bài Tập Tuần 2 - Unit 1 - Khối 4"
+            "Tên_Đề": "Phiếu Bài Tập Tuần 2 - Unit 1 - Khối 4",
+            "details": details // Mảng chứa chi tiết 20 câu hỏi vừa thu thập
         };
         
-        // Gửi dữ liệu bằng phương thức POST dạng chuỗi JSON
         fetch(scriptURL, {
             method: 'POST',
             mode: 'no-cors',
             headers: {
-                'Content-Type': 'text/plain;charset=utf-8', // Bắt buộc dùng text/plain để vượt qua lỗi CORS
+                'Content-Type': 'text/plain;charset=utf-8',
             },
             body: JSON.stringify(payload)
         }).then(() => {
@@ -1003,7 +1051,6 @@
         document.getElementById('quiz-wrapper').classList.add('locked');
         document.getElementById('timer-container').classList.remove('warning');
         
-        // Disable inputs and selects
         document.querySelectorAll('input, select').forEach(i => i.disabled = true);
 
         window.scrollTo({top: 0, behavior: 'smooth'});
