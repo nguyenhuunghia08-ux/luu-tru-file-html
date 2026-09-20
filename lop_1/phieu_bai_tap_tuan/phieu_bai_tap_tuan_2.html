@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài Tập Tiếng Anh Tương Tác - Khối 4</title>
+    <style>
+        :root {
+            --primary: #4a90e2;
+            --secondary: #ff9f43;
+            --success: #2ecc71;
+            --danger: #e74c3c;
+            --bg-color: #f0f4f8;
+            --card-bg: #ffffff;
+            --text-dark: #2d3436;
+        }
+
+        body {
+            font-family: 'Comic Sans MS', 'Fredoka One', 'Segoe UI', Tahoma, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .app-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+            padding-bottom: 30px;
+        }
+
+        .header {
+            background-color: var(--primary);
+            color: white;
+            text-align: center;
+            padding: 30px 20px;
+            border-bottom: 5px solid #357abd;
+            position: relative; /* Cho đồng hồ đếm ngược */
+        }
+
+        .header h1 {
+            margin: 0 0 10px 0;
+            font-size: 24px;
+            text-transform: uppercase;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .header h2 {
+            margin: 0 0 5px 0;
+            font-size: 20px;
+        }
+
+        .header p {
+            margin: 0;
+            font-size: 16px;
+        }
+
+        /* Đồng hồ đếm ngược */
+        #timer-container {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-size: 20px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #timer-container.warning {
+            background: var(--danger);
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        /* Form Info */
+        .student-form {
+            background: #fff3e0;
+            padding: 20px;
+            margin: 20px;
+            border-radius: 15px;
+            border: 2px dashed var(--secondary);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            width: 45%;
+            min-width: 250px;
+        }
+
+        .input-group label {
+            font-weight: bold;
+            color: #d35400;
+            margin-bottom: 5px;
+        }
+
+        .input-group input, .input-group select {
+            padding: 12px;
+            border: 2px solid #bdc3c7;
+            border-radius: 10px;
+            font-size: 16px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+            background-color: white;
+            cursor: pointer;
+        }
+
+        .input-group input:focus, .input-group select:focus {
+            border-color: var(--secondary);
+            outline: none;
+        }
+
+        /* Sections */
+        .section {
+            padding: 20px;
+            margin: 20px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            border-left: 6px solid var(--primary);
+        }
+
+        .section-title {
+            color: var(--primary);
+            font-size: 22px;
+            margin-top: 0;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 10px;
+        }
+
+        .question-block {
+            margin-bottom: 25px;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            position: relative;
+        }
+
+        .q-text {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        /* Radio Buttons (Part 1) */
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            background: #f1f2f6;
+            border: 2px solid transparent;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 16px;
+        }
+
+        .option-label:hover {
+            background: #eccc68;
+            transform: translateY(-2px);
+        }
+
+        .option-label input[type="radio"] {
+            margin-right: 10px;
+            transform: scale(1.3);
+        }
+
+        .option-label.selected {
+            background: #ffeaa7;
+            border-color: var(--secondary);
+            font-weight: bold;
+        }
+
+        /* Matching (Part 2) */
+        .reading-box {
+            background: #e8f4f8;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .matching-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .match-col {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .match-btn {
+            padding: 15px;
+            font-size: 16px;
+            font-family: inherit;
+            background: white;
+            border: 2px solid #bdc3c7;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.2s;
+            text-align: left;
+        }
+
+        .match-btn:hover {
+            border-color: var(--primary);
+            background: #f0f8ff;
+        }
+
+        .match-btn.active {
+            border-color: var(--secondary);
+            background: #ffeaa7;
+            box-shadow: 0 0 10px rgba(255, 159, 67, 0.5);
+            transform: scale(1.02);
+        }
+        
+        .match-btn.paired {
+            color: white;
+            border-color: transparent;
+        }
+
+        /* Word Ordering & Fill blank (Part 3) */
+        .word-bank {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 15px;
+            background: #f1f2f6;
+            border-radius: 10px;
+            min-height: 50px;
+            margin-bottom: 10px;
+        }
+
+        .answer-box {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 15px;
+            background: #fff;
+            border: 2px dashed #bdc3c7;
+            border-radius: 10px;
+            min-height: 50px;
+        }
+
+        .word-btn {
+            padding: 10px 15px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            font-size: 16px;
+            font-family: inherit;
+            cursor: pointer;
+            box-shadow: 0 4px 0 #357abd;
+            transition: transform 0.1s, box-shadow 0.1s;
+        }
+
+        .word-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 0 0 #357abd;
+        }
+
+        .inline-input {
+            border: none;
+            border-bottom: 3px solid var(--primary);
+            font-size: 18px;
+            font-family: inherit;
+            width: 150px;
+            text-align: center;
+            outline: none;
+            background: transparent;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        /* Controls */
+        .controls {
+            text-align: center;
+            margin: 30px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .btn-submit, .btn-exit {
+            padding: 15px 40px;
+            font-size: 20px;
+            font-family: inherit;
+            font-weight: bold;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            text-transform: uppercase;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: 0.3s;
+        }
+
+        .btn-submit { background-color: var(--success); }
+        .btn-submit:hover { background-color: #27ae60; transform: scale(1.05); }
+
+        .btn-exit { background-color: var(--danger); display: none; }
+        .btn-exit:hover { background-color: #c0392b; transform: scale(1.05); }
+
+        /* Results Display */
+        #result-board {
+            display: none;
+            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+            padding: 30px;
+            margin: 20px;
+            border-radius: 15px;
+            text-align: center;
+            color: white;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+        }
+
+        #result-board h2 { margin-top: 0; font-size: 28px;}
+        .score-text { font-size: 40px; font-weight: bold; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); margin: 15px 0;}
+        .feedback-msg { font-size: 20px; font-weight: bold; }
+
+        /* Status Colors */
+        .correct { border: 2px solid var(--success) !important; background-color: #e8f8f5 !important; }
+        .incorrect { border: 2px solid var(--danger) !important; background-color: #fdedec !important; }
+        
+        .explanation-box {
+            display: none; /* Ẩn mặc định, sẽ hiện khi nộp bài */
+            background-color: #eef2f3;
+            border-left: 4px solid var(--primary);
+            padding: 10px 15px;
+            margin-top: 15px;
+            border-radius: 5px;
+            font-size: 15px;
+            color: #34495e;
+        }
+        
+        .correct .explanation-box {
+            display: block;
+            border-left-color: var(--success);
+            background-color: #e8f8f5;
+        }
+        
+        .incorrect .explanation-box {
+            display: block;
+            border-left-color: var(--danger);
+            background-color: #fdedec;
+        }
+
+        .correct-answer-label {
+            display: block;
+            color: var(--danger);
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 15px;
+        }
+
+        /* Disable overlay */
+        .locked { pointer-events: none; opacity: 0.8; }
+
+        @media (max-width: 600px) {
+            .options-grid { grid-template-columns: 1fr; }
+            .matching-container { flex-direction: column; }
+            .input-group { width: 100%; }
+            #timer-container {
+                position: static;
+                margin-top: 15px;
+                justify-content: center;
+                display: inline-flex;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container" id="app">
+    <div class="header">
+        <h1>TRƯỜNG TIỂU HỌC BÌNH QUỚI</h1>
+        <h2>PHIẾU BÀI TẬP TUẦN 2</h2>
+        <h2>UNIT 1</h2>
+        <p>MÔN: TIẾNG ANH - THỜI GIAN: 35 PHÚT</p>
+        
+        <div id="timer-container">
+            ⏱️ <span id="timer-display">35:00</span>
+        </div>
+    </div>
+
+    <!-- User Info Form -->
+    <div class="student-form" id="studentForm">
+        <div class="input-group">
+            <label for="studentName">Họ và tên học sinh:</label>
+            <input type="text" id="studentName" placeholder="Nhập họ và tên của em..." required>
+        </div>
+        <div class="input-group">
+            <label for="studentClass">Lớp:</label>
+            <select id="studentClass" required>
+                <option value="" disabled selected>-- Chọn lớp của em --</option>
+                <option value="4/1">Lớp 4/1</option>
+                <option value="4/2">Lớp 4/2</option>
+                <option value="4/3">Lớp 4/3</option>
+                <option value="4/4">Lớp 4/4</option>
+                <option value="4/5">Lớp 4/5</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Result Board -->
+    <div id="result-board">
+        <h2>BẢNG KẾT QUẢ</h2>
+        <div id="student-display" style="font-size: 18px;"></div>
+        <div class="score-text">ĐIỂM: <span id="final-score">0</span> / 10</div>
+        <div style="font-size: 18px;">Số câu đúng: <span id="correct-count">0</span> / 20</div>
+        <div class="feedback-msg" id="feedback-message"></div>
+    </div>
+
+    <div id="quiz-wrapper">
+        <!-- PART 1: MCQ -->
+        <div class="section">
+            <h2 class="section-title">Part 1: Choose the correct answer 🎯</h2>
+            
+            <div class="question-block" id="q1">
+                <div class="q-text">1. I am from ________. (Nước Mỹ)</div>
+                <div class="options-grid">
+                    <label class="option-label"><input type="radio" name="q1" value="A"> A. Japan</label>
+                    <label class="option-label"><input type="radio" name="q1" value="B"> B. America</label>
+                    <label class="option-label"><input type="radio" name="q1" value="C"> C. Britain</label>
+                    <label class="option-label"><input type="radio" name="q1" value="D"> D. Vietnam</label>
+                </div>
+                <div class="explanation-box" id="exp-q1"></div>
+            </div>
+
+            <div class="question-block" id="q2">
+                <div class="q-text">2. Where ________ you from?</div>
+                <div class="options-grid">
+                    <label class="option-label"><input type="radio" name="q2" value="A"> A. is</label>
+                    <label class="option-label"><input type="radio" name="q2" value="B"> B. am</label>
+                    <label class="option-label"><input type="radio" name="q2" value="C"> C. are</label>
+                    <label class="option-label"><input type="radio" name="q2" value="D"> D. do</label>
+                </div>
+                <div class="explanation-box" id="exp-q2"></div>
+            </div>
+
+            <div class="question-block" id="q3">
+                <div class="q-text">3. Where is he from? - ________ is from Japan.</div>
+                <div class="options-grid">
+                    <label class="option-label"><input type="radio" name="q3" value="A"> A. I</label>
+                    <label class="option-label"><input type="radio" name="q3" value="B"> B. She</label>
+                    <label class="option-label"><input type="radio" name="q3" value="C"> C. He</label>
+                    <label class="option-label"><input type="radio" name="q3" value="D"> D. You</label>
+                </div>
+                <div class="explanation-box" id="exp-q3"></div>
+            </div>
+
+            <div class="question-block" id="q4">
+                <div class="q-text">4. Hello, I am Mary. I am from ________. (Nước Anh)</div>
+                <div class="options-grid">
+                    <label class="option-label"><input type="radio" name="q4" value="A"> A. Britain</label>
+                    <label class="option-label"><input type="radio" name="q4" value="B"> B. Malaysia</label>
+                    <label class="option-label"><input type="radio" name="q4" value="C"> C. Singapore</label>
+                    <label class="option-label"><input type="radio" name="q4" value="D"> D. America</label>
+                </div>
+                <div class="explanation-box" id="exp-q4"></div>
+            </div>
+
+            <div class="question-block" id="q5">
+                <div class="q-text">5. ________ is she from? - She is from Singapore.</div>
+                <div class="options-grid">
+                    <label class="option-label"><input type="radio" name="q5" value="A"> A. What</label>
+                    <label class="option-label"><input type="radio" name="q5" value="B"> B. How</label>
+                    <label class="option-label"><input type="radio" name="q5" value="C"> C. Where</label>
+                    <label class="option-label"><input type="radio" name="q5" value="D"> D. Who</label>
+                </div>
+                <div class="explanation-box" id="exp-q5"></div>
+            </div>
+        </div>
+
+        <!-- PART 2: MATCHING -->
+        <div class="section" id="match-section">
+            <h2 class="section-title">Part 2: Read and Match 🔗</h2>
+            <div class="reading-box">
+                Hello. My name is Lan. I am from Vietnam. This is my good friend, Tom. He is from America. And this is Akiko. She is from Japan. We have a new friend today. His name is Hakim. He is from Malaysia. We are very happy together.
+            </div>
+            <p style="font-weight: bold; color: var(--primary);">Nhiệm vụ: Bấm chọn 1 ô ở Cột Trái, sau đó bấm 1 ô tương ứng ở Cột Phải để ghép đôi!</p>
+            
+            <div class="matching-container" id="matching-board">
+                <div class="match-col" id="colA">
+                    <button class="match-btn item-a" data-id="6">6. Lan</button>
+                    <button class="match-btn item-a" data-id="7">7. Tom</button>
+                    <button class="match-btn item-a" data-id="8">8. Akiko</button>
+                    <button class="match-btn item-a" data-id="9">9. Hakim</button>
+                    <button class="match-btn item-a" data-id="10">10. The friends</button>
+                </div>
+                <div class="match-col" id="colB">
+                    <button class="match-btn item-b" data-id="A">A. is from America.</button>
+                    <button class="match-btn item-b" data-id="B">B. are very happy.</button>
+                    <button class="match-btn item-b" data-id="C">C. is from Malaysia.</button>
+                    <button class="match-btn item-b" data-id="D">D. is from Vietnam.</button>
+                    <button class="match-btn item-b" data-id="E">E. is from Japan.</button>
+                </div>
+            </div>
+            <div id="match-feedback" style="margin-top:15px;"></div>
+        </div>
+
+        <!-- PART 3: WRITING -->
+        <div class="section">
+            <h2 class="section-title">Part 3: Write and Reorder ✍️</h2>
+            <p style="color: var(--primary); font-weight: bold;">Sắp xếp từ thành câu (Bấm vào các từ để sắp xếp):</p>
+            
+            <div class="question-block" id="q11">
+                <div class="q-text">11. Bấm xếp câu:</div>
+                <div class="word-bank" id="bank-11">
+                    <button class="word-btn" onclick="moveWord(this, 'bank-11', 'ans-11')">from</button>
+                    <button class="word-btn" onclick="moveWord(this, 'bank-11', 'ans-11')">are</button>
+                    <button class="word-btn" onclick="moveWord(this, 'bank-11', 'ans-11')">Where</button>
+                    <button class="word-btn" onclick="moveWord(this, 'bank-11', 'ans-11')">you</button>
+                    <button class="word-btn" onclick="moveWord(this, 'bank-11', 'ans-11')">?</button>
+                </div>
+                <div class="answer-box" id="ans-11"></div>
+                <div class="explanation-box" id="exp-q11"></div>
+            </div>
+
+            <div class="question-block" id="q12">
+                <div class="q-text">12. Bấm xếp câu:</div>
+                <div class="word-bank" id="bank-12">
+                    <button class="word-btn" onclick="moveWord(this, 'bank-12', 'ans-12')">is</button>
+                    <button class="word-btn" onclick="moveWord(this, 'bank-12', 'ans-12')">from</button>
+                    <button class="word-btn" onclick="moveWord(this, 'bank-12', 'ans-12')">Britain</button>
+                    <button class="word-btn" onclick="moveWord(this, 'bank-12', 'ans-12')">She</button>
+                    <button class="word-btn" onclick="moveWord(this, 'bank-12', 'ans-12')">.</button>
+                </div>
+                <div class="answer-box" id="ans-12"></div>
+                <div class="explanation-box" id="exp-q12"></div>
+            </div>
+
+            <div class="question-block" id="q13">
+                <div class="q-text">13. Bấm xếp câu:</div>
+                <div class="word-bank" id="bank-13">
+                    <button class="word-btn" onclick="moveWord(this, 'bank-13', 'ans-13')">Singapore</button>
+                    <button class="word-btn" onclick="moveWord(this, 'bank-13', 'ans-13')">from</button>
+                    <button class="word-btn" onclick="moveWord(this, 'bank-13', 'ans-13')">He</button>
+                    <button class="word-btn" onclick="moveWord(this, 'bank-13', 'ans-13')">is</button>
+                    <button class="word-btn" onclick="moveWord(this, 'bank-13', 'ans-13')">.</button>
+                </div>
+                <div class="answer-box" id="ans-13"></div>
+                <div class="explanation-box" id="exp-q13"></div>
+            </div>
+
+            <div class="question-block" id="q14">
+                <div class="q-text">14. Bấm xếp câu:</div>
+                <div class="word-bank" id="bank-14">
+                    <button class="word-btn" onclick="moveWord(this, 'bank-14', 'ans-14')">he</button>
+                    <button class="word-btn" onclick="moveWord(this, 'bank-14', 'ans-14')">from</button>
+                    <button class="word-btn" onclick="moveWord(this, 'bank-14', 'ans-14')">is</button>
+                    <button class="word-btn" onclick="moveWord(this, 'bank-14', 'ans-14')">Where</button>
+                    <button class="word-btn" onclick="moveWord(this, 'bank-14', 'ans-14')">?</button>
+                </div>
+                <div class="answer-box" id="ans-14"></div>
+                <div class="explanation-box" id="exp-q14"></div>
+            </div>
+
+            <div class="question-block" id="q15">
+                <div class="q-text">15. Bấm xếp câu:</div>
+                <div class="word-bank" id="bank-15">
+                    <button class="word-btn" onclick="moveWord(this, 'bank-15', 'ans-15')">America</button>
+                    <button class="word-btn" onclick="moveWord(this, 'bank-15', 'ans-15')">from</button>
+                    <button class="word-btn" onclick="moveWord(this, 'bank-15', 'ans-15')">He</button>
+                    <button class="word-btn" onclick="moveWord(this, 'bank-15', 'ans-15')">is</button>
+                    <button class="word-btn" onclick="moveWord(this, 'bank-15', 'ans-15')">.</button>
+                </div>
+                <div class="answer-box" id="ans-15"></div>
+                <div class="explanation-box" id="exp-q15"></div>
+            </div>
+
+            <div class="question-block" id="q16">
+                <div class="q-text">16. Bấm xếp câu:</div>
+                <div class="word-bank" id="bank-16">
+                    <button class="word-btn" onclick="moveWord(this, 'bank-16', 'ans-16')">she</button>
+                    <button class="word-btn" onclick="moveWord(this, 'bank-16', 'ans-16')">Where</button>
+                    <button class="word-btn" onclick="moveWord(this, 'bank-16', 'ans-16')">from</button>
+                    <button class="word-btn" onclick="moveWord(this, 'bank-16', 'ans-16')">is</button>
+                    <button class="word-btn" onclick="moveWord(this, 'bank-16', 'ans-16')">?</button>
+                </div>
+                <div class="answer-box" id="ans-16"></div>
+                <div class="explanation-box" id="exp-q16"></div>
+            </div>
+
+            <div class="question-block" id="q17">
+                <div class="q-text">17. Bấm xếp câu:</div>
+                <div class="word-bank" id="bank-17">
+                    <button class="word-btn" onclick="moveWord(this, 'bank-17', 'ans-17')">is</button>
+                    <button class="word-btn" onclick="moveWord(this, 'bank-17', 'ans-17')">Malaysia</button>
+                    <button class="word-btn" onclick="moveWord(this, 'bank-17', 'ans-17')">She</button>
+                    <button class="word-btn" onclick="moveWord(this, 'bank-17', 'ans-17')">from</button>
+                    <button class="word-btn" onclick="moveWord(this, 'bank-17', 'ans-17')">.</button>
+                </div>
+                <div class="answer-box" id="ans-17"></div>
+                <div class="explanation-box" id="exp-q17"></div>
+            </div>
+
+            <div class="question-block" id="q18">
+                <div class="q-text">18. Bấm xếp câu:</div>
+                <div class="word-bank" id="bank-18">
+                    <button class="word-btn" onclick="moveWord(this, 'bank-18', 'ans-18')">Japan</button>
+                    <button class="word-btn" onclick="moveWord(this, 'bank-18', 'ans-18')">from</button>
+                    <button class="word-btn" onclick="moveWord(this, 'bank-18', 'ans-18')">is</button>
+                    <button class="word-btn" onclick="moveWord(this, 'bank-18', 'ans-18')">He</button>
+                    <button class="word-btn" onclick="moveWord(this, 'bank-18', 'ans-18')">.</button>
+                </div>
+                <div class="answer-box" id="ans-18"></div>
+                <div class="explanation-box" id="exp-q18"></div>
+            </div>
+
+            <div class="question-block" id="q19">
+                <div class="q-text">19. Bấm xếp câu:</div>
+                <div class="word-bank" id="bank-19">
+                    <button class="word-btn" onclick="moveWord(this, 'bank-19', 'ans-19')">I</button>
+                    <button class="word-btn" onclick="moveWord(this, 'bank-19', 'ans-19')">Vietnam</button>
+                    <button class="word-btn" onclick="moveWord(this, 'bank-19', 'ans-19')">from</button>
+                    <button class="word-btn" onclick="moveWord(this, 'bank-19', 'ans-19')">am</button>
+                    <button class="word-btn" onclick="moveWord(this, 'bank-19', 'ans-19')">.</button>
+                </div>
+                <div class="answer-box" id="ans-19"></div>
+                <div class="explanation-box" id="exp-q19"></div>
+            </div>
+
+            <div class="question-block" id="q20">
+                <div class="q-text">20. Bấm xếp câu:</div>
+                <div class="word-bank" id="bank-20">
+                    <button class="word-btn" onclick="moveWord(this, 'bank-20', 'ans-20')">you</button>
+                    <button class="word-btn" onclick="moveWord(this, 'bank-20', 'ans-20')">Where</button>
+                    <button class="word-btn" onclick="moveWord(this, 'bank-20', 'ans-20')">?</button>
+                    <button class="word-btn" onclick="moveWord(this, 'bank-20', 'ans-20')">from</button>
+                    <button class="word-btn" onclick="moveWord(this, 'bank-20', 'ans-20')">are</button>
+                </div>
+                <div class="answer-box" id="ans-20"></div>
+                <div class="explanation-box" id="exp-q20"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls">
+        <button class="btn-submit" id="btnSubmit" onclick="submitQuiz()">NỘP BÀI</button>
+        <button class="btn-exit" id="btnExit" onclick="exitApp()">THOÁT</button>
+    </div>
+
+</div>
+
+<script>
+    /* --- LOGIC RADIO BUTTONS --- */
+    const radioLabels = document.querySelectorAll('.option-label');
+    radioLabels.forEach(label => {
+        label.addEventListener('click', function() {
+            if(document.getElementById('quiz-wrapper').classList.contains('locked')) return;
+            const name = this.querySelector('input').name;
+            document.querySelectorAll(`input[name="${name}"]`).forEach(inp => {
+                inp.parentElement.classList.remove('selected');
+            });
+            this.classList.add('selected');
+            this.querySelector('input').checked = true;
+        });
+    });
+
+    /* --- LOGIC MATCHING --- */
+    let selectedA = null;
+    let selectedB = null;
+    let pairs = {}; // Lưu cặp: { idA: idB }
+    const colors = ['#e17055', '#0984e3', '#00b894', '#6c5ce7', '#e84393'];
+    let colorIndex = 0;
+
+    const itemsA = document.querySelectorAll('.item-a');
+    const itemsB = document.querySelectorAll('.item-b');
+
+    function handleMatchClick(e, type) {
+        if(document.getElementById('quiz-wrapper').classList.contains('locked')) return;
+        const btn = e.target;
+        
+        // Bấm lại để hủy ghép đôi
+        if(btn.classList.contains('paired')) {
+            unpair(btn, type);
+            return;
+        }
+
+        // Chọn item
+        if(type === 'A') {
+            if(selectedA) selectedA.classList.remove('active');
+            selectedA = btn;
+            selectedA.classList.add('active');
+        } else {
+            if(selectedB) selectedB.classList.remove('active');
+            selectedB = btn;
+            selectedB.classList.add('active');
+        }
+
+        // Nếu đã chọn 1 bên A và 1 bên B -> Tạo cặp
+        if(selectedA && selectedB) {
+            const idA = selectedA.dataset.id;
+            const idB = selectedB.dataset.id;
+            pairs[idA] = idB;
+            
+            const color = colors[colorIndex % colors.length];
+            selectedA.style.backgroundColor = color;
+            selectedB.style.backgroundColor = color;
+            selectedA.classList.add('paired');
+            selectedB.classList.add('paired');
+            selectedA.dataset.pairId = idB;
+            selectedB.dataset.pairId = idA;
+            selectedA.dataset.color = color;
+            selectedB.dataset.color = color;
+
+            selectedA.classList.remove('active');
+            selectedB.classList.remove('active');
+            selectedA = null;
+            selectedB = null;
+            colorIndex++;
+        }
+    }
+
+    function unpair(btn, type) {
+        let pairId = btn.dataset.pairId;
+        let otherBtn = null;
+        if(type === 'A') {
+            otherBtn = Array.from(itemsB).find(b => b.dataset.id === pairId);
+            delete pairs[btn.dataset.id];
+        } else {
+            otherBtn = Array.from(itemsA).find(a => a.dataset.id === pairId);
+            // Tìm key trong dictionary
+            for(let key in pairs) { if(pairs[key] === btn.dataset.id) delete pairs[key]; }
+        }
+        
+        // Reset styles
+        btn.classList.remove('paired');
+        btn.style.backgroundColor = '';
+        delete btn.dataset.pairId;
+        
+        if(otherBtn) {
+            otherBtn.classList.remove('paired');
+            otherBtn.style.backgroundColor = '';
+            delete otherBtn.dataset.pairId;
+        }
+    }
+
+    itemsA.forEach(item => item.addEventListener('click', (e) => handleMatchClick(e, 'A')));
+    itemsB.forEach(item => item.addEventListener('click', (e) => handleMatchClick(e, 'B')));
+
+
+    /* --- LOGIC XẾP TỪ --- */
+    function moveWord(btn, bankId, ansId) {
+        if(document.getElementById('quiz-wrapper').classList.contains('locked')) return;
+        const parentId = btn.parentElement.id;
+        if(parentId === bankId) {
+            document.getElementById(ansId).appendChild(btn);
+        } else {
+            document.getElementById(bankId).appendChild(btn);
+        }
+    }
+
+    /* --- LOGIC ĐỒNG HỒ ĐẾM NGƯỢC --- */
+    const TIME_LIMIT = 35 * 60; // 35 minutes in seconds
+    let timePassed = 0;
+    let timeLeft = TIME_LIMIT;
+    let timerInterval = null;
+    let isSubmitted = false;
+
+    function formatTime(time) {
+        const minutes = Math.floor(time / 60);
+        let seconds = time % 60;
+        if (seconds < 10) {
+            seconds = `0${seconds}`;
+        }
+        return `${minutes}:${seconds}`;
+    }
+
+    function startTimer() {
+        timerInterval = setInterval(() => {
+            timePassed = timePassed += 1;
+            timeLeft = TIME_LIMIT - timePassed;
+            document.getElementById("timer-display").innerHTML = formatTime(timeLeft);
+
+            if (timeLeft <= 60) {
+                // Đổi màu cảnh báo khi còn 1 phút
+                document.getElementById("timer-container").classList.add("warning");
+            }
+
+            if (timeLeft === 0) {
+                onTimesUp();
+            }
+        }, 1000);
+    }
+
+    function onTimesUp() {
+        clearInterval(timerInterval);
+        if (!isSubmitted) {
+            alert("Đã hết 35 phút làm bài! Hệ thống sẽ tự động nộp bài.");
+            // Điền thông tin mặc định nếu học sinh chưa điền để form hợp lệ
+            if(!document.getElementById('studentName').value.trim()) {
+                document.getElementById('studentName').value = "Học sinh (Nộp tự động)";
+            }
+            if(!document.getElementById('studentClass').value.trim()) {
+                document.getElementById('studentClass').value = "Chưa rõ";
+            }
+            submitQuiz(true); // true = force submit
+        }
+    }
+
+    // Bắt đầu đếm ngược khi load trang
+    window.onload = function() {
+        startTimer();
+    };
+
+    /* --- LOGIC CHẤM ĐIỂM --- */
+    const ANSWER_KEY = {
+        // Part 1
+        q1: 'B', q2: 'C', q3: 'C', q4: 'A', q5: 'C',
+        // Part 2 (A->B)
+        m6: 'D', m7: 'A', m8: 'E', m9: 'C', m10: 'B',
+        // Part 3 Reorder
+        w11: "Where are you from ?",
+        w12: "She is from Britain .",
+        w13: "He is from Singapore .",
+        w14: "Where is he from ?",
+        w15: "He is from America .",
+        w16: "Where is she from ?",
+        w17: "She is from Malaysia .",
+        w18: "He is from Japan .",
+        w19: "I am from Vietnam .",
+        w20: "Where are you from ?"
+    };
+
+    const EXPLANATIONS = {
+        q1: "America có nghĩa là Nước Mỹ. Các từ còn lại: Japan (Nhật Bản), Britain (Nước Anh), Vietnam (Việt Nam).",
+        q2: "Chủ ngữ là 'you' nên động từ to be đi kèm phải là 'are'. (Where are you from?)",
+        q3: "Câu hỏi là 'Where is he from?' (Anh ấy đến từ đâu?), nên câu trả lời phải bắt đầu bằng chủ ngữ 'He'.",
+        q4: "Britain có nghĩa là Nước Anh. Các từ còn lại: Malaysia, Singapore, America.",
+        q5: "Để hỏi về nơi chốn (quê quán), ta dùng từ để hỏi 'Where'.",
+        
+        m6: "Trong đoạn văn có câu: 'My name is Lan. I am from Vietnam.'",
+        m7: "Trong đoạn văn có câu: 'This is my good friend, Tom. He is from America.'",
+        m8: "Trong đoạn văn có câu: 'And this is Akiko. She is from Japan.'",
+        m9: "Trong đoạn văn có câu: 'His name is Hakim. He is from Malaysia.'",
+        m10: "Trong đoạn văn có câu cuối: 'We are very happy together.'",
+        
+        w11: "Cấu trúc hỏi quê quán của bạn: Where + are + you + from + ?",
+        w12: "Cấu trúc trả lời quê quán (cô ấy): She + is + from + Tên quốc gia + .",
+        w13: "Cấu trúc trả lời quê quán (anh ấy): He + is + from + Tên quốc gia + .",
+        w14: "Cấu trúc hỏi quê quán của anh ấy: Where + is + he + from + ?",
+        w15: "Cấu trúc trả lời quê quán (anh ấy): He + is + from + Tên quốc gia + .",
+        w16: "Cấu trúc hỏi quê quán của cô ấy: Where + is + she + from + ?",
+        w17: "Cấu trúc trả lời quê quán (cô ấy): She + is + from + Tên quốc gia + .",
+        w18: "Cấu trúc trả lời quê quán (anh ấy): He + is + from + Tên quốc gia + .",
+        w19: "Cấu trúc trả lời quê quán (bản thân): I + am + from + Tên quốc gia + .",
+        w20: "Cấu trúc hỏi quê quán của bạn: Where + are + you + from + ?"
+    };
+
+    function submitQuiz(forceSubmit = false) {
+        if(isSubmitted) return;
+
+        const name = document.getElementById('studentName').value.trim();
+        const sClass = document.getElementById('studentClass').value.trim();
+
+        if(!forceSubmit) {
+            if(!name || !sClass) {
+                alert("Em vui lòng điền đầy đủ Họ tên và Lớp trước khi Nộp bài nhé!");
+                window.scrollTo({top: 0, behavior: 'smooth'});
+                return;
+            }
+            if(!confirm("Em đã chắc chắn muốn nộp bài chưa?")) return;
+        }
+
+        isSubmitted = true;
+        clearInterval(timerInterval); // Dừng đồng hồ
+        let correctCount = 0;
+
+        // Grade Part 1
+        for(let i=1; i<=5; i++) {
+            const selected = document.querySelector(`input[name="q${i}"]:checked`);
+            const qBlock = document.getElementById(`q${i}`);
+            const expBox = document.getElementById(`exp-q${i}`);
+            
+            if(selected && selected.value === ANSWER_KEY[`q${i}`]) {
+                correctCount++;
+                qBlock.classList.add('correct');
+                expBox.innerHTML = `<strong>Giải thích:</strong> ${EXPLANATIONS[`q${i}`]}`;
+            } else {
+                qBlock.classList.add('incorrect');
+                const p = document.createElement('div');
+                p.className = 'correct-answer-label';
+                p.innerText = `Đáp án đúng: ${ANSWER_KEY[`q${i}`]}`;
+                qBlock.insertBefore(p, expBox);
+                expBox.innerHTML = `<strong>Giải thích:</strong> ${EXPLANATIONS[`q${i}`]}`;
+            }
+        }
+
+        // Grade Part 2 (Matching)
+        let matchFeedbackHTML = `<div style="padding:10px; background:white; border-radius:10px; border:2px dashed #bdc3c7;"><b>Kiểm tra Nối & Giải thích:</b><br>`;
+        [6,7,8,9,10].forEach(num => {
+            const userAns = pairs[num.toString()];
+            const correctAns = ANSWER_KEY[`m${num}`];
+            if(userAns === correctAns) {
+                correctCount++;
+                matchFeedbackHTML += `<div style="margin-bottom:8px;"><span style="color:var(--success)">✔️ Câu ${num}: Đúng</span><br><small style="color:#555;"><i>${EXPLANATIONS[`m${num}`]}</i></small></div>`;
+            } else {
+                document.getElementById('match-section').classList.add('incorrect');
+                matchFeedbackHTML += `<div style="margin-bottom:8px;"><span style="color:var(--danger)">❌ Câu ${num}: Sai (Đáp án đúng: Nối với ${correctAns})</span><br><small style="color:#555;"><i>${EXPLANATIONS[`m${num}`]}</i></small></div>`;
+            }
+        });
+        matchFeedbackHTML += `</div>`;
+        document.getElementById('match-feedback').innerHTML = matchFeedbackHTML;
+
+        // Grade Part 3 (Reorder)
+        [11,12,13,14,15,16,17,18,19,20].forEach(num => {
+            const ansBox = document.getElementById(`ans-${num}`);
+            const buttons = ansBox.querySelectorAll('button');
+            const userStr = Array.from(buttons).map(b => b.innerText.trim()).join(' ');
+            const qBlock = document.getElementById(`q${num}`);
+            const expBox = document.getElementById(`exp-q${num}`);
+            
+            if(userStr === ANSWER_KEY[`w${num}`]) {
+                correctCount++;
+                qBlock.classList.add('correct');
+                expBox.innerHTML = `<strong>Giải thích:</strong> ${EXPLANATIONS[`w${num}`]}`;
+            } else {
+                qBlock.classList.add('incorrect');
+                const p = document.createElement('div');
+                p.className = 'correct-answer-label';
+                p.innerText = `Đáp án đúng: ${ANSWER_KEY[`w${num}`]}`;
+                qBlock.insertBefore(p, expBox);
+                expBox.innerHTML = `<strong>Giải thích:</strong> ${EXPLANATIONS[`w${num}`]}`;
+            }
+        });
+
+        // Calculate and Show Results
+        const score = ((correctCount / 20) * 10).toFixed(1);
+        
+        document.getElementById('student-display').innerHTML = `Học sinh: <b>${name}</b> - Lớp: <b>${sClass}</b><br>Thời gian hoàn thành: <b>${formatTime(timePassed)}</b>`;
+        document.getElementById('correct-count').innerText = correctCount;
+        document.getElementById('final-score').innerText = score;
+        
+        // Gửi kết quả về Google Sheets qua Apps Script
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbxmk21YRkwkumnvhDfXSHZ7_EJ4PPz4HHBBItOUNBTxrRigOkN-rnbFcBkkI2ARUqCtVg/exec';
+        
+        // Đóng gói dữ liệu dạng JSON chuẩn khớp 100% với Code Apps Script của StepUp Edu
+        const payload = {
+            "Họ_Tên": name,
+            "Lớp": sClass,
+            "Điểm_Số": score,
+            "Số_Câu_Đúng": correctCount,
+            "totalQuestions": 20,
+            "Thời_Gian_Làm_Bài": formatTime(timePassed),
+            "Tên_Đề": "Phiếu Bài Tập Tuần 2 - Unit 1 - Khối 4"
+        };
+        
+        // Gửi dữ liệu bằng phương thức POST dạng chuỗi JSON
+        fetch(scriptURL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: {
+                'Content-Type': 'text/plain;charset=utf-8', // Bắt buộc dùng text/plain để vượt qua lỗi CORS
+            },
+            body: JSON.stringify(payload)
+        }).then(() => {
+            console.log('Đã nộp bài lên hệ thống!');
+        }).catch(error => console.error('Lỗi mạng khi nộp bài:', error));
+
+        let msg = "";
+        if(score >= 9) msg = "Xuất sắc! Em làm bài rất tuyệt vời! 🌟";
+        else if (score >= 7) msg = "Rất tốt! Em đã nắm bài rất chắc! 👍";
+        else if (score >= 5) msg = "Khá lắm! Cố gắng luyện tập thêm chút nữa nhé! 💪";
+        else msg = "Đừng buồn, hãy xem kỹ lại phần giải thích và thử sức lần sau nhé! ❤️";
+        document.getElementById('feedback-message').innerText = msg;
+
+        // UI Changes
+        document.getElementById('result-board').style.display = 'block';
+        document.getElementById('btnSubmit').style.display = 'none';
+        document.getElementById('btnExit').style.display = 'inline-block';
+        document.getElementById('studentForm').classList.add('locked');
+        document.getElementById('quiz-wrapper').classList.add('locked');
+        document.getElementById('timer-container').classList.remove('warning');
+        
+        // Disable inputs and selects
+        document.querySelectorAll('input, select').forEach(i => i.disabled = true);
+
+        window.scrollTo({top: 0, behavior: 'smooth'});
+    }
+
+    function exitApp() {
+        window.location.reload(); // Reload to reset everything
+    }
+</script>
+
+</body>
+</html>
