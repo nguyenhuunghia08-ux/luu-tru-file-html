@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PHIẾU LUYỆN TẬP - READING SKILL GRADE 4</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap');
+        
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #e0f7fa;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            font-size: 18px;
+        }
+        .app-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background-color: #00bcd4;
+            color: white;
+            text-align: center;
+            padding: 30px 20px;
+        }
+        .header h1 { margin: 0; font-size: 32px; font-weight: 900; }
+        .header h2 { margin: 10px 0 0; font-size: 24px; font-weight: 700; }
+        .header h3 { margin: 10px 0 0; font-size: 18px; font-weight: 400; }
+        
+        .student-form {
+            background-color: #fff9c4;
+            padding: 20px;
+            margin: 20px;
+            border-radius: 12px;
+            border-left: 6px solid #fbc02d;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .form-group { flex: 1; min-width: 250px; }
+        .form-group label { display: block; font-weight: bold; color: #f57f17; margin-bottom: 5px; }
+        .form-group input { 
+            width: 100%; padding: 12px; border: 2px solid #fbc02d; 
+            border-radius: 8px; font-size: 18px; font-family: 'Nunito', sans-serif; box-sizing: border-box;
+        }
+        
+        #warningMsg {
+            display: none;
+            background-color: #ffebee;
+            color: #c62828;
+            padding: 15px;
+            margin: 0 20px;
+            border-radius: 8px;
+            border: 2px solid #ef5350;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .content { padding: 20px; }
+        .part-header {
+            background-color: #ff9800;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 10px;
+            margin: 30px 0 15px 0;
+            font-size: 22px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .reset-btn {
+            background-color: #fff;
+            color: #ff9800;
+            border: none;
+            padding: 5px 12px;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .reset-btn:hover { background-color: #ffe0b2; }
+
+        .instruction { font-style: italic; color: #555; margin-bottom: 20px; font-weight: bold; }
+        
+        .question-box {
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #e0e0e0;
+        }
+        .question-text { font-weight: bold; margin-bottom: 15px; color: #1565c0; }
+        
+        .matching-area { display: flex; gap: 20px; justify-content: space-between; margin-bottom: 20px; }
+        .match-col { flex: 1; display: flex; flex-direction: column; gap: 10px; }
+        .match-item {
+            background-color: white; border: 2px solid #90caf9; padding: 15px;
+            border-radius: 8px; text-align: center; font-weight: bold; cursor: pointer;
+            transition: all 0.2s; user-select: none;
+        }
+        .match-item:hover:not(.matched):not(.disabled) { background-color: #e3f2fd; }
+        .match-item.selected { background-color: #bbdefb; border-color: #1976d2; transform: scale(1.02); }
+        .match-item.matched { color: white; cursor: default; }
+
+        .options-list { display: flex; flex-direction: column; gap: 10px; }
+        .option-label {
+            display: flex; align-items: center; padding: 12px; background-color: white;
+            border: 2px solid #eeeeee; border-radius: 8px; cursor: pointer;
+        }
+        .option-label:hover:not(.disabled) { background-color: #f9f9f9; border-color: #bdbdbd; }
+        .option-label input[type="radio"] { margin-right: 15px; transform: scale(1.5); }
+        
+        .passage {
+            background-color: #e8f5e9; border: 3px dashed #4caf50; padding: 20px;
+            border-radius: 15px; font-size: 20px; line-height: 1.8; margin-bottom: 25px; color: #1b5e20;
+        }
+        .fill-input {
+            border: none; border-bottom: 3px solid #00bcd4; background: transparent;
+            font-size: 20px; font-family: 'Nunito', sans-serif; font-weight: bold; color: #e65100;
+            width: 130px; text-align: center; padding: 0 5px; outline: none;
+        }
+
+        .submit-btn {
+            width: 100%; padding: 20px; background-color: #4caf50; color: white;
+            font-size: 26px; font-weight: 900; border: none; border-radius: 12px;
+            cursor: pointer; margin-top: 30px; transition: 0.3s;
+        }
+        .submit-btn:hover:not(:disabled) { background-color: #388e3c; transform: translateY(-3px); }
+        .submit-btn:disabled { background-color: #9e9e9e; cursor: not-allowed; }
+
+        #resultPanel {
+            display: none; background-color: #fff3e0; border: 3px solid #ff9800;
+            border-radius: 15px; padding: 25px; margin-top: 30px; text-align: center;
+        }
+        .score-display { font-size: 45px; font-weight: 900; color: #d32f2f; margin: 10px 0; }
+        .msg-display { font-size: 24px; font-weight: bold; color: #1565c0; }
+
+        .correct-text { color: #2e7d32; font-weight: bold; }
+        .incorrect-text { color: #c62828; font-weight: bold; }
+        .ans-reveal { color: #f57c00; font-size: 16px; margin-left: 10px; font-style: italic; }
+        .disabled { pointer-events: none; opacity: 0.7; }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <div class="header">
+        <h1>PHIẾU LUYỆN TẬP</h1>
+        <h2>READING SKILL - GRADE 4</h2>
+        <h3>Unit 1: My friends</h3>
+    </div>
+
+    <div class="student-form">
+        <div class="form-group">
+            <label>Họ và tên học sinh:</label>
+            <input type="text" id="hsName" placeholder="Nhập họ và tên của em..." required>
+        </div>
+        <div class="form-group">
+            <label>Lớp:</label>
+            <input type="text" id="hsClass" placeholder="Ví dụ: 4/1, 4A..." required>
+        </div>
+    </div>
+    
+    <div id="warningMsg">⚠️ Em vui lòng điền đầy đủ Họ tên và Lớp trước khi nộp bài nhé!</div>
+
+    <div class="content">
+        <!-- PART 1 -->
+        <div class="part-header">
+            Part 1: Read and match (5 questions)
+            <button class="reset-btn" id="btnResetMatch" onclick="resetPart1()">Làm lại Part 1</button>
+        </div>
+        <div class="instruction">Bấm vào một ô bên trái (Cột A) rồi bấm vào ô tương ứng bên phải (Cột B) để ghép câu.</div>
+        
+        <div class="matching-area">
+            <div class="match-col" id="colLeft">
+                <div class="match-item left" data-id="1">1. Where are you</div>
+                <div class="match-item left" data-id="2">2. I'm from</div>
+                <div class="match-item left" data-id="3">3. Where is he</div>
+                <div class="match-item left" data-id="4">4. She is from</div>
+                <div class="match-item left" data-id="5">5. Who is</div>
+            </div>
+            <div class="match-col" id="colRight">
+                <div class="match-item right" data-match="2">a. Viet Nam.</div>
+                <div class="match-item right" data-match="5">b. that?</div>
+                <div class="match-item right" data-match="4">c. Australia.</div>
+                <div class="match-item right" data-match="1">d. from?</div>
+                <div class="match-item right" data-match="3">e. from?</div>
+            </div>
+        </div>
+        <div id="fb-part1"></div>
+
+        <!-- PART 2 -->
+        <div class="part-header">Part 2: Read and choose (5 questions)</div>
+        <div class="instruction">Chọn đáp án đúng nhất (A, B hoặc C).</div>
+
+        <div class="question-box" id="qb6">
+            <div class="question-text">6. Hi. ________ name is Minh.</div>
+            <div class="options-list">
+                <label class="option-label"><input type="radio" name="q6" value="A"> A. I</label>
+                <label class="option-label"><input type="radio" name="q6" value="B"> B. My</label>
+                <label class="option-label"><input type="radio" name="q6" value="C"> C. Me</label>
+            </div>
+            <div class="feedback"></div>
+        </div>
+        <div class="question-box" id="qb7">
+            <div class="question-text">7. Where ________ you from?</div>
+            <div class="options-list">
+                <label class="option-label"><input type="radio" name="q7" value="A"> A. is</label>
+                <label class="option-label"><input type="radio" name="q7" value="B"> B. am</label>
+                <label class="option-label"><input type="radio" name="q7" value="C"> C. are</label>
+            </div>
+            <div class="feedback"></div>
+        </div>
+        <div class="question-box" id="qb8">
+            <div class="question-text">8. I'm ________ Japan.</div>
+            <div class="options-list">
+                <label class="option-label"><input type="radio" name="q8" value="A"> A. from</label>
+                <label class="option-label"><input type="radio" name="q8" value="B"> B. in</label>
+                <label class="option-label"><input type="radio" name="q8" value="C"> C. at</label>
+            </div>
+            <div class="feedback"></div>
+        </div>
+        <div class="question-box" id="qb9">
+            <div class="question-text">9. ________ is that? - It's my new friend.</div>
+            <div class="options-list">
+                <label class="option-label"><input type="radio" name="q9" value="A"> A. What</label>
+                <label class="option-label"><input type="radio" name="q9" value="B"> B. Where</label>
+                <label class="option-label"><input type="radio" name="q9" value="C"> C. Who</label>
+            </div>
+            <div class="feedback"></div>
+        </div>
+        <div class="question-box" id="qb10">
+            <div class="question-text">10. Where's she from? - ________ from Malaysia.</div>
+            <div class="options-list">
+                <label class="option-label"><input type="radio" name="q10" value="A"> A. She's</label>
+                <label class="option-label"><input type="radio" name="q10" value="B"> B. He's</label>
+                <label class="option-label"><input type="radio" name="q10" value="C"> C. I'm</label>
+            </div>
+            <div class="feedback"></div>
+        </div>
+
+        <!-- PART 3 -->
+        <div class="part-header">Part 3: Read and answer (10 questions)</div>
+        <div class="instruction">Đọc kỹ đoạn văn trong khung xanh và làm bài tập A, B.</div>
+        
+        <div class="passage">
+            Hello! My name is Hoa. I am from Viet Nam. I am a pupil at a primary school. I have two new friends. They are Laura and Tony. Laura is from Britain. She is nine years old. Tony is from Australia. He is ten years old. We like playing together.
+        </div>
+
+        <div class="instruction">A. True or False? (Chọn True nếu đúng, False nếu sai)</div>
+        
+        <div class="question-box" id="qb11">
+            <div class="question-text">11. Hoa is from Japan.</div>
+            <div class="options-list">
+                <label class="option-label"><input type="radio" name="q11" value="True"> True</label>
+                <label class="option-label"><input type="radio" name="q11" value="False"> False</label>
+            </div>
+            <div class="feedback"></div>
+        </div>
+        <div class="question-box" id="qb12">
+            <div class="question-text">12. Hoa has two new friends.</div>
+            <div class="options-list">
+                <label class="option-label"><input type="radio" name="q12" value="True"> True</label>
+                <label class="option-label"><input type="radio" name="q12" value="False"> False</label>
+            </div>
+            <div class="feedback"></div>
+        </div>
+        <div class="question-box" id="qb13">
+            <div class="question-text">13. Laura is from Britain.</div>
+            <div class="options-list">
+                <label class="option-label"><input type="radio" name="q13" value="True"> True</label>
+                <label class="option-label"><input type="radio" name="q13" value="False"> False</label>
+            </div>
+            <div class="feedback"></div>
+        </div>
+        <div class="question-box" id="qb14">
+            <div class="question-text">14. Laura is ten years old.</div>
+            <div class="options-list">
+                <label class="option-label"><input type="radio" name="q14" value="True"> True</label>
+                <label class="option-label"><input type="radio" name="q14" value="False"> False</label>
+            </div>
+            <div class="feedback"></div>
+        </div>
+        <div class="question-box" id="qb15">
+            <div class="question-text">15. Tony is from Australia.</div>
+            <div class="options-list">
+                <label class="option-label"><input type="radio" name="q15" value="True"> True</label>
+                <label class="option-label"><input type="radio" name="q15" value="False"> False</label>
+            </div>
+            <div class="feedback"></div>
+        </div>
+
+        <div class="instruction">B. Fill in the blanks. (Gõ 01 từ tiếng Anh vào chỗ trống)</div>
+        
+        <div class="question-box" id="qb16">
+            <div class="question-text">16. Hoa is a <input type="text" id="i16" class="fill-input" autocomplete="off"> at a primary school.</div>
+            <div class="feedback"></div>
+        </div>
+        <div class="question-box" id="qb17">
+            <div class="question-text">17. Laura and Tony are her new <input type="text" id="i17" class="fill-input" autocomplete="off">.</div>
+            <div class="feedback"></div>
+        </div>
+        <div class="question-box" id="qb18">
+            <div class="question-text">18. Laura is <input type="text" id="i18" class="fill-input" autocomplete="off"> years old.</div>
+            <div class="feedback"></div>
+        </div>
+        <div class="question-box" id="qb19">
+            <div class="question-text">19. Tony is from <input type="text" id="i19" class="fill-input" autocomplete="off">.</div>
+            <div class="feedback"></div>
+        </div>
+        <div class="question-box" id="qb20">
+            <div class="question-text">20. We like <input type="text" id="i20" class="fill-input" autocomplete="off"> together.</div>
+            <div class="feedback"></div>
+        </div>
+
+        <button class="submit-btn" id="btnSubmit" onclick="gradeTest()">NỘP BÀI</button>
+
+        <div id="resultPanel">
+            <h2>KẾT QUẢ BÀI LÀM</h2>
+            <p style="font-size:20px;">Học sinh: <span id="rName" style="font-weight:bold; color:#d32f2f;"></span> - Lớp: <span id="rClass" style="font-weight:bold; color:#d32f2f;"></span></p>
+            <div class="score-display">ĐIỂM: <span id="rScore"></span>/10</div>
+            <p style="font-size:20px;">Số câu đúng: <strong id="rCorrect"></strong> / 20 câu</p>
+            <p class="msg-display" id="rMsg"></p>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // --- Xáo trộn cột B (Matching) ---
+    const rightCol = document.getElementById('colRight');
+    for (let i = rightCol.children.length; i >= 0; i--) {
+        rightCol.appendChild(rightCol.children[Math.random() * i | 0]);
+    }
+
+    // --- Logic Matching Game ---
+    const matchColors = ['#f44336', '#9c27b0', '#2196f3', '#4caf50', '#ff9800'];
+    let selectedLeft = null;
+    let selectedRight = null;
+    let userMatches = {}; 
+
+    const leftEls = document.querySelectorAll('.left');
+    const rightEls = document.querySelectorAll('.right');
+
+    function handleMatchClick(e, side) {
+        if(e.target.classList.contains('matched') || e.target.classList.contains('disabled')) return;
+        
+        if (side === 'left') {
+            leftEls.forEach(el => { if(!el.classList.contains('matched')) el.classList.remove('selected'); });
+            e.target.classList.add('selected');
+            selectedLeft = e.target;
+        } else {
+            rightEls.forEach(el => { if(!el.classList.contains('matched')) el.classList.remove('selected'); });
+            e.target.classList.add('selected');
+            selectedRight = e.target;
+        }
+
+        if (selectedLeft && selectedRight) {
+            const lId = selectedLeft.getAttribute('data-id');
+            const rMatch = selectedRight.getAttribute('data-match');
+            
+            const color = matchColors[Object.keys(userMatches).length % matchColors.length];
+            
+            selectedLeft.style.backgroundColor = color; selectedLeft.style.borderColor = color;
+            selectedLeft.classList.add('matched'); selectedLeft.classList.remove('selected');
+            
+            selectedRight.style.backgroundColor = color; selectedRight.style.borderColor = color;
+            selectedRight.classList.add('matched'); selectedRight.classList.remove('selected');
+
+            userMatches[lId] = rMatch; 
+
+            selectedLeft = null; selectedRight = null;
+        }
+    }
+
+    leftEls.forEach(el => el.addEventListener('click', (e) => handleMatchClick(e, 'left')));
+    rightEls.forEach(el => el.addEventListener('click', (e) => handleMatchClick(e, 'right')));
+
+    // Hàm làm lại Part 1
+    function resetPart1() {
+        userMatches = {};
+        selectedLeft = null;
+        selectedRight = null;
+        
+        leftEls.forEach(el => {
+            el.className = 'match-item left';
+            el.style.backgroundColor = '';
+            el.style.borderColor = '';
+        });
+        
+        rightEls.forEach(el => {
+            el.className = 'match-item right';
+            el.style.backgroundColor = '';
+            el.style.borderColor = '';
+        });
+    }
+
+    // --- Logic Chấm điểm ---
+    const answerKey = {
+        q6: 'B', q7: 'C', q8: 'A', q9: 'C', q10: 'A',
+        q11: 'False', q12: 'True', q13: 'True', q14: 'False', q15: 'True',
+        i16: 'pupil', i17: 'friends', i18: 'nine', i19: 'australia', i20: 'playing'
+    };
+
+    function gradeTest() {
+        const hsName = document.getElementById('hsName').value.trim();
+        const hsClass = document.getElementById('hsClass').value.trim();
+        const warning = document.getElementById('warningMsg');
+
+        if (hsName === '' || hsClass === '') {
+            warning.style.display = 'block';
+            document.getElementById('hsName').focus();
+            return;
+        }
+        
+        warning.style.display = 'none';
+        let correctCount = 0;
+
+        // Chấm Part 1 (Đã sửa lỗi chấp nhận chéo đáp án "from?")
+        let p1Score = 0;
+        for (let i = 1; i <= 5; i++) {
+            let uAns = userMatches[i.toString()];
+            // Câu 1 (Where are you) và Câu 3 (Where is he) đều có chung đáp án kết thúc bằng "from?" (Mã 1 và 3)
+            if (i === 1 || i === 3) {
+                if (uAns === '1' || uAns === '3') {
+                    correctCount++;
+                    p1Score++;
+                }
+            } else {
+                if (uAns === i.toString()) {
+                    correctCount++;
+                    p1Score++;
+                }
+            }
+        }
+        
+        leftEls.forEach(el => el.classList.add('disabled'));
+        rightEls.forEach(el => el.classList.add('disabled'));
+        document.getElementById('btnResetMatch').style.display = 'none'; // Ẩn nút reset khi đã nộp
+        document.getElementById('fb-part1').innerHTML = `<p class="${p1Score === 5 ? 'correct-text' : 'incorrect-text'}">Em nối đúng ${p1Score}/5 câu.</p>`;
+
+        // Chấm Part 2 & 3A (Radios)
+        for (let i = 6; i <= 15; i++) {
+            const qId = 'q' + i;
+            const radios = document.getElementsByName(qId);
+            let uAns = '';
+            for (let r of radios) {
+                if (r.checked) uAns = r.value;
+                r.disabled = true; 
+                r.parentElement.classList.add('disabled');
+            }
+            
+            const fbBox = document.getElementById('qb'+i).querySelector('.feedback');
+            if (uAns === answerKey[qId]) {
+                correctCount++;
+                fbBox.innerHTML = '<span class="correct-text">✔ Đúng</span>';
+            } else {
+                fbBox.innerHTML = `<span class="incorrect-text">✘ Sai</span> <span class="ans-reveal">Đáp án đúng: ${answerKey[qId]}</span>`;
+            }
+        }
+
+        // Chấm Part 3B (Text Input)
+        for (let i = 16; i <= 20; i++) {
+            const inputEl = document.getElementById('i' + i);
+            const uAns = inputEl.value.trim().toLowerCase();
+            inputEl.disabled = true;
+            
+            const fbBox = document.getElementById('qb'+i).querySelector('.feedback');
+            if (uAns === answerKey['i'+i]) {
+                correctCount++;
+                fbBox.innerHTML = '<span class="correct-text">✔ Đúng</span>';
+            } else {
+                inputEl.style.color = '#c62828';
+                inputEl.style.textDecoration = 'line-through';
+                fbBox.innerHTML = `<span class="incorrect-text">✘ Sai</span> <span class="ans-reveal">Đáp án đúng: ${answerKey['i'+i]}</span>`;
+            }
+        }
+
+        // Tổng kết
+        const finalScore = (correctCount / 20) * 10;
+        document.getElementById('rName').innerText = hsName;
+        document.getElementById('rClass').innerText = hsClass;
+        document.getElementById('rCorrect').innerText = correctCount;
+        document.getElementById('rScore').innerText = finalScore.toFixed(1);
+
+        const rMsg = document.getElementById('rMsg');
+        if (finalScore === 10) {
+            rMsg.innerText = "Xuất sắc! Em làm bài hoàn hảo! 🏆";
+        } else if (finalScore >= 8) {
+            rMsg.innerText = "Rất tốt! Em nhớ từ vựng rất giỏi! 🌟";
+        } else if (finalScore >= 5) {
+            rMsg.innerText = "Khá lắm! Hãy xem lại các câu sai để nhớ lâu hơn nhé! 👍";
+        } else {
+            rMsg.innerText = "Cố gắng lên nhé! Em cần ôn tập thêm Unit 1. 💪";
+        }
+
+        document.getElementById('resultPanel').style.display = 'block';
+        const btn = document.getElementById('btnSubmit');
+        btn.disabled = true;
+        btn.innerText = "ĐÃ NỘP BÀI";
+        
+        document.getElementById('resultPanel').scrollIntoView({ behavior: 'smooth' });
+    }
+</script>
+
+</body>
+</html>
