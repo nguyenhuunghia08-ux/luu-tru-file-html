@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phiếu Luyện Tập | Reading Skill - Grade 4</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Thêm Font chữ Nunito thân thiện cho học sinh tiểu học -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            font-size: 16px; /* Đã chỉnh font cơ bản nhỏ lại */
+            line-height: 1.6;
+            background-color: #e0f2fe; /* Màu xanh pastel nhẹ nhàng */
+        }
+        
+        /* CSS ghi đè để tự động thu nhỏ tất cả các câu hỏi bị to (text-2xl) */
+        .question-card p.text-2xl, .question-card label.text-2xl, .question-card span.text-2xl {
+            font-size: 1.125rem !important; /* Tương đương text-lg */
+            line-height: 1.75rem !important;
+        }
+        
+        .question-card {
+            background: #ffffff;
+            border-radius: 1rem;
+            padding: 1.25rem 1.5rem; /* Thu nhỏ khoảng cách */
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border: 2px solid #f1f5f9;
+            transition: transform 0.2s;
+        }
+        .question-card:hover {
+            border-color: #bae6fd;
+            transform: translateY(-2px);
+        }
+
+        .passage-box {
+            background-color: #fefce8; 
+            border: 3px dashed #facc15;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            font-size: 1.1rem; /* Chữ trong đoạn văn nhỏ lại */
+            color: #422006;
+            line-height: 1.8;
+        }
+
+        /* Biến label thành nút bấm gọn gàng hơn */
+        .radio-label {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 0.75rem;
+            background-color: #f8fafc;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
+            font-weight: 600;
+            font-size: 1rem; /* Font chữ lựa chọn nhỏ lại */
+        }
+        .radio-label:hover {
+            background-color: #eff6ff;
+            border-color: #93c5fd;
+        }
+        input[type="radio"] {
+            width: 1.25rem;
+            height: 1.25rem;
+            accent-color: #3b82f6;
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+
+        /* Ô điền từ nhỏ lại tương ứng */
+        .fill-input {
+            border: none;
+            border-bottom: 3px dashed #3b82f6;
+            background-color: #eff6ff;
+            color: #1d4ed8;
+            font-weight: 700;
+            text-align: center;
+            outline: none;
+            border-radius: 0.5rem 0.5rem 0 0;
+            padding: 0.25rem 0.5rem;
+            margin: 0 0.25rem;
+            width: 100px;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+        }
+        .fill-input:focus {
+            background-color: #dbeafe;
+            border-bottom-color: #1e3a8a;
+            box-shadow: 0 -4px 10px rgba(59, 130, 246, 0.1);
+        }
+
+        /* Header cong nhẹ vui nhộn */
+        .fun-header {
+            background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+            border-bottom-left-radius: 3rem;
+            border-bottom-right-radius: 3rem;
+        }
+    </style>
+</head>
+<body class="text-gray-800 antialiased min-h-screen pb-16">
+
+    <div class="max-w-4xl mx-auto pt-6 px-4 sm:px-6">
+        
+        <div class="bg-white rounded-[2rem] shadow-2xl overflow-hidden mb-8 border-4 border-white">
+            
+            <div class="fun-header text-white text-center py-10 px-4 relative">
+                <span class="absolute top-6 left-6 text-5xl opacity-80 animate-bounce">⏰</span>
+                <span class="absolute bottom-6 right-6 text-5xl opacity-80 rotate-12">📚</span>
+                
+                <h1 class="text-3xl sm:text-4xl font-extrabold uppercase tracking-widest mb-3 drop-shadow-lg">
+                    PHIẾU LUYỆN TẬP - TUẦN 3
+                </h1>
+                <h2 class="text-2xl sm:text-3xl font-bold mb-4 text-yellow-300 drop-shadow-md">
+                    READING SKILL - GRADE 4
+                </h2>
+                <div class="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-6 py-2 rounded-full border border-white/30 text-xl font-semibold">
+                    <span>🌟</span> Unit 2: Time and daily routines <span>🌟</span>
+                </div>
+            </div>
+            
+            <form id="quiz-form" class="p-4 sm:p-8 md:p-10 bg-slate-50">
+                
+                <div class="bg-blue-100/50 p-6 sm:p-8 rounded-3xl border-2 border-blue-200 mb-10 shadow-inner">
+                    <h3 class="text-2xl font-bold text-blue-800 mb-6 text-center">📝 Thông tin của em</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="studentName" class="block font-bold text-blue-900 mb-2 text-xl">Họ và tên (Full Name)</label>
+                            <input type="text" id="studentName" placeholder="VD: Nguyễn Văn A" class="w-full px-5 py-4 rounded-2xl border-2 border-blue-300 focus:border-blue-500 focus:ring-4 focus:ring-blue-200 shadow-sm text-xl outline-none transition-all">
+                        </div>
+                        <div>
+                            <label for="studentClass" class="block font-bold text-blue-900 mb-2 text-xl">Lớp (Class)</label>
+                            <input type="text" id="studentClass" placeholder="VD: 4/1" class="w-full px-5 py-4 rounded-2xl border-2 border-blue-300 focus:border-blue-500 focus:ring-4 focus:ring-blue-200 shadow-sm text-xl outline-none transition-all">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PHẦN 1: Tinh chỉnh lại chữ và hiển thị trực tiếp đáp án -->
+                <div class="mb-10">
+                    <div class="flex items-center gap-3 mb-5 bg-orange-100 p-3 rounded-xl border-2 border-orange-300">
+                        <span class="text-3xl">🧩</span>
+                        <div>
+                            <h3 class="text-xl font-bold text-orange-800">Phần 1: Chọn Giờ Đúng! (2.5 điểm)</h3>
+                            <p class="text-orange-700 text-sm font-medium">Đọc câu và chọn giờ tương ứng ở bên dưới nhé.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Q1 -->
+                    <div class="question-card">
+                        <p class="font-bold text-lg mb-3 text-gray-800">1. It's six o'clock.</p>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                            <label class="radio-label"><input type="radio" name="q1" value="a"> <span>a. 6:30</span></label>
+                            <label class="radio-label"><input type="radio" name="q1" value="b"> <span>b. 6:00</span></label>
+                            <label class="radio-label"><input type="radio" name="q1" value="c"> <span>c. 6:15</span></label>
+                        </div>
+                        <div id="ans-1" class="hidden mt-3 p-3 text-sm rounded-lg border-2"></div>
+                    </div>
+                    
+                    <!-- Q2 -->
+                    <div class="question-card">
+                        <p class="font-bold text-lg mb-3 text-gray-800">2. It's six fifteen.</p>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                            <label class="radio-label"><input type="radio" name="q2" value="a"> <span>a. 6:15</span></label>
+                            <label class="radio-label"><input type="radio" name="q2" value="b"> <span>b. 6:45</span></label>
+                            <label class="radio-label"><input type="radio" name="q2" value="c"> <span>c. 8:30</span></label>
+                        </div>
+                        <div id="ans-2" class="hidden mt-3 p-3 text-sm rounded-lg border-2"></div>
+                    </div>
+
+                    <!-- Q3 -->
+                    <div class="question-card">
+                        <p class="font-bold text-lg mb-3 text-gray-800">3. It's six thirty.</p>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                            <label class="radio-label"><input type="radio" name="q3" value="a"> <span>a. 6:00</span></label>
+                            <label class="radio-label"><input type="radio" name="q3" value="b"> <span>b. 6:30</span></label>
+                            <label class="radio-label"><input type="radio" name="q3" value="c"> <span>c. 6:45</span></label>
+                        </div>
+                        <div id="ans-3" class="hidden mt-3 p-3 text-sm rounded-lg border-2"></div>
+                    </div>
+
+                    <!-- Q4 -->
+                    <div class="question-card">
+                        <p class="font-bold text-lg mb-3 text-gray-800">4. It's six forty-five.</p>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                            <label class="radio-label"><input type="radio" name="q4" value="a"> <span>a. 8:30</span></label>
+                            <label class="radio-label"><input type="radio" name="q4" value="b"> <span>b. 6:15</span></label>
+                            <label class="radio-label"><input type="radio" name="q4" value="c"> <span>c. 6:45</span></label>
+                        </div>
+                        <div id="ans-4" class="hidden mt-3 p-3 text-sm rounded-lg border-2"></div>
+                    </div>
+
+                    <!-- Q5 -->
+                    <div class="question-card">
+                        <p class="font-bold text-lg mb-3 text-gray-800">5. It's eight thirty.</p>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                            <label class="radio-label"><input type="radio" name="q5" value="a"> <span>a. 8:30</span></label>
+                            <label class="radio-label"><input type="radio" name="q5" value="b"> <span>b. 6:00</span></label>
+                            <label class="radio-label"><input type="radio" name="q5" value="c"> <span>c. 6:30</span></label>
+                        </div>
+                        <div id="ans-5" class="hidden mt-3 p-3 text-sm rounded-lg border-2"></div>
+                    </div>
+                </div>
+
+                <!-- PHẦN 2: Cũng được chuyển sang định dạng a, b, c và font chữ nhỏ lại -->
+                <div class="mb-10">
+                    <div class="flex items-center gap-3 mb-5 bg-pink-100 p-3 rounded-xl border-2 border-pink-300">
+                        <span class="text-3xl">🎯</span>
+                        <div>
+                            <h3 class="text-xl font-bold text-pink-800">Phần 2: Chọn Từ Đúng! (2.5 điểm)</h3>
+                            <p class="text-pink-700 text-sm font-medium">Đọc kỹ câu và chọn một từ phù hợp nhất nhé.</p>
+                        </div>
+                    </div>
+
+                    <!-- Q6 -->
+                    <div class="question-card">
+                        <p class="font-bold text-lg mb-3 text-gray-800">
+                            6. A: What __________ is it?<br>
+                            <span class="pl-6 text-gray-600">B: It's ten o'clock.</span>
+                        </p>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                            <label class="radio-label"><input type="radio" name="q6" value="a"> <span>a. day</span></label>
+                            <label class="radio-label"><input type="radio" name="q6" value="b"> <span>b. time</span></label>
+                            <label class="radio-label"><input type="radio" name="q6" value="c"> <span>c. color</span></label>
+                        </div>
+                        <div id="ans-6" class="hidden mt-3 p-3 text-sm rounded-lg border-2"></div>
+                    </div>
+
+                    <!-- Q7 -->
+                    <div class="question-card">
+                        <p class="font-bold text-lg mb-3 text-gray-800">
+                            7. A: What time is it?<br>
+                            <span class="pl-6 text-gray-600">B: It's three __________. (3:15)</span>
+                        </p>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                            <label class="radio-label"><input type="radio" name="q7" value="a"> <span>a. fifteen</span></label>
+                            <label class="radio-label"><input type="radio" name="q7" value="b"> <span>b. fifty</span></label>
+                            <label class="radio-label"><input type="radio" name="q7" value="c"> <span>c. five</span></label>
+                        </div>
+                        <div id="ans-7" class="hidden mt-3 p-3 text-sm rounded-lg border-2"></div>
+                    </div>
+
+                    <!-- Q8 -->
+                    <div class="question-card">
+                        <p class="font-bold text-lg mb-3 text-gray-800">
+                            8. A: __________ time is it?<br>
+                            <span class="pl-6 text-gray-600">B: It's four forty-five.</span>
+                        </p>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                            <label class="radio-label"><input type="radio" name="q8" value="a"> <span>a. When</span></label>
+                            <label class="radio-label"><input type="radio" name="q8" value="b"> <span>b. How</span></label>
+                            <label class="radio-label"><input type="radio" name="q8" value="c"> <span>c. What</span></label>
+                        </div>
+                        <div id="ans-8" class="hidden mt-3 p-3 text-sm rounded-lg border-2"></div>
+                    </div>
+
+                    <!-- Q9 -->
+                    <div class="question-card">
+                        <p class="font-bold text-lg mb-3 text-gray-800">
+                            9. It's 7:00 AM. It's time to get __________.
+                        </p>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                            <label class="radio-label"><input type="radio" name="q9" value="a"> <span>a. on</span></label>
+                            <label class="radio-label"><input type="radio" name="q9" value="b"> <span>b. up</span></label>
+                            <label class="radio-label"><input type="radio" name="q9" value="c"> <span>c. to</span></label>
+                        </div>
+                        <div id="ans-9" class="hidden mt-3 p-3 text-sm rounded-lg border-2"></div>
+                    </div>
+
+                    <!-- Q10 -->
+                    <div class="question-card">
+                        <p class="font-bold text-lg mb-3 text-gray-800">
+                            10. Let's __________ a break.
+                        </p>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                            <label class="radio-label"><input type="radio" name="q10" value="a"> <span>a. have</span></label>
+                            <label class="radio-label"><input type="radio" name="q10" value="b"> <span>b. has</span></label>
+                            <label class="radio-label"><input type="radio" name="q10" value="c"> <span>c. having</span></label>
+                        </div>
+                        <div id="ans-10" class="hidden mt-3 p-3 text-sm rounded-lg border-2"></div>
+                    </div>
+                </div>
+
+                <div class="mb-12">
+                    <div class="flex items-center gap-4 mb-6 bg-purple-100 p-4 rounded-2xl border-2 border-purple-300">
+                        <span class="text-4xl">📖</span>
+                        <div>
+                            <h3 class="text-2xl font-bold text-purple-800">Phần 3: Đọc Truyện & Trả Lời (5.0 điểm)</h3>
+                            <p class="text-purple-700 font-medium">Cùng đọc đoạn văn về bạn Nam và làm bài tập nhé.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Bố cục xếp dọc: Đoạn văn ở trên -->
+                    <div class="mb-8 w-full">
+                        <div class="passage-box shadow-sm relative">
+                            <span class="absolute -top-5 left-1/2 transform -translate-x-1/2 bg-yellow-400 text-yellow-900 font-black px-6 py-2 rounded-full border-4 border-white shadow-md text-sm whitespace-nowrap">MY DAY</span>
+                            <p class="mt-4 font-medium text-gray-800">
+                                Hello, my name is Nam. I am a student in Grade 4. I get up at six o'clock every morning. I have breakfast with my family at six thirty. Then, I go to school at six forty-five. My school starts at seven fifteen. At school, I study English, Math, and Vietnamese. I have lunch at eleven thirty. I go home at four o'clock. In the evening, I do my homework and watch TV. I go to bed at nine thirty.
+                            </p>
+                        </div>
+
+                        <!-- Bản dịch (Ẩn mặc định) -->
+                        <div id="translation-box" class="hidden mt-6 p-5 bg-amber-50 border-2 border-amber-300 rounded-2xl">
+                            <p class="font-bold text-amber-900 mb-2 text-lg">💡 Bản dịch để em hiểu bài hơn:</p>
+                            <p class="text-amber-800 font-medium italic text-sm">Ngày của tớ. Xin chào, tên tớ là Nam. Tớ là học sinh lớp 4. Tớ thức dậy lúc 6 giờ mỗi sáng. Tớ ăn sáng cùng gia đình lúc 6 giờ 30. Sau đó, tớ đi học lúc 6 giờ 45. Trường của tớ bắt đầu học lúc 7 giờ 15. Ở trường, tớ học tiếng Anh, Toán và Tiếng Việt. Tớ ăn trưa lúc 11 giờ 30. Tớ về nhà lúc 4 giờ. Vào buổi tối, tớ làm bài tập về nhà và xem TV. Tớ đi ngủ lúc 9 giờ 30.</p>
+                        </div>
+                    </div>
+
+                    <!-- Bố cục xếp dọc: Câu hỏi ở dưới -->
+                    <div class="w-full">
+                        <h4 class="font-bold text-lg mb-4 text-indigo-700 bg-indigo-100 inline-block px-4 py-2 rounded-xl">A. Chọn Đúng (True) hoặc Sai (False) 🧐</h4>
+                        
+                        <!-- Q11 -->
+                            <div class="question-card">
+                                <p class="font-bold text-lg mb-3 text-gray-800">11. Nam gets up at six fifteen.</p>
+                                <div class="flex flex-col sm:flex-row gap-4">
+                                    <label class="radio-label flex-1"><input type="radio" name="q11" value="T"> <span class="text-green-600 font-bold">True (T)</span></label>
+                                    <label class="radio-label flex-1"><input type="radio" name="q11" value="F"> <span class="text-red-600 font-bold">False (F)</span></label>
+                                </div>
+                                <div id="ans-11" class="hidden mt-3 p-3 text-sm rounded-lg border-2"></div>
+                            </div>
+
+                            <!-- Q12 -->
+                            <div class="question-card">
+                                <p class="font-bold text-lg mb-3 text-gray-800">12. He has breakfast at 6:30.</p>
+                                <div class="flex flex-col sm:flex-row gap-4">
+                                    <label class="radio-label flex-1"><input type="radio" name="q12" value="T"> <span class="text-green-600 font-bold">True (T)</span></label>
+                                    <label class="radio-label flex-1"><input type="radio" name="q12" value="F"> <span class="text-red-600 font-bold">False (F)</span></label>
+                                </div>
+                                <div id="ans-12" class="hidden mt-3 p-3 text-sm rounded-lg border-2"></div>
+                            </div>
+
+                            <!-- Q13 -->
+                            <div class="question-card">
+                                <p class="font-bold text-lg mb-3 text-gray-800">13. Nam goes to school at six forty-five.</p>
+                                <div class="flex flex-col sm:flex-row gap-4">
+                                    <label class="radio-label flex-1"><input type="radio" name="q13" value="T"> <span class="text-green-600 font-bold">True (T)</span></label>
+                                    <label class="radio-label flex-1"><input type="radio" name="q13" value="F"> <span class="text-red-600 font-bold">False (F)</span></label>
+                                </div>
+                                <div id="ans-13" class="hidden mt-3 p-3 text-sm rounded-lg border-2"></div>
+                            </div>
+
+                            <!-- Q14 -->
+                            <div class="question-card">
+                                <p class="font-bold text-lg mb-3 text-gray-800">14. His school starts at seven o'clock.</p>
+                                <div class="flex flex-col sm:flex-row gap-4">
+                                    <label class="radio-label flex-1"><input type="radio" name="q14" value="T"> <span class="text-green-600 font-bold">True (T)</span></label>
+                                    <label class="radio-label flex-1"><input type="radio" name="q14" value="F"> <span class="text-red-600 font-bold">False (F)</span></label>
+                                </div>
+                                <div id="ans-14" class="hidden mt-3 p-3 text-sm rounded-lg border-2"></div>
+                            </div>
+
+                            <!-- Q15 -->
+                            <div class="question-card">
+                                <p class="font-bold text-lg mb-3 text-gray-800">15. He goes to bed at nine thirty.</p>
+                                <div class="flex flex-col sm:flex-row gap-4">
+                                    <label class="radio-label flex-1"><input type="radio" name="q15" value="T"> <span class="text-green-600 font-bold">True (T)</span></label>
+                                    <label class="radio-label flex-1"><input type="radio" name="q15" value="F"> <span class="text-red-600 font-bold">False (F)</span></label>
+                                </div>
+                                <div id="ans-15" class="hidden mt-3 p-3 text-sm rounded-lg border-2"></div>
+                            </div>
+
+                            <h4 class="font-bold text-lg mb-4 mt-8 text-teal-700 bg-teal-100 inline-block px-4 py-2 rounded-xl">B. Tìm Từ Điền Vào Chỗ Trống ✍️</h4>
+                            <p class="text-gray-600 mb-4 text-sm italic">(Em hãy tìm ĐÚNG 1 TỪ trong đoạn văn phía bên trái để điền vào nhé)</p>
+                            
+                            <!-- Q16 -->
+                            <div class="question-card leading-loose">
+                                <label for="q16" class="font-bold text-lg block text-gray-800">
+                                    16. Nam is a student in Grade <input type="text" id="q16" class="fill-input">.
+                                </label>
+                                <div id="ans-16" class="hidden mt-3 p-3 text-sm rounded-lg border-2"></div>
+                            </div>
+
+                            <!-- Q17 -->
+                            <div class="question-card leading-loose">
+                                <label for="q17" class="font-bold text-lg block text-gray-800">
+                                    17. He has lunch at eleven <input type="text" id="q17" class="fill-input">.
+                                </label>
+                                <div id="ans-17" class="hidden mt-3 p-3 text-sm rounded-lg border-2"></div>
+                            </div>
+
+                            <!-- Q18 -->
+                            <div class="question-card leading-loose">
+                                <label for="q18" class="font-bold text-lg block text-gray-800">
+                                    18. He goes <input type="text" id="q18" class="fill-input"> at four o'clock.
+                                </label>
+                                <div id="ans-18" class="hidden mt-3 p-3 text-sm rounded-lg border-2"></div>
+                            </div>
+
+                            <!-- Q19 -->
+                            <div class="question-card leading-loose">
+                                <label for="q19" class="font-bold text-lg block text-gray-800">
+                                    19. In the evening, he does his <input type="text" id="q19" class="fill-input"> and watches TV.
+                                </label>
+                                <div id="ans-19" class="hidden mt-3 p-3 text-sm rounded-lg border-2"></div>
+                            </div>
+
+                            <!-- Q20 -->
+                            <div class="question-card leading-loose">
+                                <label for="q20" class="font-bold text-lg block text-gray-800">
+                                    20. He studies English, Math, and <input type="text" id="q20" class="fill-input" style="width: 150px;"> at school.
+                                </label>
+                                <div id="ans-20" class="hidden mt-3 p-3 text-sm rounded-lg border-2"></div>
+                            </div>
+
+                    </div>
+                </div>
+
+                <div class="flex flex-col items-center justify-center border-t-4 border-dashed border-gray-200 pt-10 mt-6">
+                    
+                    <div id="result-box" class="hidden mb-8 text-center bg-yellow-100 p-6 sm:p-8 rounded-3xl border-4 border-yellow-400 w-full animate-bounce">
+                        <h2 class="text-3xl sm:text-4xl font-extrabold text-blue-800 mb-4">🎉 BẢNG KẾT QUẢ 🎉</h2>
+                        
+                        <div class="flex flex-col sm:flex-row justify-center gap-4 mb-6">
+                            <div class="bg-white px-6 py-3 rounded-2xl border-2 border-green-400 shadow-sm flex items-center justify-center">
+                                <span class="text-xl font-bold text-gray-700">✅ Câu đúng:</span>
+                                <span id="correct-count" class="text-2xl font-black text-green-600 ml-2"></span>
+                            </div>
+                            <div class="bg-white px-6 py-3 rounded-2xl border-2 border-red-400 shadow-sm flex items-center justify-center">
+                                <span class="text-xl font-bold text-gray-700">❌ Sai/Bỏ trống:</span>
+                                <span id="wrong-count" class="text-2xl font-black text-red-600 ml-2"></span>
+                            </div>
+                        </div>
+
+                        <h3 class="text-2xl sm:text-3xl font-bold text-gray-800 mt-4">Tổng điểm của em: <span id="score-display" class="text-5xl sm:text-6xl text-red-600 font-black"></span> <span class="text-3xl sm:text-4xl">/ 10</span></h3>
+                        
+                        <p class="text-lg sm:text-xl mt-6 text-green-700 font-bold bg-green-100 inline-block px-4 sm:px-6 py-3 rounded-full border border-green-300">
+                            Hãy xem phần giải thích (Đúng/Sai) chi tiết bên dưới mỗi câu nhé! 👇
+                        </p>
+                    </div>
+
+                    <button type="submit" id="submit-btn" class="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-extrabold py-5 px-16 rounded-full text-2xl shadow-[0_10px_0_0_#047857] hover:shadow-[0_5px_0_0_#047857] hover:translate-y-[5px] transition-all">
+                        🚀 NỘP BÀI NGAY
+                    </button>
+                    
+                    <button type="button" id="exit-btn" onclick="exitApp()" class="hidden bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 text-white font-extrabold py-5 px-16 rounded-full text-2xl shadow-[0_10px_0_0_#374151] hover:shadow-[0_5px_0_0_#374151] hover:translate-y-[5px] transition-all">
+                        👋 THOÁT & ĐÓNG
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const correctAnswers = {
+            q1: 'b', q2: 'a', q3: 'b', q4: 'c', q5: 'a',
+            q6: 'b', q7: 'a', q8: 'c', q9: 'b', q10: 'a',
+            q11: 'F', q12: 'T', q13: 'T', q14: 'F', q15: 'T',
+            q16: ['4', 'four'], 
+            q17: ['thirty'], 
+            q18: ['home'], 
+            q19: ['homework', 'home work'], 
+            q20: ['vietnamese']
+        };
+
+        const explanations = {
+            q1: 'Giải thích: "six o\'clock" là 6 giờ đúng (6:00).',
+            q2: 'Giải thích: "six fifteen" là 6 giờ 15 phút (6:15).',
+            q3: 'Giải thích: "six thirty" là 6 giờ 30 phút (6:30).',
+            q4: 'Giải thích: "six forty-five" là 6 giờ 45 phút (6:45).',
+            q5: 'Giải thích: "eight thirty" là 8 giờ 30 phút (8:30).',
+            q6: 'Giải thích: Mẫu câu hỏi giờ là "What time is it?".',
+            q7: 'Giải thích: 3:15 đọc là "three fifteen".',
+            q8: 'Giải thích: Từ để hỏi giờ luôn bắt đầu bằng "What".',
+            q9: 'Giải thích: "get up" có nghĩa là thức dậy.',
+            q10: 'Giải thích: Sau "Let\'s" động từ ở dạng nguyên thể, "have a break" nghĩa là nghỉ giải lao.',
+            q11: 'Trong bài viết "I get up at six o\'clock" (thức dậy lúc 6 giờ đúng, không phải 6:15).',
+            q12: 'Trong bài có câu "I have breakfast with my family at six thirty."',
+            q13: 'Trong bài có câu "Then, I go to school at six forty-five."',
+            q14: 'Trong bài: "My school starts at seven fifteen." (Trường bắt đầu lúc 7:15, không phải 7:00).',
+            q15: 'Câu cuối bài: "I go to bed at nine thirty."',
+            q16: 'Trong bài: "I am a student in Grade 4."',
+            q17: 'Trong bài: "I have lunch at eleven thirty."',
+            q18: 'Trong bài: "I go home at four o\'clock."',
+            q19: 'Trong bài: "In the evening, I do my homework and watch TV."',
+            q20: 'Trong bài: "I study English, Math, and Vietnamese."'
+        };
+
+        document.getElementById('quiz-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            let score = 0;
+            let correctCount = 0;
+            let wrongCount = 0;
+
+            // Chấm điểm Câu 1 - 15 (Trắc nghiệm)
+            for (let i = 1; i <= 15; i++) {
+                const radios = document.getElementsByName('q' + i);
+                let correctVal = correctAnswers['q'+i];
+                let isAnswered = false;
+                let isCorrect = false;
+                
+                for (let radio of radios) {
+                    radio.disabled = true; // Khóa không cho bấm nữa
+                    let label = radio.parentElement;
+                    
+                    // Reset class mặc định của label
+                    label.classList.remove('bg-f8fafc', 'border-e2e8f0');
+
+                    if (radio.checked) {
+                        isAnswered = true;
+                        if (radio.value === correctVal) {
+                            isCorrect = true;
+                            score += 0.5;
+                            correctCount++;
+                            label.classList.add('bg-green-100', 'border-green-500', 'text-green-900', 'shadow-md');
+                        } else {
+                            // Đáp án sai mà học sinh đã chọn
+                            label.classList.add('bg-red-100', 'border-red-500', 'text-red-900', 'line-through');
+                        }
+                    } else {
+                        if (radio.value === correctVal) {
+                            // Câu đúng nhưng hs ko chọn
+                            label.classList.add('bg-green-50', 'border-green-400', 'text-green-700', 'border-dashed');
+                        } else {
+                            // Đáp án sai hs ko chọn -> Làm mờ đi
+                            label.classList.add('bg-gray-100', 'border-gray-200', 'text-gray-400', 'opacity-50');
+                        }
+                    }
+                }
+                
+                if (!isCorrect) wrongCount++;
+
+                // Hiển thị khung giải thích
+                let ansBox = document.getElementById('ans-' + i);
+                ansBox.classList.remove('hidden', 'bg-blue-50', 'text-blue-900', 'border-blue-300');
+                
+                let statusText = isCorrect ? '<span class="text-green-700 font-black text-lg">✅ CHÍNH XÁC!</span>' : 
+                                 (!isAnswered ? '<span class="text-orange-600 font-black text-lg">⚠️ CHƯA LÀM!</span>' : '<span class="text-red-700 font-black text-lg">❌ SAI RỒI!</span>');
+                
+                ansBox.classList.add(isCorrect ? 'bg-green-50' : 'bg-red-50', isCorrect ? 'border-green-400' : 'border-red-400', 'text-gray-800');
+                ansBox.innerHTML = `${statusText} <br> <strong>ĐÁP ÁN ĐÚNG: ${correctVal.toUpperCase()}.</strong> ${explanations['q'+i]}`;
+            }
+
+            // Chấm điểm Câu 16 - 20 (Điền từ)
+            for (let i = 16; i <= 20; i++) {
+                const input = document.getElementById('q' + i);
+                input.readOnly = true; 
+                
+                const studentAns = input.value.trim().toLowerCase();
+                const correctVals = correctAnswers['q'+i];
+                let isCorrect = false;
+                let isAnswered = studentAns !== "";
+                
+                // Reset style
+                input.classList.remove('border-blue-400', 'bg-eff6ff', 'text-1d4ed8');
+
+                if (isAnswered && correctVals.includes(studentAns)) {
+                    isCorrect = true;
+                    score += 0.5;
+                    correctCount++;
+                    input.classList.add('bg-green-200', 'border-green-600', 'text-green-900');
+                } else if (isAnswered) {
+                    input.classList.add('bg-red-200', 'border-red-600', 'text-red-900', 'line-through');
+                } else {
+                    // Nếu bỏ trống không điền
+                    input.classList.add('bg-gray-200', 'border-gray-400', 'text-gray-600', 'italic');
+                    input.value = "(Bỏ trống)";
+                }
+                
+                if (!isCorrect) wrongCount++;
+
+                // Hiển thị khung giải thích 
+                let ansBox = document.getElementById('ans-' + i);
+                ansBox.classList.remove('hidden', 'bg-blue-50', 'text-blue-900', 'border-blue-300');
+                
+                let statusText = isCorrect ? '<span class="text-green-700 font-black text-lg">✅ CHÍNH XÁC!</span>' : 
+                                 (!isAnswered ? '<span class="text-orange-600 font-black text-lg">⚠️ CHƯA LÀM!</span>' : '<span class="text-red-700 font-black text-lg">❌ SAI RỒI!</span>');
+                
+                ansBox.classList.add(isCorrect ? 'bg-green-50' : 'bg-red-50', isCorrect ? 'border-green-400' : 'border-red-400', 'text-gray-800');
+                ansBox.innerHTML = `${statusText} <br> <strong>TỪ CẦN ĐIỀN LÀ: "${correctVals[0]}".</strong> ${explanations['q'+i]}`;
+            }
+
+            // Hiện bản dịch
+            document.getElementById('translation-box').classList.remove('hidden');
+            
+            // Khóa text input
+            document.getElementById('studentName').readOnly = true;
+            document.getElementById('studentClass').readOnly = true;
+
+            // Hiển thị Bảng điểm chi tiết
+            document.getElementById('correct-count').innerText = correctCount + ' / 20';
+            document.getElementById('wrong-count').innerText = wrongCount + ' / 20';
+            document.getElementById('score-display').innerText = score;
+            document.getElementById('result-box').classList.remove('hidden');
+
+            // Đổi nút nộp bài sang nút thoát
+            document.getElementById('submit-btn').classList.add('hidden');
+            document.getElementById('exit-btn').classList.remove('hidden');
+
+            // Tự động cuộn lên vị trí thông báo điểm (result-box)
+            setTimeout(() => {
+                document.getElementById('result-box').scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 100);
+        });
+
+        // Nút THOÁT - Đóng tab trình duyệt theo yêu cầu khắt khe
+        function exitApp() {
+            alert('Em đã hoàn thành xuất sắc bài tập! Hệ thống sẽ đóng ngay bây giờ.');
+            
+            // Hack đóng tab trên các trình duyệt hiện đại
+            window.open('', '_self', ''); 
+            window.close();
+
+            // Lớp bảo vệ (Fallback): Nếu trình duyệt bảo mật cao chặn window.close(), 
+            // ta sẽ xóa toàn bộ nội dung bài thi và hiện màn hình chờ tắt.
+            document.body.innerHTML = `
+                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background-color: #e0f2fe; text-align: center; font-family: 'Nunito', sans-serif;">
+                    <div style="font-size: 6rem; margin-bottom: 1rem;">🏆</div>
+                    <h1 style="font-size: 2.5rem; color: #1e3a8a; font-weight: 800; margin-bottom: 1rem;">ĐÃ NỘP BÀI THÀNH CÔNG!</h1>
+                    <p style="font-size: 1.5rem; color: #334155; font-weight: 600;">Em có thể tắt trình duyệt này được rồi nhé.</p>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>
