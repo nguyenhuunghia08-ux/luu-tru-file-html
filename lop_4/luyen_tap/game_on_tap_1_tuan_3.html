@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI GAMES GEN TOOL ver 4.26</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #134e5e 0%, #71b280 100%);
+            overflow: hidden;
+            user-select: none;
+        }
+
+        /* Hiệu ứng lá rơi */
+        .leaf {
+            position: absolute;
+            top: -50px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="%234ade80" d="M272 96c-78.6 0-145.1 51.5-167.7 122.5c33.6-17 71.5-26.5 111.7-26.5h88c8.8 0 16 7.2 16 16s-7.2 16-16 16H216c-34.6 0-67.3 10.3-94.6 28.5C92.5 285.5 80 324.9 80 368c0 30.6 7.6 59.5 21.1 84.8C127.3 490.8 163.6 512 208 512h48c141.4 0 256-114.6 256-256V128c0-17.7-14.3-32-32-32H272z"/></svg>');
+            background-size: contain;
+            background-repeat: no-repeat;
+            opacity: 0.6;
+            animation: fall linear infinite;
+            pointer-events: none;
+            z-index: 10;
+        }
+        @keyframes fall {
+            0% { transform: translateY(-50px) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.8; }
+            90% { opacity: 0.8; }
+            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* Hiệu ứng rung lắc khi sai */
+        .shake {
+            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+        }
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
+        }
+
+        /* Hiệu ứng nháy đỏ màn hình */
+        .flash-red-bg {
+            animation: flashRed 0.5s ease-out;
+        }
+        @keyframes flashRed {
+            0% { background-color: rgba(239, 68, 68, 0.4); }
+            100% { background-color: transparent; }
+        }
+
+        /* Hiệu ứng nút bấm */
+        .btn-correct {
+            background-color: #22c55e !important;
+            color: white !important;
+            border-color: #16a34a !important;
+            box-shadow: 0 0 15px #4ade80;
+            animation: pulse-green 1s infinite;
+        }
+        .btn-incorrect {
+            background-color: #ef4444 !important;
+            color: white !important;
+            border-color: #dc2626 !important;
+        }
+        .btn-hint {
+            border: 3px solid #22c55e !important;
+            animation: pulse-green 1s infinite;
+        }
+        @keyframes pulse-green {
+            0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(34, 197, 94, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+        }
+
+        .fade-in { animation: fadeIn 0.5s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        
+        .hidden { display: none !important; }
+        
+        /* Đất trồng cây */
+        .ground-texture {
+            background-image: repeating-linear-gradient(45deg, #8B4513 25%, transparent 25%, transparent 75%, #8B4513 75%, #8B4513), repeating-linear-gradient(45deg, #8B4513 25%, #A0522D 25%, #A0522D 75%, #8B4513 75%, #8B4513);
+            background-position: 0 0, 10px 10px;
+            background-size: 20px 20px;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body class="w-full h-screen flex justify-center items-center relative">
+
+    <!-- Lớp nền nháy đỏ khi sai -->
+    <div id="red-flash-overlay" class="absolute inset-0 z-50 pointer-events-none transition-colors duration-300"></div>
+
+    <div id="screen-welcome" class="fade-in z-20 w-full max-w-md bg-white/95 backdrop-blur-md p-8 rounded-3xl shadow-2xl border-4 border-green-500 text-center mx-4">
+        <h1 class="text-2xl font-bold text-green-700 mb-2">AI GAMES GEN TOOL ver 4.26</h1>
+        <div class="text-5xl mb-4">🌳</div>
+        <h2 class="text-3xl font-extrabold text-gray-800 mb-6 uppercase tracking-wider">Vệ Binh Rừng Xanh</h2>
+        <p class="text-gray-600 mb-6 font-medium">Nhập tên của bạn để bắt đầu hành trình bảo vệ khu rừng!</p>
+        <input type="text" id="playerNameInput" placeholder="Tên của bạn..." class="w-full px-4 py-3 rounded-xl border-2 border-green-300 focus:outline-none focus:border-green-600 mb-6 text-lg text-center font-semibold text-gray-700 shadow-inner">
+        <button onclick="startGame()" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-xl shadow-lg transform transition active:scale-95 text-xl">
+            BẮT ĐẦU
+        </button>
+    </div>
+
+    <div id="screen-instructions" class="hidden fade-in z-20 w-full max-w-lg bg-white/95 backdrop-blur-md p-8 rounded-3xl shadow-2xl border-4 border-yellow-500 mx-4">
+        <h1 class="text-xl font-bold text-green-700 mb-4 text-center border-b pb-2">AI GAMES GEN TOOL ver 4.26</h1>
+        <h2 class="text-2xl font-extrabold text-gray-800 mb-4 text-center">📜 LUẬT CHƠI</h2>
+        <ul class="space-y-4 text-gray-700 font-medium mb-8">
+            <li class="flex items-start"><span class="text-green-500 text-xl mr-3">✔</span> Vượt qua 10 câu hỏi để trồng cây gây rừng.</li>
+            <li class="flex items-start"><span class="text-green-500 text-xl mr-3">✔</span> Trả lời ĐÚNG: Cây sẽ lớn lên và bay xuống mảnh đất của bạn, cộng điểm.</li>
+            <li class="flex items-start"><span class="text-red-500 text-xl mr-3">❤</span> Bạn có tối đa 3 mạng sống. Trả lời SAI sẽ bị trừ 1 mạng.</li>
+            <li class="flex items-start"><span class="text-yellow-500 text-xl mr-3">⚠</span> Hết mạng, trò chơi sẽ kết thúc ngay lập tức!</li>
+        </ul>
+        <button onclick="startMission()" class="w-full bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-3 px-6 rounded-xl shadow-lg transform transition active:scale-95 text-xl">
+            NHẬN NHIỆM VỤ
+        </button>
+    </div>
+
+    <div id="screen-game" class="hidden fade-in z-20 w-full h-full max-w-5xl flex flex-col p-2 md:p-6 relative">
+        
+        <!-- Header thông tin -->
+        <div class="flex justify-between items-center bg-white/95 p-3 rounded-2xl shadow-md border-b-4 border-green-500 mb-4 backdrop-blur-md z-20">
+            <div class="text-xs md:text-sm font-bold text-green-800">AI GAMES GEN TOOL ver 4.26</div>
+            <div class="flex items-center gap-4">
+                <div class="text-lg md:text-xl font-bold text-blue-600 bg-blue-100 px-3 py-1 rounded-lg">Điểm: <span id="scoreDisplay">0</span></div>
+                <div id="livesDisplay" class="text-xl md:text-2xl tracking-widest text-red-500">❤️❤️❤️</div>
+                <button onclick="toggleMute()" id="muteBtn" class="text-gray-500 hover:text-gray-800 text-xl w-10 h-10 bg-gray-200 rounded-full flex justify-center items-center transition">
+                    <i class="fas fa-volume-up"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="w-full bg-gray-200 rounded-full h-3 mb-4 shadow-inner z-20">
+            <div id="progressBar" class="bg-gradient-to-r from-green-400 to-green-600 h-3 rounded-full transition-all duration-500" style="width: 0%"></div>
+        </div>
+
+        <!-- VÙNG CHƠI CHÍNH -->
+        <div class="flex-1 bg-white/95 rounded-3xl shadow-2xl border-4 border-green-100 flex flex-col p-4 relative z-20 w-full max-w-4xl mx-auto overflow-hidden">
+            
+            <!-- Phần trung tâm: Mầm cây và Câu hỏi -->
+            <div class="w-full flex flex-col items-center flex-shrink-0">
+                <!-- Mầm cây trung tâm -->
+                <div class="h-24 flex justify-center items-center relative w-full mb-2">
+                    <div id="treeSprout" class="text-6xl md:text-7xl transition-transform duration-500 transform scale-100 drop-shadow-lg z-30">🌱</div>
+                    <div id="feedbackText" class="absolute top-0 text-3xl font-bold text-green-600 opacity-0 transition-all duration-300 pointer-events-none z-40 drop-shadow-md">Tuyệt vời!</div>
+                </div>
+
+                <!-- Câu hỏi -->
+                <h2 id="questionText" class="text-2xl md:text-3xl font-extrabold text-gray-800 text-center mb-6 drop-shadow-sm px-2"></h2>
+                
+                <!-- Hình ảnh (ẩn mặc định vì dùng số điện tử) -->
+                <div id="imageContainer" class="w-full flex justify-center mb-4 hidden">
+                    <img id="questionImage" src="" alt="Minh họa" class="max-h-32 rounded-xl shadow-md border-2 border-gray-200">
+                </div>
+
+                <!-- Grid Đáp án -->
+                <div id="answersGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-3xl mb-4">
+                    <!-- Nút sinh tự động -->
+                </div>
+            </div>
+
+            <!-- Hộp thoại giải thích (Chèn ngang, không đè lên rừng) -->
+            <div id="explanationBox" class="hidden w-full max-w-3xl mx-auto bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-xl shadow-md transform transition-all duration-500 mb-4 flex-shrink-0 z-30">
+                <h3 class="font-bold text-blue-800 mb-1"><i class="fas fa-lightbulb text-yellow-500 mr-2"></i>Giải thích:</h3>
+                <p id="explanationText" class="text-gray-700 font-medium"></p>
+                <div class="w-full bg-gray-300 h-1 mt-3 rounded-full overflow-hidden">
+                    <div id="nextTimerBar" class="bg-blue-500 h-full w-full"></div>
+                </div>
+            </div>
+
+            <!-- Đẩy vùng đất xuống dưới cùng -->
+            <div class="flex-grow"></div>
+
+            <!-- MẢNH ĐẤT TRỒNG CÂY (KHU RỪNG) NẰM Ở DƯỚI CÙNG -->
+            <div class="w-full mt-2 relative rounded-2xl overflow-hidden border-4 border-amber-800/20 bg-green-50 shadow-inner flex-shrink-0" style="height: 140px;">
+                <!-- Nhãn nền -->
+                <div class="absolute inset-0 flex items-center justify-center opacity-20 text-green-800 font-black text-2xl tracking-widest pointer-events-none uppercase">
+                    Khu Vườn Của Bạn
+                </div>
+                <!-- Nền đất -->
+                <div class="absolute bottom-0 left-0 right-0 h-4 ground-texture z-10"></div>
+                <!-- Vùng chứa cây -->
+                <div id="collectedForest" class="absolute inset-0 pb-4 px-4 z-20 flex flex-wrap-reverse items-end justify-center content-end gap-1 md:gap-3 overflow-hidden">
+                    <!-- Các cây sẽ bay vào đây -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="screen-summary" class="hidden fade-in z-30 w-full max-w-md bg-white/95 backdrop-blur-xl p-8 rounded-3xl shadow-2xl border-4 border-green-500 text-center mx-4">
+        <h1 class="text-lg font-bold text-green-700 mb-6">AI GAMES GEN TOOL ver 4.26</h1>
+        <h2 class="text-4xl font-extrabold text-gray-800 mb-2">HOÀN THÀNH!</h2>
+        <div class="text-6xl mb-4" id="rankEmoji">🏆</div>
+        <p class="text-xl text-gray-600 mb-2">Vệ binh: <span id="finalPlayerName" class="font-bold text-green-600"></span></p>
+        <div class="bg-green-100 rounded-2xl p-4 mb-6 shadow-inner">
+            <p class="text-gray-600 font-semibold mb-1">Tổng điểm</p>
+            <p class="text-5xl font-black text-green-600" id="finalScore">0</p>
+        </div>
+        <p class="text-lg font-bold text-gray-800 mb-8">Danh hiệu: <span id="finalRank" class="text-blue-600"></span></p>
+        
+        <button onclick="location.reload()" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-xl shadow-lg transform transition active:scale-95 text-xl flex items-center justify-center gap-2">
+            <i class="fas fa-redo"></i> CHƠI LẠI
+        </button>
+    </div>
+
+    <script>
+        // 1. Dữ liệu câu hỏi ĐÃ SỬA LỖI LẶP "A. A." & THÊM ĐỒNG HỒ GỢI Ý
+        const questionsData = [
+            {
+                question: "What time is it? ⏰ [08:30]",
+                image: "", 
+                answers: ["A. It's eight thirty.", "B. It's eight fifteen.", "C. It's eight o'clock.", "D. It's eight forty-five."],
+                correct: 0,
+                explanation: "8:30 trong tiếng Anh đọc là 'eight thirty' (tám giờ ba mươi)."
+            },
+            {
+                question: "What time is it? ⏰ [03:15]",
+                image: "", 
+                answers: ["A. It's three o'clock.", "B. It's three fifteen.", "C. It's three thirty.", "D. It's three forty-five."],
+                correct: 1,
+                explanation: "3:15 trong tiếng Anh đọc là 'three fifteen' (ba giờ mười lăm)."
+            },
+            {
+                question: "What time is it? ⏰ [06:00]",
+                image: "", 
+                answers: ["A. It's six fifteen.", "B. It's six thirty.", "C. It's six o'clock.", "D. It's six forty-five."],
+                correct: 2,
+                explanation: "6:00 là giờ chẵn, đọc là 'six o'clock' (sáu giờ đúng)."
+            },
+            {
+                question: "What time is it? ⏰ [06:15]",
+                image: "", 
+                answers: ["A. It's six fifteen.", "B. It's six thirty.", "C. It's six o'clock.", "D. It's six forty-five."],
+                correct: 0,
+                explanation: "6:15 đọc là 'six fifteen' (sáu giờ mười lăm)."
+            },
+            {
+                question: "What time is it? ⏰ [06:30]",
+                image: "", 
+                answers: ["A. It's six fifteen.", "B. It's six thirty.", "C. It's six o'clock.", "D. It's six forty-five."],
+                correct: 1,
+                explanation: "6:30 đọc là 'six thirty' (sáu giờ ba mươi)."
+            },
+            {
+                question: "What time is it? ⏰ [06:45]",
+                image: "", 
+                answers: ["A. It's six fifteen.", "B. It's six thirty.", "C. It's six o'clock.", "D. It's six forty-five."],
+                correct: 3,
+                explanation: "6:45 đọc là 'six forty-five' (sáu giờ bốn mươi lăm)."
+            },
+            {
+                question: "What time is it? ⏰ [10:00]",
+                image: "", 
+                answers: ["A. It's ten fifteen.", "B. It's ten thirty.", "C. It's ten o'clock.", "D. It's ten forty-five."],
+                correct: 2,
+                explanation: "10:00 là giờ chẵn, đọc là 'ten o'clock' (mười giờ đúng)."
+            },
+            {
+                question: "What time is it? ⏰ [01:15]",
+                image: "", 
+                answers: ["A. It's one fifteen.", "B. It's one thirty.", "C. It's one o'clock.", "D. It's one forty-five."],
+                correct: 0,
+                explanation: "1:15 đọc là 'one fifteen' (một giờ mười lăm)."
+            },
+            {
+                question: "What time is it? ⏰ [03:30]",
+                image: "", 
+                answers: ["A. It's three fifteen.", "B. It's three thirty.", "C. It's three o'clock.", "D. It's three forty-five."],
+                correct: 1,
+                explanation: "3:30 đọc là 'three thirty' (ba giờ ba mươi)."
+            },
+            {
+                question: "What time is it? ⏰ [04:45]",
+                image: "", 
+                answers: ["A. It's four fifteen.", "B. It's four thirty.", "C. It's four o'clock.", "D. It's four forty-five."],
+                correct: 3,
+                explanation: "4:45 đọc là 'four forty-five' (bốn giờ bốn mươi lăm)."
+            }
+        ];
+
+        // 2. Biến trạng thái trò chơi
+        let playerName = "";
+        let score = 0;
+        let lives = 3;
+        let currentQuestionIndex = 0;
+        let isMuted = false;
+        let leafInterval;
+        let isAnswered = false;
+
+        const audioBGM = new Audio('https://raw.githubusercontent.com/HuuNghia2308/Edu-assets/main/Game/Am-Thanh/asset_1779548216493_268_bombinsound-children-35-second-490549.mp3');
+        audioBGM.loop = true;
+        const audioCorrect = new Audio('https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c3a726fa.mp3?filename=success-1-6297.mp3');
+        const audioWrong = new Audio('https://cdn.pixabay.com/download/audio/2022/03/15/audio_a1639d6790.mp3?filename=negative_beeps-6008.mp3');
+        const audioEnd = new Audio('https://cdn.pixabay.com/download/audio/2021/08/30/audio_557545b64c.mp3?filename=tada-fanfare-6313.mp3');
+
+        function toggleMute() {
+            isMuted = !isMuted;
+            audioBGM.muted = isMuted;
+            audioCorrect.muted = isMuted;
+            audioWrong.muted = isMuted;
+            audioEnd.muted = isMuted;
+            
+            const icon = document.querySelector('#muteBtn i');
+            if(isMuted) {
+                icon.className = 'fas fa-volume-mute';
+                document.getElementById('muteBtn').classList.add('bg-red-200', 'text-red-500');
+            } else {
+                icon.className = 'fas fa-volume-up';
+                document.getElementById('muteBtn').classList.remove('bg-red-200', 'text-red-500');
+            }
+        }
+
+        function playSound(type) {
+            if(isMuted) return;
+            if(type === 'correct') {
+                audioCorrect.currentTime = 0;
+                audioCorrect.play().catch(e=>console.log(e));
+            } else if(type === 'wrong') {
+                audioWrong.currentTime = 0;
+                audioWrong.play().catch(e=>console.log(e));
+            } else if(type === 'end') {
+                audioEnd.currentTime = 0;
+                audioEnd.play().catch(e=>console.log(e));
+            }
+        }
+
+        function hideAllScreens() {
+            document.getElementById('screen-welcome').classList.add('hidden');
+            document.getElementById('screen-instructions').classList.add('hidden');
+            document.getElementById('screen-game').classList.add('hidden');
+            document.getElementById('screen-summary').classList.add('hidden');
+        }
+
+        function startGame() {
+            const input = document.getElementById('playerNameInput');
+            if (input.value.trim() === '') {
+                input.classList.add('shake', 'border-red-500');
+                setTimeout(() => input.classList.remove('shake', 'border-red-500'), 500);
+                return;
+            }
+            playerName = input.value.trim();
+            hideAllScreens();
+            document.getElementById('screen-instructions').classList.remove('hidden');
+            
+            if(!isMuted) audioBGM.play().catch(e=>console.log("Auto-play prevented"));
+        }
+
+        function startMission() {
+            hideAllScreens();
+            document.getElementById('screen-game').classList.remove('hidden');
+            
+            score = 0;
+            lives = 3;
+            currentQuestionIndex = 0;
+            document.getElementById('collectedForest').innerHTML = ''; // Xóa rừng cũ
+            
+            updateUI();
+            startFallingLeaves();
+            loadQuestion();
+        }
+
+        function startFallingLeaves() {
+            if(leafInterval) clearInterval(leafInterval);
+            leafInterval = setInterval(() => {
+                const leaf = document.createElement('div');
+                leaf.classList.add('leaf');
+                leaf.style.left = Math.random() * 100 + 'vw';
+                leaf.style.width = (Math.random() * 20 + 15) + 'px';
+                leaf.style.height = leaf.style.width;
+                leaf.style.animationDuration = (Math.random() * 5 + 5) + 's';
+                document.body.appendChild(leaf);
+                
+                setTimeout(() => {
+                    if(leaf.parentNode) leaf.remove();
+                }, 10000);
+            }, 800);
+        }
+
+        function spawnFlyingTree() {
+            const sprout = document.getElementById('treeSprout');
+            const forest = document.getElementById('collectedForest');
+            if (!sprout || !forest) return;
+
+            // 1. Tạo bản sao cây bay ngay tại vị trí mầm cây
+            const sproutRect = sprout.getBoundingClientRect();
+            const flyingTree = document.createElement('div');
+            flyingTree.textContent = '🌳';
+            flyingTree.style.position = 'fixed';
+            
+            // Căn giữa cây bay với mầm cây
+            const size = 60; // Kích thước xấp xỉ của mầm cây
+            flyingTree.style.left = (sproutRect.left + sproutRect.width / 2 - size / 2) + 'px';
+            flyingTree.style.top = (sproutRect.top + sproutRect.height / 2 - size / 2) + 'px';
+            flyingTree.style.fontSize = size + 'px';
+            flyingTree.style.zIndex = '9999';
+            flyingTree.style.transition = 'all 1s cubic-bezier(0.25, 1, 0.5, 1)'; // Hiệu ứng bay mượt
+            flyingTree.style.pointerEvents = 'none';
+
+            document.body.appendChild(flyingTree);
+
+            // Bắt buộc reflow
+            flyingTree.getBoundingClientRect();
+
+            // 2. Tính toán vị trí đáp xuống dưới mảnh đất (rừng)
+            const forestRect = forest.getBoundingClientRect();
+            // Lấy ngẫu nhiên vị trí theo chiều ngang trong mảnh đất
+            const endX = forestRect.left + 10 + Math.random() * (forestRect.width - 50);
+            // Bay xuống sát mép dưới (sát mặt đất)
+            const endY = forestRect.bottom - 40 - Math.random() * 20;
+
+            flyingTree.style.left = endX + 'px';
+            flyingTree.style.top = endY + 'px';
+            flyingTree.style.transform = 'scale(0.8)'; // Thu nhỏ khi bay xuống
+
+            // 3. Hoàn tất bay: Gắn cây vào mảnh đất
+            setTimeout(() => {
+                if(flyingTree.parentNode) flyingTree.remove();
+                
+                const plantedTree = document.createElement('span');
+                plantedTree.textContent = '🌳';
+                plantedTree.className = 'text-3xl md:text-4xl animate-bounce drop-shadow-md relative z-20';
+                
+                setTimeout(()=> plantedTree.classList.remove('animate-bounce'), 1000);
+                forest.appendChild(plantedTree);
+            }, 1000); // 1 giây là thời gian bay
+        }
+
+        function updateUI() {
+            document.getElementById('scoreDisplay').innerText = score;
+            document.getElementById('livesDisplay').innerText = '❤️'.repeat(lives) + '🖤'.repeat(3 - lives);
+            
+            const progress = ((currentQuestionIndex) / questionsData.length) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+
+        function loadQuestion() {
+            if (currentQuestionIndex >= questionsData.length || lives <= 0) {
+                endGame();
+                return;
+            }
+
+            isAnswered = false;
+            updateUI();
+            
+            const q = questionsData[currentQuestionIndex];
+            
+            document.getElementById('questionText').innerText = `Câu ${currentQuestionIndex + 1}: ${q.question}`;
+            
+            const imgContainer = document.getElementById('imageContainer');
+            const imgEl = document.getElementById('questionImage');
+            if (q.image) {
+                imgEl.src = q.image;
+                imgContainer.classList.remove('hidden');
+            } else {
+                imgContainer.classList.add('hidden');
+            }
+
+            // Đặt lại mầm cây
+            document.getElementById('treeSprout').className = "text-6xl md:text-7xl transition-transform duration-500 transform scale-100 drop-shadow-lg z-30";
+            document.getElementById('treeSprout').textContent = "🌱";
+            document.getElementById('feedbackText').style.opacity = "0";
+            
+            // Ẩn hộp giải thích
+            const expBox = document.getElementById('explanationBox');
+            expBox.classList.add('hidden', 'opacity-0', 'translate-y-4');
+            document.getElementById('nextTimerBar').style.transition = 'none';
+            document.getElementById('nextTimerBar').style.width = '100%';
+
+            const answersGrid = document.getElementById('answersGrid');
+            answersGrid.innerHTML = '';
+
+            // Đã fix lỗi lặp chữ A, B, C, D bằng cách in thẳng ans
+            q.answers.forEach((ans, index) => {
+                const btn = document.createElement('button');
+                btn.className = "w-full text-left bg-white border-2 border-green-200 text-gray-700 font-bold py-4 px-6 rounded-xl hover:bg-green-50 hover:border-green-400 transition shadow-sm text-lg md:text-xl";
+                btn.textContent = ans; 
+                btn.onclick = () => checkAnswer(index, btn);
+                answersGrid.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(selectedIndex, btnElement) {
+            if (isAnswered) return;
+            isAnswered = true;
+
+            const q = questionsData[currentQuestionIndex];
+            const isCorrect = (selectedIndex === q.correct);
+            const allButtons = document.getElementById('answersGrid').querySelectorAll('button');
+            
+            allButtons.forEach(b => {
+                b.disabled = true;
+                b.classList.add('opacity-80', 'cursor-not-allowed');
+                b.classList.remove('hover:bg-green-50', 'hover:border-green-400');
+            });
+
+            if (isCorrect) {
+                playSound('correct');
+                score += 10;
+                btnElement.classList.remove('bg-white', 'text-gray-700', 'border-green-200');
+                btnElement.classList.add('btn-correct');
+                
+                // Mầm cây nảy nở
+                const sprout = document.getElementById('treeSprout');
+                sprout.textContent = '🌳';
+                sprout.classList.add('scale-125');
+                const feedback = document.getElementById('feedbackText');
+                feedback.style.opacity = "1";
+                feedback.style.transform = "translateY(-40px)";
+                
+                // Gọi cây bay xuống rừng
+                spawnFlyingTree();
+
+            } else {
+                playSound('wrong');
+                lives--;
+                
+                btnElement.classList.remove('bg-white', 'text-gray-700', 'border-green-200');
+                btnElement.classList.add('btn-incorrect');
+                
+                allButtons[q.correct].classList.remove('bg-white');
+                allButtons[q.correct].classList.add('bg-green-100', 'btn-hint');
+                
+                document.getElementById('screen-game').classList.add('shake');
+                const overlay = document.getElementById('red-flash-overlay');
+                overlay.classList.add('flash-red-bg');
+                
+                setTimeout(() => {
+                    document.getElementById('screen-game').classList.remove('shake');
+                    overlay.classList.remove('flash-red-bg');
+                }, 500);
+                
+                document.getElementById('treeSprout').textContent = '🥀';
+            }
+
+            updateUI();
+            showExplanationAndNext(q.explanation);
+        }
+
+        function showExplanationAndNext(explanationText) {
+            const expBox = document.getElementById('explanationBox');
+            document.getElementById('explanationText').innerText = explanationText;
+            
+            expBox.classList.remove('hidden');
+            requestAnimationFrame(() => {
+                expBox.classList.remove('opacity-0', 'translate-y-4');
+                expBox.classList.add('opacity-100', 'translate-y-0');
+            });
+
+            if (lives <= 0) {
+                document.getElementById('nextTimerBar').style.display = 'none';
+                setTimeout(endGame, 2000);
+                return;
+            }
+
+            const waitTime = 4000;
+            setTimeout(() => {
+                document.getElementById('nextTimerBar').style.transition = `width ${waitTime}ms linear`;
+                document.getElementById('nextTimerBar').style.width = '0%';
+            }, 50);
+
+            setTimeout(() => {
+                currentQuestionIndex++;
+                loadQuestion();
+            }, waitTime);
+        }
+
+        function endGame() {
+            if(leafInterval) clearInterval(leafInterval);
+            audioBGM.pause();
+            playSound('end');
+            
+            hideAllScreens();
+            document.getElementById('screen-summary').classList.remove('hidden');
+            
+            document.getElementById('finalPlayerName').innerText = playerName;
+            document.getElementById('finalScore').innerText = score;
+            
+            const maxScore = questionsData.length * 10;
+            let rankText = "";
+            let emoji = "🏆";
+            
+            if (score === maxScore) {
+                rankText = "Thần Rừng Vĩ Đại (Hoàn hảo!)";
+                emoji = "👑";
+            } else if (score >= maxScore * 0.7) {
+                rankText = "Vệ Binh Tinh Nhuệ (Rất giỏi)";
+                emoji = "🌟";
+            } else if (score >= maxScore * 0.4) {
+                rankText = "Người Chăm Sóc Rừng (Khá)";
+                emoji = "🌱";
+            } else {
+                rankText = "Tân Binh Học Việc (Cố gắng lên nhé)";
+                emoji = "💪";
+            }
+            
+            if (lives <= 0) {
+                 rankText = "Nhiệm vụ thất bại (Hết mạng)";
+                 emoji = "💔";
+            }
+
+            document.getElementById('finalRank').innerText = rankText;
+            document.getElementById('rankEmoji').innerText = emoji;
+        }
+    </script>
+</body>
+</html>
