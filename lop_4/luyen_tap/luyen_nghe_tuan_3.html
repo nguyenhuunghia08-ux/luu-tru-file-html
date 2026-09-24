@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phiếu Luyện Nghe Tiếng Anh - Lớp 4</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            color: #1f2937;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        }
+        .inline-input {
+            display: inline-block;
+            width: 110px;
+            text-align: center;
+            border: none;
+            border-bottom: 2px solid #3b82f6;
+            background-color: #eff6ff;
+            color: #1d4ed8;
+            font-weight: 600;
+            padding: 2px 5px;
+            outline: none;
+            transition: all 0.3s ease;
+            margin: 0 4px;
+            border-radius: 4px 4px 0 0;
+        }
+        .inline-input:focus {
+            background-color: #dbeafe;
+            border-bottom-color: #2563eb;
+        }
+        .inline-input:disabled {
+            background-color: #f3f4f6;
+            border-bottom-color: #d1d5db;
+            color: #4b5563;
+            cursor: not-allowed;
+        }
+        .inline-input.correct {
+            border-bottom-color: #10b981;
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+        .inline-input.incorrect {
+            border-bottom-color: #ef4444;
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+        /* Custom radio button styles */
+        .radio-custom:checked + label {
+            background-color: #eff6ff;
+            border-color: #3b82f6;
+        }
+        .radio-custom.correct-radio + label {
+            background-color: #d1fae5 !important;
+            border-color: #10b981 !important;
+            color: #065f46;
+        }
+        .radio-custom.incorrect-radio + label {
+            background-color: #fee2e2 !important;
+            border-color: #ef4444 !important;
+            color: #991b1b;
+        }
+        
+        /* Tùy chỉnh CSS cho Kéo - Thả (Drag and Drop) */
+        .word-token {
+            display: inline-block;
+            background-color: #3b82f6; /* blue-500 */
+            color: white;
+            padding: 6px 16px;
+            border-radius: 9999px;
+            cursor: grab;
+            user-select: none;
+            font-weight: 600;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.1s, box-shadow 0.2s;
+        }
+        .word-token:active {
+            cursor: grabbing;
+            transform: scale(0.95);
+        }
+        .word-token.selected {
+            box-shadow: 0 0 0 4px #93c5fd;
+            background-color: #2563eb;
+        }
+        .drop-zone {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 100px;
+            height: 38px;
+            border-bottom: 2px dashed #9ca3af;
+            vertical-align: middle;
+            margin: 0 4px;
+            background-color: #f9fafb;
+            border-radius: 4px 4px 0 0;
+            transition: all 0.2s ease;
+        }
+        .drop-zone.drag-over {
+            background-color: #dbeafe;
+            border-bottom-color: #3b82f6;
+        }
+        .drop-zone.correct-drop {
+            border-bottom-color: #10b981;
+            background-color: #d1fae5;
+        }
+        .drop-zone.incorrect-drop {
+            border-bottom-color: #ef4444;
+            background-color: #fee2e2;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="min-h-screen py-8 px-4 sm:px-6 lg:px-8">
+
+    <div class="max-w-4xl mx-auto glass-panel rounded-2xl overflow-hidden border border-gray-200">
+        
+        <header class="bg-blue-600 text-white p-6 sm:p-10 text-center relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-full opacity-10 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCI+PGNpcmNsZSBjeD0iMTAiIGN5PSIxMCIgcj0iMiIgZmlsbD0iI2ZmZiIvPjwvc3ZnPg==')]"></div>
+            <h1 class="text-3xl sm:text-4xl font-extrabold uppercase tracking-tight relative z-10">
+                LUYỆN NGHE TUẦN 3
+            </h1>
+            <p class="text-blue-100 mt-2 font-medium text-lg relative z-10">DÀNH CHO HỌC SINH LỚP 4</p>
+        </header>
+
+        <main class="p-6 sm:p-10">
+            <section class="bg-gray-50 p-6 rounded-xl border border-gray-200 mb-10">
+                <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    <svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                    Thông tin học sinh
+                </h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div>
+                        <label for="studentName" class="block text-sm font-semibold text-gray-700 mb-2">Họ và tên</label>
+                        <input type="text" id="studentName" placeholder="Nhập họ và tên..." class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow outline-none">
+                    </div>
+                    <div>
+                        <label for="studentClass" class="block text-sm font-semibold text-gray-700 mb-2">Lớp</label>
+                        <select id="studentClass" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-white">
+                            <option value="">-- Chọn lớp --</option>
+                            <optgroup label="Khối 1">
+                                <option value="1/1">1/1</option><option value="1/2">1/2</option><option value="1/3">1/3</option><option value="1/4">1/4</option><option value="1/5">1/5</option>
+                            </optgroup>
+                            <optgroup label="Khối 2">
+                                <option value="2/1">2/1</option><option value="2/2">2/2</option><option value="2/3">2/3</option><option value="2/4">2/4</option><option value="2/5">2/5</option>
+                            </optgroup>
+                            <optgroup label="Khối 3">
+                                <option value="3/1">3/1</option><option value="3/2">3/2</option><option value="3/3">3/3</option><option value="3/4">3/4</option><option value="3/5">3/5</option>
+                            </optgroup>
+                            <optgroup label="Khối 4">
+                                <option value="4/1">4/1</option><option value="4/2">4/2</option><option value="4/3">4/3</option><option value="4/4">4/4</option><option value="4/5">4/5</option>
+                            </optgroup>
+                            <optgroup label="Khối 5">
+                                <option value="5/1">5/1</option><option value="5/2">5/2</option><option value="5/3">5/3</option><option value="5/4">5/4</option><option value="5/5">5/5</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                </div>
+            </section>
+
+            <form id="quizForm" onsubmit="return false;">
+                
+                <section class="mb-12">
+                    <div class="border-b-2 border-blue-500 pb-4 mb-6">
+                        <h2 class="text-2xl font-bold text-blue-800">PART 1: Listen and Choose the correct time</h2>
+                        <p class="text-gray-600 mt-1">Nghe và chọn mốc thời gian đúng (10 câu).</p>
+                    </div>
+
+                    <!-- Audio Box Part 1 -->
+                    <div class="bg-blue-50 p-4 rounded-xl border border-blue-100 mb-8 flex flex-col gap-3">
+                        <div class="hidden flex gap-2">
+                            <input type="text" id="audioUrl1" value="https://raw.githack.com/HuuNghia2308/Edu-assets/main/Lop-4/File-Nghe/asset_1790261127648_917_k4---phi-u-nghe-tu-n-3---part-1.wav" placeholder="Dán link file audio phần 1 vào đây..." class="flex-grow px-4 py-2 rounded-lg border border-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <button type="button" onclick="loadAudio('player1', 'audioUrl1')" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg font-medium transition-colors whitespace-nowrap">
+                                Tải âm thanh
+                            </button>
+                        </div>
+                        <audio id="player1" src="https://raw.githack.com/HuuNghia2308/Edu-assets/main/Lop-4/File-Nghe/asset_1790261127648_917_k4---phi-u-nghe-tu-n-3---part-1.wav" controls class="w-full h-10 mt-2 rounded-lg outline-none">
+                            Trình duyệt của bạn không hỗ trợ thẻ audio.
+                        </audio>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6" id="part1-questions">
+                        <!-- Questions will be injected via JS to keep HTML clean and avoid repetition -->
+                    </div>
+                </section>
+
+                <section class="mb-12">
+                    <div class="border-b-2 border-blue-500 pb-4 mb-6">
+                        <h2 class="text-2xl font-bold text-blue-800">PART 2 & 3: Listen and Complete</h2>
+                        <p class="text-gray-600 mt-1">Nghe đoạn văn. Phần 2 chọn từ trong menu, Phần 3 kéo thả từ vào chỗ trống.</p>
+                    </div>
+
+                    <!-- Audio Box Part 2 & 3 -->
+                    <div class="bg-blue-50 p-4 rounded-xl border border-blue-100 mb-8 flex flex-col gap-3">
+                        <label class="hidden font-semibold text-blue-900 text-sm">Nạp link Audio Phần 2 & 3 (URL MP3):</label>
+                        <div class="hidden flex gap-2">
+                            <input type="text" id="audioUrl2" value="https://raw.githack.com/HuuNghia2308/Edu-assets/main/Lop-4/File-Nghe/asset_1790261120465_69_k4---phi-u-nghe-tu-n-3---part-2.mp3" placeholder="Dán link file audio vào đây..." class="flex-grow px-4 py-2 rounded-lg border border-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <button type="button" onclick="loadAudio('player2', 'audioUrl2')" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg font-medium transition-colors whitespace-nowrap">
+                                Tải âm thanh
+                            </button>
+                        </div>
+                        <audio id="player2" src="https://raw.githack.com/HuuNghia2308/Edu-assets/main/Lop-4/File-Nghe/asset_1790261120465_69_k4---phi-u-nghe-tu-n-3---part-2.mp3" controls class="w-full h-10 mt-2 rounded-lg outline-none">
+                            Trình duyệt của bạn không hỗ trợ thẻ audio.
+                        </audio>
+                    </div>
+
+                    <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-gray-200 text-lg leading-loose text-gray-800 text-justify">
+                        
+                        <!-- PART 2: Dropdown Menu -->
+                        <h3 class="text-xl font-bold text-blue-700 mb-3">PART 2: Choose the correct word</h3>
+                        <p class="mb-4">
+                            Hello, my name is Tom. I have a busy day. In the morning, I get up at six (11) 
+                            <select id="q11" class="inline-input appearance-none cursor-pointer">
+                                <option value=""></option><option value="o'clock">o'clock</option><option value="fifteen">fifteen</option><option value="thirty">thirty</option>
+                            </select>. 
+                            I have breakfast and go to school at seven (12) 
+                            <select id="q12" class="inline-input appearance-none cursor-pointer">
+                                <option value=""></option><option value="o'clock">o'clock</option><option value="fifteen">fifteen</option><option value="forty-five">forty-five</option>
+                            </select>. 
+                            I have a break at school at nine (13) 
+                            <select id="q13" class="inline-input appearance-none cursor-pointer">
+                                <option value=""></option><option value="fifteen">fifteen</option><option value="thirty">thirty</option><option value="forty-five">forty-five</option>
+                            </select>. 
+                            I go home at four (14) 
+                            <select id="q14" class="inline-input appearance-none cursor-pointer">
+                                <option value=""></option><option value="fifteen">fifteen</option><option value="thirty">thirty</option><option value="forty-five">forty-five</option>
+                            </select>. 
+                            In the evening, I do my homework. I have dinner at seven (15) 
+                            <select id="q15" class="inline-input appearance-none cursor-pointer">
+                                <option value=""></option><option value="o'clock">o'clock</option><option value="fifteen">fifteen</option><option value="thirty">thirty</option>
+                            </select>.
+                        </p>
+
+                        <hr class="my-8 border-gray-200">
+
+                        <!-- PART 3: Drag and Drop -->
+                        <h3 class="text-xl font-bold text-blue-700 mb-2">PART 3: Drag and drop the words</h3>
+                        <p class="text-sm text-gray-500 mb-5 italic">(Mẹo: Kéo thả từ màu xanh vào chỗ trống. Với thiết bị cảm ứng: chạm vào từ để chọn, sau đó chạm vào chỗ trống để điền).</p>
+                        
+                        <!-- Word Bank -->
+                        <div id="wordbank" class="min-h-[60px] p-4 bg-gray-50 border-2 border-dashed border-gray-300 rounded-xl mb-6 flex flex-wrap gap-3 items-center justify-center">
+                            <div class="word-token" draggable="true" data-word="fifteen">fifteen</div>
+                            <div class="word-token" draggable="true" data-word="thirty">thirty</div>
+                            <div class="word-token" draggable="true" data-word="forty-five">forty-five</div>
+                            <div class="word-token" draggable="true" data-word="o'clock">o'clock</div>
+                            <div class="word-token" draggable="true" data-word="fifteen">fifteen</div>
+                        </div>
+
+                        <p class="mb-4">
+                            After that, I read a book. I go to bed at nine (16) 
+                            <span class="drop-zone" id="q16"></span>. 
+                            On weekends, I have more free time. I play football at eight (17) 
+                            <span class="drop-zone" id="q17"></span> 
+                            in the morning. I watch TV at two (18) 
+                            <span class="drop-zone" id="q18"></span> 
+                            in the afternoon. Sometimes, I visit my grandparents. We have lunch at twelve (19) 
+                            <span class="drop-zone" id="q19"></span>. 
+                            I like playing games with them at three (20) 
+                            <span class="drop-zone" id="q20"></span>.
+                        </p>
+                    </div>
+
+                    <!-- Part 2 & 3 Explanations Container (Hidden initially) -->
+                    <div id="part2-explanations" class="hidden mt-8 flex flex-col gap-3">
+                        <h3 class="font-bold text-xl text-gray-800 mb-2 border-b pb-2">Giải thích chi tiết Phần 2:</h3>
+                        <!-- Injected via JS -->
+                    </div>
+
+                </section>
+
+                <div id="action-area" class="flex flex-col items-center mt-10 border-t pt-8">
+                    <button id="submitBtn" onclick="submitQuiz()" class="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white text-lg font-bold py-4 px-12 rounded-full shadow-lg transform transition-transform hover:scale-105">
+                        NỘP BÀI
+                    </button>
+                    
+                    <div id="resultBox" class="hidden w-full text-center fade-in bg-white p-8 rounded-2xl shadow-lg border-2 border-blue-100">
+                        <h3 class="text-2xl font-bold text-gray-800 mb-2" id="resultName"></h3>
+                        <p class="text-gray-500 text-lg mb-6" id="resultClass"></p>
+                        <div class="inline-block bg-blue-50 rounded-full p-8 border-4 border-blue-200">
+                            <p class="text-sm font-bold text-blue-600 uppercase tracking-widest mb-1">Tổng điểm</p>
+                            <p class="text-6xl font-black text-blue-600" id="scoreDisplay">0/20</p>
+                        </div>
+                        <p class="mt-6 text-lg text-gray-700">Hãy kéo lên trên để xem ĐÁP ÁN ĐÚNG và GIẢI THÍCH CHI TIẾT cho từng câu nhé!</p>
+                        
+                        <!-- CẬP NHẬT: Đổi hàm onclick thành exitApp() -->
+                        <button id="exitBtn" onclick="exitApp()" class="mt-8 bg-gray-800 hover:bg-gray-900 text-white font-semibold py-3 px-8 rounded-lg shadow transition-colors inline-flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                            Thoát & Đóng Tab
+                        </button>
+                    </div>
+                </div>
+
+            </form>
+        </main>
+    </div>
+
+    <script>
+        // Dữ liệu đáp án và giải thích
+        const answerKey = {
+            part1: [
+                { id: 1, options: ["9:00", "9:15", "9:30"], answer: "A", exp: "Audio đọc <strong>'nine o'clock'</strong> nghĩa là 9 giờ đúng." },
+                { id: 2, options: ["4:00", "4:15", "4:30"], answer: "C", exp: "Audio đọc <strong>'four thirty'</strong> nghĩa là 4 giờ 30 phút." },
+                { id: 3, options: ["8:00", "8:15", "8:30"], answer: "B", exp: "Audio đọc <strong>'eight fifteen'</strong> nghĩa là 8 giờ 15 phút." },
+                { id: 4, options: ["6:15", "6:30", "6:45"], answer: "C", exp: "Audio đọc <strong>'six forty-five'</strong> nghĩa là 6 giờ 45 phút." },
+                { id: 5, options: ["10:00", "10:15", "10:30"], answer: "C", exp: "Audio đọc <strong>'ten thirty'</strong> nghĩa là 10 giờ 30 phút." },
+                { id: 6, options: ["2:00", "2:15", "2:30"], answer: "B", exp: "Audio đọc <strong>'two fifteen'</strong> nghĩa là 2 giờ 15 phút." },
+                { id: 7, options: ["7:00", "7:15", "7:30"], answer: "A", exp: "Audio đọc <strong>'seven o'clock'</strong> nghĩa là 7 giờ đúng." },
+                { id: 8, options: ["5:15", "5:30", "5:45"], answer: "C", exp: "Audio đọc <strong>'five forty-five'</strong> nghĩa là 5 giờ 45 phút." },
+                { id: 9, options: ["11:00", "11:15", "11:30"], answer: "B", exp: "Audio đọc <strong>'eleven fifteen'</strong> nghĩa là 11 giờ 15 phút." },
+                { id: 10, options: ["12:00", "12:15", "12:30"], answer: "C", exp: "Audio đọc <strong>'twelve thirty'</strong> nghĩa là 12 giờ 30 phút." }
+            ],
+            part2: {
+                11: { ans: "o'clock", exp: "Audio đọc '...at six <strong>o'clock</strong>'." },
+                12: { ans: "fifteen", exp: "Audio đọc '...at seven <strong>fifteen</strong>'." },
+                13: { ans: "thirty", exp: "Audio đọc '...at nine <strong>thirty</strong>'." },
+                14: { ans: "forty-five", exp: "Audio đọc '...at four <strong>forty-five</strong>'." },
+                15: { ans: "o'clock", exp: "Audio đọc '...at seven <strong>o'clock</strong>'." },
+                16: { ans: "fifteen", exp: "Audio đọc '...at nine <strong>fifteen</strong>'." },
+                17: { ans: "thirty", exp: "Audio đọc '...at eight <strong>thirty</strong>'." },
+                18: { ans: "forty-five", exp: "Audio đọc '...at two <strong>forty-five</strong>'." },
+                19: { ans: "o'clock", exp: "Audio đọc '...at twelve <strong>o'clock</strong>'." },
+                20: { ans: "fifteen", exp: "Audio đọc '...at three <strong>fifteen</strong>'." }
+            }
+        };
+
+        // Render Part 1 Questions
+        const part1Container = document.getElementById('part1-questions');
+        answerKey.part1.forEach(q => {
+            let html = `
+            <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 relative" id="q${q.id}-container">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="bg-blue-100 text-blue-800 font-bold w-8 h-8 rounded-full flex items-center justify-center">${q.id}</span>
+                </div>
+                <div class="flex flex-col gap-3">`;
+            
+            const letters = ['A', 'B', 'C'];
+            q.options.forEach((opt, idx) => {
+                const val = letters[idx];
+                html += `
+                    <div class="relative">
+                        <input type="radio" name="q${q.id}" id="q${q.id}_${val}" value="${val}" class="peer sr-only radio-custom">
+                        <label for="q${q.id}_${val}" class="flex items-center p-3 cursor-pointer border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                            <span class="font-bold text-gray-500 w-6">${val}.</span>
+                            <span class="text-lg font-medium text-gray-800">${opt}</span>
+                        </label>
+                    </div>`;
+            });
+
+            html += `
+                </div>
+                <!-- Vùng hiển thị giải thích (ẩn ban đầu) -->
+                <div id="expl-q${q.id}" class="hidden mt-4 p-4 rounded-lg bg-green-50 border border-green-200 fade-in">
+                    <div class="flex gap-2">
+                        <svg class="w-6 h-6 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <div>
+                            <p class="font-bold text-green-800">Đáp án đúng: ${q.answer}</p>
+                            <p class="text-sm text-green-700 mt-1">${q.exp}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+            part1Container.innerHTML += html;
+        });
+
+        // Hàm xử lý tải audio
+        function loadAudio(playerId, inputId) {
+            const url = document.getElementById(inputId).value.trim();
+            const player = document.getElementById(playerId);
+            if(url) {
+                player.src = url;
+                player.load();
+                player.play().catch(e => {
+                    console.log('Trình duyệt chặn tự động phát.');
+                });
+            } else {
+                alert('Vui lòng dán link file audio trước khi tải!');
+            }
+        }
+
+        // Hàm chấm điểm
+        function submitQuiz() {
+            const name = document.getElementById('studentName').value.trim();
+            const studentClass = document.getElementById('studentClass').value;
+            
+            if(!name || !studentClass) {
+                // Thay vì dùng alert, tạo hộp thoại cảnh báo nhỏ (nhưng theo luật không dùng alert)
+                // Cập nhật giao diện để cảnh báo
+                document.getElementById('studentName').classList.add('border-red-500');
+                document.getElementById('studentClass').classList.add('border-red-500');
+                return;
+            }
+            
+            // Xóa viền đỏ nếu có
+            document.getElementById('studentName').classList.remove('border-red-500');
+            document.getElementById('studentClass').classList.remove('border-red-500');
+
+            let totalScore = 0;
+
+            // Chấm điểm Part 1
+            answerKey.part1.forEach(q => {
+                const radios = document.getElementsByName(`q${q.id}`);
+                let userAns = null;
+                radios.forEach(r => {
+                    r.disabled = true; // Khóa input
+                    if(r.checked) userAns = r.value;
+                });
+
+                const explDiv = document.getElementById(`expl-q${q.id}`);
+                explDiv.classList.remove('hidden'); // Hiển thị giải thích
+
+                if(userAns === q.answer) {
+                    totalScore++;
+                    // Tô màu xanh cho đáp án đúng của user
+                    document.getElementById(`q${q.id}_${userAns}`).classList.add('correct-radio');
+                } else {
+                    if(userAns) {
+                        // Tô màu đỏ cho đáp án sai của user
+                        document.getElementById(`q${q.id}_${userAns}`).classList.add('incorrect-radio');
+                    }
+                    // Đổi style giải thích sang màu đỏ nhạt để báo sai
+                    explDiv.className = 'mt-4 p-4 rounded-lg bg-red-50 border border-red-200 fade-in block';
+                    explDiv.innerHTML = `
+                        <div class="flex gap-2">
+                            <svg class="w-6 h-6 text-red-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            <div>
+                                <p class="font-bold text-red-800">Sai rồi. Đáp án đúng: ${q.answer}</p>
+                                <p class="text-sm text-red-700 mt-1">${q.exp}</p>
+                            </div>
+                        </div>`;
+                }
+            });
+
+            // Chấm điểm Part 2 & 3
+            const part2ExplContainer = document.getElementById('part2-explanations');
+            part2ExplContainer.classList.remove('hidden');
+            
+            for(let i = 11; i <= 20; i++) {
+                let userAns = "";
+                let isCorrect = false;
+                const correctAns = answerKey.part2[i].ans.toLowerCase();
+                
+                if (i <= 15) {
+                    // Xử lý Part 2 (Dropdown)
+                    const inputEl = document.getElementById(`q${i}`);
+                    userAns = inputEl.value.trim().toLowerCase();
+                    inputEl.disabled = true; // Khóa input
+
+                    if(userAns === correctAns) {
+                        totalScore++;
+                        inputEl.classList.add('correct');
+                        isCorrect = true;
+                    } else {
+                        inputEl.classList.add('incorrect');
+                        if(!userAns) {
+                            inputEl.value = `[ ${correctAns} ]`;
+                        }
+                    }
+                } else {
+                    // Xử lý Part 3 (Drag and Drop)
+                    const zoneEl = document.getElementById(`q${i}`);
+                    
+                    if (zoneEl.children.length > 0) {
+                        const token = zoneEl.children[0];
+                        userAns = token.dataset.word.toLowerCase();
+                        token.draggable = false;
+                        token.style.cursor = 'default';
+                        
+                        // Đổi màu token theo kết quả
+                        if (userAns === correctAns) {
+                            token.style.backgroundColor = '#10b981'; // Green
+                            token.style.boxShadow = 'none';
+                        } else {
+                            token.style.backgroundColor = '#ef4444'; // Red
+                            token.style.boxShadow = 'none';
+                        }
+                    }
+
+                    if(userAns === correctAns) {
+                        totalScore++;
+                        zoneEl.classList.add('correct-drop');
+                        isCorrect = true;
+                    } else {
+                        zoneEl.classList.add('incorrect-drop');
+                        // Nếu bỏ trống, hiển thị đáp án đúng
+                        if (!userAns) {
+                            zoneEl.innerHTML = `<span class="text-red-600 font-bold px-2 whitespace-nowrap">[ ${correctAns} ]</span>`;
+                        }
+                    }
+                }
+
+                // Thêm dòng giải thích bên dưới đoạn văn
+                const pDiv = document.createElement('div');
+                pDiv.className = `p-3 rounded-lg border flex gap-3 items-start fade-in ${isCorrect ? 'bg-green-50 border-green-200 text-green-800' : 'bg-red-50 border-red-200 text-red-800'}`;
+                pDiv.innerHTML = `
+                    <div class="font-bold min-w-[40px]">Câu ${i}:</div>
+                    <div>
+                        <p class="font-semibold mb-1">Đáp án: ${answerKey.part2[i].ans}</p>
+                        <p class="text-sm opacity-90">${answerKey.part2[i].exp}</p>
+                    </div>
+                `;
+                part2ExplContainer.appendChild(pDiv);
+            }
+
+            // Hiển thị kết quả
+            document.getElementById('submitBtn').classList.add('hidden');
+            const resultBox = document.getElementById('resultBox');
+            resultBox.classList.remove('hidden');
+            
+            document.getElementById('resultName').innerText = name;
+            document.getElementById('resultClass').innerText = `Lớp: ${studentClass}`;
+            document.getElementById('scoreDisplay').innerText = `${totalScore}/20`;
+            
+            // Tắt input thông tin
+            document.getElementById('studentName').disabled = true;
+            document.getElementById('studentClass').disabled = true;
+
+            // Cuộn xuống kết quả
+            resultBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        // HÀM MỚI: Xử lý nút Thoát
+        function exitApp() {
+            // Mẹo lách luật để đóng tab: mở một tab trống đè lên tab hiện tại (target _self) rồi gọi hàm close()
+            // Lưu ý: Các trình duyệt rất hiện đại có thể vẫn chặn hành vi này nếu tab ban đầu không do window.open tạo ra.
+            try {
+                // Tạo một trang trống
+                window.open('', '_self', ''); 
+                // Yêu cầu đóng tab
+                window.close();
+                
+                // Dự phòng: Nếu sau 500ms tab vẫn chưa đóng (bị trình duyệt chặn), hiện thông báo
+                setTimeout(() => {
+                    if(!window.closed) {
+                         alert("Trình duyệt của bạn không cho phép tự động đóng trang (để bảo mật). Vui lòng bấm dấu X trên tab hoặc phím tắt (Ctrl+W / Cmd+W) để thoát nhé!");
+                    }
+                }, 500);
+            } catch (e) {
+                alert("Vui lòng bấm dấu X trên tab để đóng trang web.");
+            }
+        }
+
+        /* TÍCH HỢP HỆ THỐNG KÉO THẢ (DRAG & DROP) CÓ HỖ TRỢ CHẠM (TOUCH) DÀNH CHO MOBILE */
+        document.addEventListener('DOMContentLoaded', () => {
+            let draggedToken = null;
+            const tokens = document.querySelectorAll('.word-token');
+            const zones = document.querySelectorAll('.drop-zone');
+            const wordbank = document.getElementById('wordbank');
+
+            tokens.forEach(token => {
+                token.addEventListener('dragstart', function(e) {
+                    draggedToken = this;
+                    e.dataTransfer.setData('text/plain', this.dataset.word);
+                    setTimeout(() => this.style.opacity = '0', 0);
+                });
+                
+                token.addEventListener('dragend', function() {
+                    this.style.opacity = '1';
+                    draggedToken = null;
+                });
+                
+                // Hỗ trợ chạm cho Mobile (Tap to select)
+                token.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    if(draggedToken) draggedToken.classList.remove('selected');
+                    
+                    // Nếu bấm lại token đang chọn -> Hủy chọn
+                    if (draggedToken === this) {
+                        draggedToken = null;
+                        return;
+                    }
+                    
+                    draggedToken = this;
+                    this.classList.add('selected');
+                });
+            });
+
+            zones.forEach(zone => {
+                zone.addEventListener('dragover', e => e.preventDefault());
+                
+                zone.addEventListener('dragenter', function(e) {
+                    e.preventDefault();
+                    this.classList.add('drag-over');
+                });
+                
+                zone.addEventListener('dragleave', function() {
+                    this.classList.remove('drag-over');
+                });
+                
+                zone.addEventListener('drop', function(e) {
+                    e.preventDefault();
+                    this.classList.remove('drag-over');
+                    
+                    if (draggedToken) {
+                        // Nếu ô đã có từ, trả từ cũ về wordbank
+                        if(this.children.length > 0) {
+                            wordbank.appendChild(this.children[0]);
+                        }
+                        this.appendChild(draggedToken);
+                        draggedToken.classList.remove('selected');
+                        draggedToken = null;
+                    }
+                });
+                
+                // Hỗ trợ chạm (Tap to drop)
+                zone.addEventListener('click', function() {
+                    if (draggedToken) {
+                        if(this.children.length > 0) {
+                            wordbank.appendChild(this.children[0]);
+                        }
+                        this.appendChild(draggedToken);
+                        draggedToken.classList.remove('selected');
+                        draggedToken = null;
+                    } else if (this.children.length > 0) {
+                        // Bấm vào từ đang nằm trong ô để trả về wordbank
+                        wordbank.appendChild(this.children[0]);
+                    }
+                });
+            });
+
+            // Khu vực Wordbank nhận từ bị trả lại
+            wordbank.addEventListener('dragover', e => e.preventDefault());
+            wordbank.addEventListener('drop', function(e) {
+                e.preventDefault();
+                if(draggedToken) {
+                    this.appendChild(draggedToken);
+                    draggedToken.classList.remove('selected');
+                    draggedToken = null;
+                }
+            });
+            
+            wordbank.addEventListener('click', function() {
+                 if (draggedToken && draggedToken.parentElement !== wordbank) {
+                     this.appendChild(draggedToken);
+                     draggedToken.classList.remove('selected');
+                     draggedToken = null;
+                 }
+            });
+        });
+    </script>
+</body>
+</html>
