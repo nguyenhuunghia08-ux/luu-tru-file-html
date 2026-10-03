@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phiếu Bài Tập Tương Tác - Tuần 4</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap');
+        
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #f0f8ff;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            font-size: 28px;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        h2.subtitle {
+            text-align: center;
+            color: #2980b9;
+            font-size: 20px;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+
+        #timer-container {
+            background: #fff3e0;
+            border: 2px solid #e67e22;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #d35400;
+            margin-bottom: 30px;
+            position: sticky;
+            top: 10px;
+            z-index: 100;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .header-form {
+            background: #eaf2f8;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .header-form input, .header-form select {
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        .header-form input { flex: 2; min-width: 200px; }
+        .header-form select { flex: 1; min-width: 120px; }
+
+        .part-title {
+            font-size: 22px;
+            font-weight: bold;
+            color: #e67e22;
+            border-bottom: 3px dashed #e67e22;
+            padding-bottom: 10px;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+
+        .question {
+            background: #fafafa;
+            border: 2px solid #eaeaea;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .question p {
+            font-size: 18px;
+            font-weight: 600;
+            margin-top: 0;
+        }
+
+        .reading-box {
+            background: #fff3e0;
+            padding: 15px;
+            border-radius: 8px;
+            font-style: italic;
+            margin-bottom: 20px;
+            border-left: 5px solid #ff9800;
+        }
+
+        .radio-label {
+            display: block;
+            padding: 12px 15px;
+            margin: 8px 0;
+            border: 2px solid #dcdde1;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 16px;
+        }
+        .radio-label:hover { background: #f1f2f6; border-color: #a4b0be; }
+        .radio-label input[type="radio"] { margin-right: 10px; transform: scale(1.2); }
+        .radio-label input[type="radio"]:checked + span { font-weight: bold; color: #2980b9; }
+
+        select.inline-select {
+            font-size: 16px; padding: 5px 10px; border: 2px solid #bdc3c7; border-radius: 5px; font-family: 'Nunito', sans-serif;
+            background: #fff;
+        }
+
+        .btn-submit {
+            display: block; width: 100%; padding: 18px; font-size: 22px; font-weight: bold;
+            color: white; background: #27ae60; border: none; border-radius: 12px; cursor: pointer;
+            margin-top: 40px; box-shadow: 0 6px 12px rgba(39, 174, 96, 0.3); transition: all 0.3s;
+        }
+        .btn-submit:hover { background: #2ecc71; transform: translateY(-2px); }
+        .btn-submit:disabled { background: #95a5a6; cursor: not-allowed; transform: none; box-shadow: none; }
+
+        .btn-exit {
+            display: none; width: 100%; padding: 15px; font-size: 18px; font-weight: bold;
+            color: white; background: #e74c3c; border: none; border-radius: 12px; cursor: pointer;
+            margin-top: 15px; transition: background 0.3s;
+        }
+        .btn-exit:hover { background: #c0392b; }
+
+        #result-summary {
+            display: none; text-align: center; padding: 30px; background: #e8f8f5;
+            border: 3px solid #2ecc71; border-radius: 15px; margin-bottom: 30px;
+        }
+        .score-text { font-size: 40px; font-weight: bold; color: #e67e22; margin: 15px 0; }
+        
+        .question.correct { background: #f4fcfa; border-color: #2ecc71; }
+        .question.incorrect { background: #fdf5f6; border-color: #e74c3c; }
+        .explanation {
+            display: none; margin-top: 15px; padding: 15px; background: #fff9c4;
+            border-left: 5px solid #fbc02d; border-radius: 5px; font-size: 15px; color: #333;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>PHIẾU BÀI TẬP TUẦN 4</h1>
+    <h2 class="subtitle">Unit 2: Time and daily routines</h2>
+
+    <div id="timer-container">
+        ⏳ Thời gian còn lại: <span id="time">35:00</span>
+    </div>
+
+    <div class="header-form">
+        <input type="text" id="student-name" placeholder="Nhập họ và tên học sinh..." required>
+        <select id="student-class" required>
+            <option value="">-- Chọn lớp --</option>
+            <script>
+                for(let i=1; i<=5; i++) {
+                    for(let j=1; j<=5; j++) {
+                        document.write(`<option value="${i}/${j}">Lớp ${i}/${j}</option>`);
+                    }
+                }
+            </script>
+        </select>
+    </div>
+
+    <div id="result-summary">
+        <p style="font-size: 18px;">Học sinh: <strong id="rs-name"></strong> - Lớp: <strong id="rs-class"></strong></p>
+        <div class="score-text" id="rs-score">Điểm: 0/10</div>
+        <p style="font-size: 18px; font-weight: bold;" id="rs-praise"></p>
+    </div>
+
+    <div id="quiz-container">
+        <!-- PART 1: TRẮC NGHIỆM CƠ BẢN -->
+        <div class="part-title">PART 1: MULTIPLE CHOICE (Trắc nghiệm cơ bản)</div>
+        
+        <div class="question" id="div-q1">
+            <p>1. What time _________ it?</p>
+            <label class="radio-label"><input type="radio" name="q1" value="A"> <span>A. do</span></label>
+            <label class="radio-label"><input type="radio" name="q1" value="B"> <span>B. is</span></label>
+            <label class="radio-label"><input type="radio" name="q1" value="C"> <span>C. are</span></label>
+            <label class="radio-label"><input type="radio" name="q1" value="D"> <span>D. does</span></label>
+            <div class="explanation" id="exp-q1"></div>
+        </div>
+
+        <div class="question" id="div-q2">
+            <p>2. It's six _________. (6:15)</p>
+            <label class="radio-label"><input type="radio" name="q2" value="A"> <span>A. o'clock</span></label>
+            <label class="radio-label"><input type="radio" name="q2" value="B"> <span>B. fifteen</span></label>
+            <label class="radio-label"><input type="radio" name="q2" value="C"> <span>C. thirty</span></label>
+            <label class="radio-label"><input type="radio" name="q2" value="D"> <span>D. forty-five</span></label>
+            <div class="explanation" id="exp-q2"></div>
+        </div>
+
+        <div class="question" id="div-q3">
+            <p>3. What time do you _________ up?</p>
+            <label class="radio-label"><input type="radio" name="q3" value="A"> <span>A. get</span></label>
+            <label class="radio-label"><input type="radio" name="q3" value="B"> <span>B. go</span></label>
+            <label class="radio-label"><input type="radio" name="q3" value="C"> <span>C. have</span></label>
+            <label class="radio-label"><input type="radio" name="q3" value="D"> <span>D. do</span></label>
+            <div class="explanation" id="exp-q3"></div>
+        </div>
+
+        <div class="question" id="div-q4">
+            <p>4. I go to school _________ six thirty.</p>
+            <label class="radio-label"><input type="radio" name="q4" value="A"> <span>A. in</span></label>
+            <label class="radio-label"><input type="radio" name="q4" value="B"> <span>B. on</span></label>
+            <label class="radio-label"><input type="radio" name="q4" value="C"> <span>C. at</span></label>
+            <label class="radio-label"><input type="radio" name="q4" value="D"> <span>D. to</span></label>
+            <div class="explanation" id="exp-q4"></div>
+        </div>
+
+        <div class="question" id="div-q5">
+            <p>5. What time do you have _________?</p>
+            <label class="radio-label"><input type="radio" name="q5" value="A"> <span>A. bed</span></label>
+            <label class="radio-label"><input type="radio" name="q5" value="B"> <span>B. breakfast</span></label>
+            <label class="radio-label"><input type="radio" name="q5" value="C"> <span>C. school</span></label>
+            <label class="radio-label"><input type="radio" name="q5" value="D"> <span>D. up</span></label>
+            <div class="explanation" id="exp-q5"></div>
+        </div>
+
+        <!-- PART 2: ĐỌC HIỂU ĐƠN GIẢN -->
+        <div class="part-title">PART 2: READING (Đọc đoạn văn và trả lời)</div>
+        <div class="reading-box">
+            "Hello, my name is Tom. I get up at six o'clock. I have breakfast at six fifteen. I go to school at six thirty. I go to bed at nine o'clock."
+        </div>
+
+        <div class="question" id="div-q6">
+            <p>6. What time does Tom get up?</p>
+            <label class="radio-label"><input type="radio" name="q6" value="A"> <span>A. six o'clock</span></label>
+            <label class="radio-label"><input type="radio" name="q6" value="B"> <span>B. six fifteen</span></label>
+            <label class="radio-label"><input type="radio" name="q6" value="C"> <span>C. six thirty</span></label>
+            <label class="radio-label"><input type="radio" name="q6" value="D"> <span>D. nine o'clock</span></label>
+            <div class="explanation" id="exp-q6"></div>
+        </div>
+
+        <div class="question" id="div-q7">
+            <p>7. He has breakfast at _________.</p>
+            <label class="radio-label"><input type="radio" name="q7" value="A"> <span>A. six o'clock</span></label>
+            <label class="radio-label"><input type="radio" name="q7" value="B"> <span>B. six fifteen</span></label>
+            <label class="radio-label"><input type="radio" name="q7" value="C"> <span>C. six thirty</span></label>
+            <label class="radio-label"><input type="radio" name="q7" value="D"> <span>D. nine o'clock</span></label>
+            <div class="explanation" id="exp-q7"></div>
+        </div>
+
+        <div class="question" id="div-q8">
+            <p>8. What time does he go to school?</p>
+            <label class="radio-label"><input type="radio" name="q8" value="A"> <span>A. six o'clock</span></label>
+            <label class="radio-label"><input type="radio" name="q8" value="B"> <span>B. six fifteen</span></label>
+            <label class="radio-label"><input type="radio" name="q8" value="C"> <span>C. six thirty</span></label>
+            <label class="radio-label"><input type="radio" name="q8" value="D"> <span>D. nine o'clock</span></label>
+            <div class="explanation" id="exp-q8"></div>
+        </div>
+
+        <div class="question" id="div-q9">
+            <p>9. Tom goes to bed at nine 
+                <select id="q9" class="inline-select">
+                    <option value="">-- Chọn --</option>
+                    <option value="o'clock">o'clock</option>
+                    <option value="fifteen">fifteen</option>
+                    <option value="thirty">thirty</option>
+                </select>.
+            </p>
+            <div class="explanation" id="exp-q9"></div>
+        </div>
+
+        <div class="question" id="div-q10">
+            <p>10. Tom is a 
+                <select id="q10" class="inline-select">
+                    <option value="">-- Chọn --</option>
+                    <option value="student">student</option>
+                    <option value="teacher">teacher</option>
+                    <option value="doctor">doctor</option>
+                </select>.
+            </p>
+            <div class="explanation" id="exp-q10"></div>
+        </div>
+
+        <!-- PART 3: HOÀN THÀNH CÂU CƠ BẢN -->
+        <div class="part-title">PART 3: GUIDED PRACTICE (Chọn từ đúng điền vào câu)</div>
+        
+        <div class="question" id="div-q11">
+            <p>11. What time 
+                <select id="q11" class="inline-select">
+                    <option value="">-- Chọn --</option>
+                    <option value="is">is</option>
+                    <option value="do">do</option>
+                </select> it?
+            </p>
+            <div class="explanation" id="exp-q11"></div>
+        </div>
+
+        <div class="question" id="div-q12">
+            <p>12. I get up 
+                <select id="q12" class="inline-select">
+                    <option value="">-- Chọn --</option>
+                    <option value="at">at</option>
+                    <option value="in">in</option>
+                </select> six o'clock.
+            </p>
+            <div class="explanation" id="exp-q12"></div>
+        </div>
+
+        <div class="question" id="div-q13">
+            <p>13. What time 
+                <select id="q13" class="inline-select">
+                    <option value="">-- Chọn --</option>
+                    <option value="do">do</option>
+                    <option value="does">does</option>
+                </select> you get up?
+            </p>
+            <div class="explanation" id="exp-q13"></div>
+        </div>
+
+        <div class="question" id="div-q14">
+            <p>14. It is six 
+                <select id="q14" class="inline-select">
+                    <option value="">-- Chọn --</option>
+                    <option value="fifteen">fifteen</option>
+                    <option value="thirty">thirty</option>
+                </select>. (6:15)
+            </p>
+            <div class="explanation" id="exp-q14"></div>
+        </div>
+
+        <div class="question" id="div-q15">
+            <p>15. I go to 
+                <select id="q15" class="inline-select">
+                    <option value="">-- Chọn --</option>
+                    <option value="bed">bed</option>
+                    <option value="school">school</option>
+                </select> at nine o'clock.
+            </p>
+            <div class="explanation" id="exp-q15"></div>
+        </div>
+
+        <div class="question" id="div-q16">
+            <p>16. What time 
+                <select id="q16" class="inline-select">
+                    <option value="">-- Chọn --</option>
+                    <option value="do">do</option>
+                    <option value="does">does</option>
+                </select> you have breakfast?
+            </p>
+            <div class="explanation" id="exp-q16"></div>
+        </div>
+
+        <div class="question" id="div-q17">
+            <p>17. It 
+                <select id="q17" class="inline-select">
+                    <option value="">-- Chọn --</option>
+                    <option value="is">is</option>
+                    <option value="are">are</option>
+                </select> seven o'clock.
+            </p>
+            <div class="explanation" id="exp-q17"></div>
+        </div>
+
+        <div class="question" id="div-q18">
+            <p>18. I go to school 
+                <select id="q18" class="inline-select">
+                    <option value="">-- Chọn --</option>
+                    <option value="at">at</option>
+                    <option value="on">on</option>
+                </select> six forty-five.
+            </p>
+            <div class="explanation" id="exp-q18"></div>
+        </div>
+
+        <div class="question" id="div-q19">
+            <p>19. What time is 
+                <select id="q19" class="inline-select">
+                    <option value="">-- Chọn --</option>
+                    <option value="it">it</option>
+                    <option value="this">this</option>
+                </select> ?
+            </p>
+            <div class="explanation" id="exp-q19"></div>
+        </div>
+
+        <div class="question" id="div-q20">
+            <p>20. I get 
+                <select id="q20" class="inline-select">
+                    <option value="">-- Chọn --</option>
+                    <option value="up">up</option>
+                    <option value="down">down</option>
+                </select> at six fifteen.
+            </p>
+            <div class="explanation" id="exp-q20"></div>
+        </div>
+
+        <button class="btn-submit" id="submit-btn" onclick="submitQuiz()">NỘP BÀI</button>
+        <button class="btn-exit" id="exit-btn" onclick="exitApp()">THOÁT</button>
+    </div>
+</div>
+
+<script>
+    let cheatCount = 0;
+    let cheatLog = [];
+    let isSubmitted = false;
+    let startTime = Date.now();
+
+    document.addEventListener('contextmenu', event => event.preventDefault());
+    document.addEventListener('copy', event => event.preventDefault());
+    document.addEventListener('paste', event => event.preventDefault());
+
+    document.addEventListener("visibilitychange", () => {
+        if (document.hidden && !isSubmitted) {
+            cheatCount++;
+            let timeStr = new Date().toLocaleTimeString('vi-VN');
+            cheatLog.push('Rời tab lúc ' + timeStr);
+            alert('⚠️ CẢNH BÁO GIAN LẬN: Em vừa chuyển sang ứng dụng/tab khác!\nHệ thống đã ghi nhận vi phạm lần ' + cheatCount);
+        }
+    });
+
+    let timeInSecs = 35 * 60;
+    let timerInterval;
+
+    function startTimer() {
+        timerInterval = setInterval(() => {
+            timeInSecs--;
+            let m = Math.floor(timeInSecs / 60);
+            let s = timeInSecs % 60;
+            document.getElementById('time').innerText = 
+                (m < 10 ? "0" + m : m) + ":" + (s < 10 ? "0" + s : s);
+            
+            if (timeInSecs <= 0) {
+                clearInterval(timerInterval);
+                alert("Đã hết thời gian làm bài! Hệ thống sẽ tự động nộp bài.");
+                submitQuiz(true);
+            }
+        }, 1000);
+    }
+    window.onload = startTimer;
+
+    const answerKey = {
+        q1: { ans: 'B', exp: '<strong>Đáp án B.</strong> Cấu trúc hỏi giờ "What time is it?".', prompt: '1. What time _________ it?' },
+        q2: { ans: 'B', exp: '<strong>Đáp án B.</strong> 6:15 đọc là six fifteen.', prompt: '2. It\'s six _________. (6:15)' },
+        q3: { ans: 'A', exp: '<strong>Đáp án A.</strong> Cụm từ thức dậy là "get up".', prompt: '3. What time do you _________ up?' },
+        q4: { ans: 'C', exp: '<strong>Đáp án C.</strong> Dùng giới từ "at" trước mốc thời gian cụ thể.', prompt: '4. I go to school _________ six thirty.' },
+        q5: { ans: 'B', exp: '<strong>Đáp án B.</strong> Cụm từ ăn sáng là "have breakfast".', prompt: '5. What time do you have _________?' },
+        q6: { ans: 'A', exp: '<strong>Đáp án A.</strong> Thông tin trong bài: "I get up at six o\'clock".', prompt: '6. What time does Tom get up?' },
+        q7: { ans: 'B', exp: '<strong>Đáp án B.</strong> Thông tin trong bài: "I have breakfast at six fifteen".', prompt: '7. He has breakfast at _________.' },
+        q8: { ans: 'C', exp: '<strong>Đáp án C.</strong> Thông tin trong bài: "I go to school at six thirty".', prompt: '8. What time does he go to school?' },
+        q9: { ans: 'o\'clock', exp: '<strong>Đáp án: o\'clock.</strong> Thông tin: "I go to bed at nine o\'clock".', prompt: '9. Tom goes to bed at nine...' },
+        q10: { ans: 'student', exp: '<strong>Đáp án: student.</strong> Thông tin bài đọc đầu Unit.', prompt: '10. Tom is a...' },
+        q11: { ans: 'is', exp: '<strong>Đáp án: is.</strong> Cấu trúc hỏi giờ "What time is it?".', prompt: '11. What time ... it?' },
+        q12: { ans: 'at', exp: '<strong>Đáp án: at.</strong> Dùng "at" trước giờ.', prompt: '12. I get up ... six o\'clock.' },
+        q13: { ans: 'do', exp: '<strong>Đáp án: do.</strong> Chủ ngữ "you" dùng "do".', prompt: '13. What time ... you get up?' },
+        q14: { ans: 'fifteen', exp: '<strong>Đáp án: fifteen.</strong> 6:15 đọc là six fifteen.', prompt: '14. It is six ... (6:15)' },
+        q15: { ans: 'bed', exp: '<strong>Đáp án: bed.</strong> Cụm từ "go to bed".', prompt: '15. I go to ... at nine o\'clock.' },
+        q16: { ans: 'do', exp: '<strong>Đáp án: do.</strong> Chủ ngữ "you" dùng "do".', prompt: '16. What time ... you have breakfast?' },
+        q17: { ans: 'is', exp: '<strong>Đáp án: is.</strong> Chủ ngữ "It" đi với "is".', prompt: '17. It ... seven o\'clock.' },
+        q18: { ans: 'at', exp: '<strong>Đáp án: at.</strong> Dùng "at" trước thời gian.', prompt: '18. I go to school ... six forty-five.' },
+        q19: { ans: 'it', exp: '<strong>Đáp án: it.</strong> Cụm cố định "What time is it?".', prompt: '19. What time is ...?' },
+        q20: { ans: 'up', exp: '<strong>Đáp án: up.</strong> Cụm từ "get up".', prompt: '20. I get ... at six fifteen.' }
+    };
+
+    function submitQuiz(autoSubmit = false) {
+        let name = document.getElementById('student-name').value.trim();
+        let className = document.getElementById('student-class').value;
+        
+        if (!autoSubmit && (!name || !className)) {
+            alert('Vui lòng nhập đầy đủ Họ tên và Chọn lớp trước khi Nộp bài!');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            return;
+        }
+
+        if (autoSubmit) {
+            if (!name) name = "Chưa nhập tên";
+            if (!className) className = "Chưa chọn lớp";
+        }
+
+        isSubmitted = true;
+        if (typeof timerInterval !== 'undefined') clearInterval(timerInterval);
+        document.getElementById('timer-container').style.display = 'none';
+
+        let timeSpentMs = Date.now() - startTime;
+        let mins = Math.floor(timeSpentMs / 60000);
+        let secs = Math.floor((timeSpentMs % 60000) / 1000);
+        let timeSpentStr = mins + " phút " + secs + " giây";
+
+        let correctCount = 0;
+        let details = [];
+
+        for(let i=1; i<=20; i++) {
+            let qKey = `q${i}`;
+            let userVal = "";
+            let displayAns = "";
+            let isCorrect = false;
+
+            if (i <= 8) {
+                let checkedEl = document.querySelector(`input[name="${qKey}"]:checked`);
+                if (checkedEl) {
+                    userVal = checkedEl.value.trim().toLowerCase();
+                    displayAns = checkedEl.nextElementSibling.innerText.trim();
+                }
+            } else {
+                let inputEl = document.getElementById(qKey);
+                if (inputEl) {
+                    userVal = inputEl.value.trim().toLowerCase();
+                    displayAns = inputEl.value.trim();
+                }
+            }
+
+            if (!displayAns) displayAns = "Chưa trả lời";
+
+            if (userVal !== "") {
+                let correctAns = answerKey[qKey].ans.toLowerCase();
+                if (userVal === correctAns) {
+                    isCorrect = true;
+                }
+            }
+
+            if (isCorrect) correctCount++;
+
+            let divId = `div-${qKey}`;
+            let qDiv = document.getElementById(divId);
+            if (qDiv) {
+                if (isCorrect) qDiv.classList.add('correct');
+                else qDiv.classList.add('incorrect');
+            }
+
+            let expDiv = document.getElementById(`exp-${qKey}`);
+            if (expDiv) {
+                expDiv.innerHTML = answerKey[qKey].exp;
+                expDiv.style.display = 'block';
+            }
+
+            details.push({
+                questionPrompt: answerKey[qKey].prompt,
+                studentAnswer: displayAns,
+                correctAnswer: answerKey[qKey].ans,
+                isCorrect: isCorrect
+            });
+        }
+
+        const score = correctCount * 0.5;
+        
+        document.getElementById('rs-name').innerText = name;
+        document.getElementById('rs-class').innerText = className;
+        document.getElementById('rs-score').innerText = `Điểm: ${score}/10 (${correctCount}/20 câu)`;
+
+        const submitBtn = document.getElementById('submit-btn');
+        submitBtn.disabled = true;
+        submitBtn.innerText = "ĐANG LƯU ĐIỂM VÀO HỆ THỐNG...";
+        document.querySelectorAll('input, select').forEach(el => el.disabled = true);
+
+        const showResultUI = () => {
+            submitBtn.style.display = 'none';
+            document.getElementById('result-summary').style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            document.getElementById('exit-btn').style.display = 'block';
+        };
+
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbyPHVr8m2IYntvby0KBgO6v7OgtAobj9iFWLmvoc9uWWFXyegEwY2Prfl2QpWaDJKa-EA/exec';
+        
+        let payload = {
+            "Họ_Tên": name,
+            "Lớp": className,
+            "Điểm_Số": score,
+            "Số_Câu_Đúng": correctCount,
+            "Tên_Đề": "Phiếu Bài Tập Tiếng Anh Tuần 3 - Unit 2 (Dành cho học sinh yếu)",
+            "Thời_Gian": new Date().toLocaleString("vi-VN"),
+            "Thời_Gian_Làm_Bài": timeSpentStr,
+            "Số_Lần_Vi_Phạm": cheatCount,
+            "Chi_Tiết_Vi_Phạm": cheatLog.length > 0 ? cheatLog.join("; ") : "Không có vi phạm",
+            "Trạng_Thái_Gian_Lận": cheatCount > 0 ? ("CẢNH BÁO (" + cheatCount + " vi phạm)") : "An toàn (0 vi phạm)",
+            "details": details 
+        };
+
+        fetch(scriptURL, { 
+            method: 'POST',
+            headers: {
+                'Content-Type': 'text/plain;charset=utf-8' 
+            },
+            body: JSON.stringify(payload)
+        })
+        .then(() => showResultUI())
+        .catch(error => {
+            console.error('Lỗi khi gửi điểm: ', error);
+            showResultUI(); 
+        });
+    }
+
+    function exitApp() {
+        // Thoát hoàn toàn (Đóng tab hoặc chuyển trang trắng thông báo)
+        window.close();
+        document.body.innerHTML = `
+            <div style="display: flex; justify-content: center; align-items: center; height: 100vh; background: #f0f8ff; font-family: 'Nunito', sans-serif; text-align: center;">
+                <div style="background: white; padding: 40px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                    <h2 style="color: #27ae60; margin-bottom: 15px;">ĐÃ THOÁT KHỎI BÀI THI</h2>
+                    <p style="font-size: 18px; color: #555;">Cảm ơn em đã hoàn thành bài tập. Em có thể đóng tab trình duyệt này lại.</p>
+                </div>
+            </div>
+        `;
+    }
+</script>
+
+</body>
+</html>
