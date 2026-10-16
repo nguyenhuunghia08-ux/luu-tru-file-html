@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Ai Là Triệu Phú - English Vocabulary</title>
+    <style>
+        :root {
+            --bg-color: #020111;
+            --bg-gradient: radial-gradient(circle at center, #0a0a2a 0%, #020111 100%);
+            --neon-blue: #00f3ff;
+            --neon-green: #00ff00;
+            --neon-red: #ff003c;
+            --neon-orange: #ff9d00;
+            --box-bg: rgba(0, 5, 40, 0.85);
+            --text-color: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            background: var(--bg-gradient);
+            padding: 20px;
+            text-align: center;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        h1.title {
+            font-size: 3.5rem;
+            color: var(--neon-blue);
+            text-shadow: 0 0 20px var(--neon-blue);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            color: #ccc;
+            margin-bottom: 30px;
+        }
+
+        .instructions {
+            background: var(--box-bg);
+            border: 2px solid var(--neon-blue);
+            padding: 20px;
+            border-radius: 15px;
+            max-width: 600px;
+            margin-bottom: 40px;
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.3);
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        button.btn-primary {
+            background: transparent;
+            color: var(--neon-blue);
+            border: 2px solid var(--neon-blue);
+            padding: 15px 40px;
+            font-size: 1.5rem;
+            border-radius: 30px;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-weight: bold;
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.5), inset 0 0 10px rgba(0, 243, 255, 0.3);
+            transition: all 0.3s;
+            touch-action: manipulation;
+        }
+
+        button.btn-primary:hover, button.btn-primary:active {
+            background: var(--neon-blue);
+            color: #000;
+            box-shadow: 0 0 30px var(--neon-blue);
+        }
+
+        #game-screen {
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            height: 100vh;
+        }
+
+        .game-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+        }
+
+        .top-bar {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 5;
+        }
+
+        .lifeline-btn {
+            background: #000;
+            color: #fff;
+            border: 2px solid var(--neon-orange);
+            box-shadow: 0 0 10px var(--neon-orange);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            cursor: pointer;
+            touch-action: manipulation;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.3s;
+        }
+        
+        .lifeline-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            box-shadow: none;
+            border-color: #555;
+        }
+
+        .question-counter {
+            font-size: 1.2rem;
+            color: var(--neon-blue);
+            text-shadow: 0 0 5px var(--neon-blue);
+        }
+
+        .q-box {
+            background: var(--box-bg);
+            border: 2px solid var(--neon-blue);
+            border-radius: 40px;
+            padding: 30px 20px;
+            width: 100%;
+            max-width: 800px;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 40px;
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.4), inset 0 0 15px rgba(0, 243, 255, 0.2);
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .option {
+            background: rgba(0, 0, 20, 0.9);
+            border: 2px solid var(--neon-blue);
+            border-radius: 35px;
+            padding: 18px 25px;
+            color: #fff;
+            font-size: 1.2rem;
+            cursor: pointer;
+            text-align: left;
+            position: relative;
+            touch-action: manipulation;
+            transition: all 0.2s;
+            overflow: hidden;
+        }
+
+        .option:hover {
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.5);
+            background: rgba(0, 243, 255, 0.1);
+        }
+
+        .option span.letter {
+            color: var(--neon-orange);
+            font-weight: bold;
+            margin-right: 15px;
+        }
+
+        @keyframes blinkOrange {
+            0%, 100% { background: rgba(255, 157, 0, 0.2); border-color: var(--neon-orange); box-shadow: 0 0 15px var(--neon-orange); }
+            50% { background: rgba(255, 157, 0, 0.6); border-color: #fff; box-shadow: 0 0 25px var(--neon-orange); }
+        }
+
+        @keyframes pulseGreen {
+            0% { box-shadow: 0 0 10px var(--neon-green); background: rgba(0, 255, 0, 0.3); border-color: var(--neon-green); }
+            50% { box-shadow: 0 0 30px var(--neon-green); background: rgba(0, 255, 0, 0.7); border-color: #fff; color: #000; }
+            100% { box-shadow: 0 0 10px var(--neon-green); background: var(--neon-green); border-color: var(--neon-green); color: #000; }
+        }
+
+        .blink-orange {
+            animation: blinkOrange 0.5s infinite;
+            pointer-events: none;
+        }
+
+        .pulse-green {
+            animation: pulseGreen 1s forwards;
+            pointer-events: none;
+        }
+
+        .solid-red {
+            background: var(--neon-red) !important;
+            border-color: var(--neon-red) !important;
+            box-shadow: 0 0 20px var(--neon-red) !important;
+            color: #fff !important;
+            pointer-events: none;
+        }
+
+        .option.disabled {
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .explanation {
+            margin-top: 25px;
+            padding: 15px;
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid var(--neon-green);
+            border-radius: 10px;
+            color: #ddd;
+            width: 100%;
+            max-width: 800px;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+
+        .explanation.show {
+            opacity: 1;
+        }
+
+        .ladder-container {
+            width: 250px;
+            background: rgba(0, 0, 0, 0.6);
+            border-left: 2px solid var(--neon-blue);
+            display: flex;
+            flex-direction: column-reverse;
+            justify-content: center;
+            padding: 20px 0;
+            z-index: 5;
+        }
+
+        .ladder-item {
+            padding: 8px 20px;
+            font-size: 1.1rem;
+            color: var(--neon-orange);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            opacity: 0.6;
+            transition: all 0.3s;
+        }
+
+        .ladder-item.safe-haven {
+            color: #fff;
+            font-weight: bold;
+        }
+
+        .ladder-item.active {
+            background: var(--neon-orange);
+            color: #000 !important;
+            opacity: 1;
+            font-weight: bold;
+            box-shadow: 0 0 15px var(--neon-orange);
+            border-radius: 5px;
+        }
+
+        .ladder-item.passed {
+            color: #888;
+        }
+
+        @media (max-width: 768px) {
+            #game-screen {
+                flex-direction: column;
+            }
+
+            .q-box {
+                font-size: 1.2rem;
+                padding: 20px 15px;
+                border-radius: 20px;
+                margin-top: 40px; /* Nhường chỗ cho top-bar */
+                margin-bottom: 20px;
+            }
+
+            .options-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .option {
+                padding: 15px 20px;
+                font-size: 1rem;
+                border-radius: 25px;
+            }
+
+            .top-bar {
+                top: 10px; left: 10px; right: 10px;
+            }
+
+            .lifeline-btn {
+                width: 50px; height: 50px; font-size: 1rem;
+            }
+
+            /* Đưa thang tiền xuống dưới và cuộn ngang */
+            .ladder-container {
+                width: 100%;
+                height: 70px;
+                flex-direction: row;
+                border-left: none;
+                border-top: 2px solid var(--neon-blue);
+                overflow-x: auto;
+                overflow-y: hidden;
+                padding: 0 10px;
+                justify-content: flex-start;
+                align-items: center;
+                scroll-behavior: smooth;
+            }
+
+            .ladder-item {
+                flex: 0 0 auto;
+                margin: 0 10px;
+                padding: 8px 15px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="start-screen" class="screen">
+        <h1 class="title">Ai Là Triệu Phú</h1>
+        <div class="subtitle">Chủ đề: Vocabulary - Days & Months</div>
+        
+        <div class="instructions">
+            <p><strong>Luật chơi:</strong></p>
+            <p>- Bạn sẽ trả lời 10 câu hỏi trắc nghiệm tiếng Anh.</p>
+            <p>- Có 4 lựa chọn, chỉ 1 đáp án chính xác duy nhất.</p>
+            <p>- Cột mốc an toàn ở câu số 5 và câu số 10.</p>
+            <p>- Bạn có 1 quyền trợ giúp <strong>50:50</strong> (loại bỏ 2 phương án sai).</p>
+        </div>
+        
+        <button class="btn-primary" onclick="startGame()">Bắt Đầu Chơi</button>
+    </div>
+
+    <div id="game-screen" class="hidden">
+        <div class="game-main">
+            <div class="top-bar">
+                <div class="question-counter" id="q-counter">Câu hỏi: 1/10</div>
+                <button id="btn-5050" class="lifeline-btn" onclick="use5050()">50:50</button>
+            </div>
+
+            <div class="q-box" id="question-text">Đang tải câu hỏi...</div>
+            
+            <div class="options-grid" id="options-container">
+                <!-- Nút đáp án sẽ được tạo bằng JS -->
+            </div>
+
+            <div id="explanation-box" class="explanation"></div>
+        </div>
+
+        <div class="ladder-container" id="prize-ladder">
+            <!-- Thang tiền thưởng sinh ra bởi JS -->
+        </div>
+    </div>
+
+    <div id="end-screen" class="screen hidden">
+        <h1 class="title" id="end-title">Trò Chơi Kết Thúc</h1>
+        <div class="subtitle" id="end-subtitle">Bạn đã giành được: $0</div>
+        <button class="btn-primary" onclick="location.reload()">Chơi Lại</button>
+    </div>
+
+    <script>
+        // Dữ liệu câu hỏi tạo từ nội dung bài học
+        const questionData = [
+            {
+                q: "Chọn từ đúng để điền vào chỗ trống: 'What day is it today? It's ________.'",
+                options: ["January", "Monday", "February", "March"],
+                correct: 1,
+                explanation: "'Monday' là ngày thứ Hai. Cấu trúc 'What day is it today?' dùng để hỏi về thứ trong tuần."
+            },
+            {
+                q: "Khi ai đó hỏi 'When's your birthday?', bạn sẽ dùng giới từ nào trước tháng (ví dụ: May)?",
+                options: ["on", "at", "in", "to"],
+                correct: 2,
+                explanation: "Với các tháng trong năm, ta dùng giới từ 'in'. Ví dụ: 'It's in May'."
+            },
+            {
+                q: "Hôm nay là thứ Tư, bạn sẽ nói bằng tiếng Anh như thế nào?",
+                options: ["It's Tuesday", "It's Wednesday", "It's Thursday", "It's Friday"],
+                correct: 1,
+                explanation: "'Wednesday' có nghĩa là thứ Tư trong tiếng Anh."
+            },
+            {
+                q: "Tháng Hai trong tiếng Anh được viết là gì?",
+                options: ["February", "April", "March", "January"],
+                correct: 0,
+                explanation: "'February' là tháng Hai. January là tháng 1, March là tháng 3, April là tháng 4."
+            },
+            {
+                q: "Điền từ còn thiếu vào chuỗi ngày sau: 'Monday, Tuesday, ________, Thursday.'",
+                options: ["Wednesday", "Friday", "Sunday", "Saturday"],
+                correct: 0,
+                explanation: "Sau thứ Ba (Tuesday) sẽ là thứ Tư (Wednesday), rồi mới tới thứ Năm (Thursday)."
+            },
+            {
+                q: "Câu 'When's your birthday? It's in January.' có nghĩa là gì?",
+                options: ["Sinh nhật của tôi vào tháng Năm", "Sinh nhật của tôi vào tháng Một", "Sinh nhật của tôi vào thứ Hai", "Hôm nay là sinh nhật của tôi"],
+                correct: 1,
+                explanation: "'January' có nghĩa là tháng Một. Do đó câu này là 'Sinh nhật của tôi vào tháng Một'."
+            },
+            {
+                q: "Hai ngày cuối tuần thường được gọi bằng tiếng Anh là gì?",
+                options: ["Monday and Tuesday", "Wednesday and Thursday", "Saturday and Sunday", "Friday and Saturday"],
+                correct: 2,
+                explanation: "'Saturday' là thứ Bảy và 'Sunday' là Chủ nhật, đây là hai ngày cuối tuần (weekend)."
+            },
+            {
+                q: "Sắp xếp các tháng sau theo thứ tự đúng trong năm: March, January, April, February.",
+                options: ["January - February - March - April", "January - March - February - April", "February - January - March - April", "March - April - January - February"],
+                correct: 0,
+                explanation: "Thứ tự đúng là Tháng 1 (January) - Tháng 2 (February) - Tháng 3 (March) - Tháng 4 (April)."
+            },
+            {
+                q: "Nếu bạn muốn hỏi ai đó 'Hôm nay là thứ mấy?', bạn sẽ hỏi câu nào?",
+                options: ["When's your birthday?", "What day is it today?", "How are you today?", "What is your name?"],
+                correct: 1,
+                explanation: "'What day is it today?' là cấu trúc chuẩn để hỏi về ngày/thứ hiện tại."
+            },
+            {
+                q: "Từ vựng nào dưới đây KHÔNG phải là một ngày trong tuần?",
+                options: ["Thursday", "Friday", "May", "Saturday"],
+                correct: 2,
+                explanation: "'May' là tháng Năm, không phải là một ngày trong tuần. Các từ còn lại đều là thứ trong tuần."
+            }
+        ];
+
+        // Cấu hình giải thưởng và mốc an toàn
+        const prizes = ["$100", "$200", "$500", "$1,000", "$5,000", "$10,000", "$50,000", "$100,000", "$500,000", "$1,000,000"];
+        const safeHavens = [4, 9]; // Vị trí (index) của mốc an toàn: Câu 5 và Câu 10
+
+        let currentQuestionIndex = 0;
+        let guaranteedPrize = "$0";
+        let isAnswering = false;
+        let is5050Used = false;
+
+        const bgm = new Audio("https://raw.githubusercontent.com/HuuNghia2308/Edu-assets/main/Lop-1/File-Nghe/asset_1777903499504_-m-thanh-ch----c-c-u-h-i.mp3");
+        bgm.loop = true;
+        const correctSound = new Audio("https://raw.githubusercontent.com/HuuNghia2308/Edu-assets/main/Lop-1/File-Nghe/asset_1777903530000_am-thanh-tra-loi-dung-ai-la-trieu-phu.mp3");
+        const wrongSound = new Audio("https://raw.githubusercontent.com/HuuNghia2308/Edu-assets/main/Lop-1/File-Nghe/asset_1777903552999_-m-thanh-sai-ai-l--trieu-phu.mp3");
+
+        function playSound(audioObj) {
+            audioObj.currentTime = 0;
+            audioObj.play().catch(e => console.log("Trình duyệt chặn autoplay âm thanh:", e));
+        }
+
+        function startGame() {
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('game-screen').classList.remove('hidden');
+            playSound(bgm);
+            buildPrizeLadder();
+            loadQuestion(currentQuestionIndex);
+        }
+
+        function buildPrizeLadder() {
+            const ladderContainer = document.getElementById('prize-ladder');
+            ladderContainer.innerHTML = '';
+            
+            prizes.forEach((prize, index) => {
+                const div = document.createElement('div');
+                div.className = 'ladder-item';
+                div.id = `ladder-${index}`;
+                
+                // Mốc an toàn
+                if (safeHavens.includes(index)) {
+                    div.classList.add('safe-haven');
+                }
+                
+                // Đánh số từ dưới lên (câu 1 -> 10)
+                div.innerHTML = `<span>${index + 1}</span> <span>${prize}</span>`;
+                ladderContainer.appendChild(div);
+            });
+        }
+
+        function loadQuestion(index) {
+            isAnswering = false;
+            const qData = questionData[index];
+            
+            // Cập nhật UI Header
+            document.getElementById('q-counter').innerText = `Câu hỏi: ${index + 1}/10`;
+            document.getElementById('question-text').innerText = qData.q;
+            document.getElementById('explanation-box').classList.remove('show');
+            document.getElementById('explanation-box').innerText = '';
+
+            // Sinh nút đáp án
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+            const labels = ['A', 'B', 'C', 'D'];
+            
+            qData.options.forEach((optText, i) => {
+                const btn = document.createElement('div');
+                btn.className = 'option';
+                btn.innerHTML = `<span class="letter">${labels[i]}:</span> ${optText}`;
+                btn.onclick = () => selectAnswer(btn, i);
+                optionsContainer.appendChild(btn);
+            });
+
+            // Cập nhật Ladder
+            updateLadderUI(index);
+        }
+
+        function updateLadderUI(currentIndex) {
+            prizes.forEach((_, i) => {
+                const item = document.getElementById(`ladder-${i}`);
+                item.classList.remove('active', 'passed');
+                if (i < currentIndex) {
+                    item.classList.add('passed');
+                } else if (i === currentIndex) {
+                    item.classList.add('active');
+                    // Tự động cuộn trên mobile
+                    if (window.innerWidth <= 768) {
+                        setTimeout(() => {
+                            item.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+                        }, 100);
+                    }
+                }
+            });
+        }
+
+        function selectAnswer(selectedBtn, selectedIndex) {
+            if (isAnswering) return;
+            isAnswering = true;
+            bgm.pause(); // Dừng nhạc nền để tạo kịch tính
+
+            const qData = questionData[currentQuestionIndex];
+            const allBtns = document.querySelectorAll('.option');
+            
+            // Hồi hộp 2s (Nhấp nháy cam)
+            selectedBtn.classList.add('blink-orange');
+
+            setTimeout(() => {
+                selectedBtn.classList.remove('blink-orange');
+
+                if (selectedIndex === qData.correct) {
+                    // Trả lời Đúng
+                    selectedBtn.classList.add('pulse-green');
+                    playSound(correctSound);
+                    
+                    // Cập nhật mốc an toàn
+                    if (safeHavens.includes(currentQuestionIndex)) {
+                        guaranteedPrize = prizes[currentQuestionIndex];
+                    }
+                    
+                    showExplanation(qData.explanation);
+
+                    setTimeout(() => {
+                        currentQuestionIndex++;
+                        if (currentQuestionIndex < questionData.length) {
+                            loadQuestion(currentQuestionIndex);
+                            playSound(bgm); // Tiếp tục nhạc nền
+                        } else {
+                            endGame(true); // Thắng 1 triệu đô
+                        }
+                    }, 2500); // Đợi 2.5s sau khi đúng mới qua câu
+
+                } else {
+                    // Trả lời Sai
+                    selectedBtn.classList.add('solid-red');
+                    playSound(wrongSound);
+                    
+                    // Hiển thị đáp án đúng
+                    allBtns[qData.correct].classList.add('pulse-green');
+                    showExplanation(qData.explanation);
+
+                    setTimeout(() => {
+                        endGame(false);
+                    }, 3000);
+                }
+            }, 2000); // 2s suspense
+        }
+
+        function showExplanation(text) {
+            const expBox = document.getElementById('explanation-box');
+            expBox.innerText = text;
+            expBox.classList.add('show');
+        }
+
+        function use5050() {
+            if (is5050Used || isAnswering) return;
+            is5050Used = true;
+            
+            const btn5050 = document.getElementById('btn-5050');
+            btn5050.disabled = true;
+
+            const qData = questionData[currentQuestionIndex];
+            const allBtns = document.querySelectorAll('.option');
+            
+            let wrongIndexes = [0, 1, 2, 3].filter(i => i !== qData.correct);
+            // Chọn ngẫu nhiên 2 đáp án sai để ẩn
+            wrongIndexes.sort(() => 0.5 - Math.random());
+            const toHide = wrongIndexes.slice(0, 2);
+
+            toHide.forEach(index => {
+                allBtns[index].classList.add('disabled');
+            });
+        }
+
+        function endGame(isWin) {
+            document.getElementById('game-screen').classList.add('hidden');
+            const endScreen = document.getElementById('end-screen');
+            endScreen.classList.remove('hidden');
+            bgm.pause();
+
+            const titleObj = document.getElementById('end-title');
+            const subObj = document.getElementById('end-subtitle');
+
+            if (isWin) {
+                titleObj.innerText = "CHÚC MỪNG!";
+                titleObj.style.color = "var(--neon-green)";
+                titleObj.style.textShadow = "0 0 20px var(--neon-green)";
+                subObj.innerText = `Bạn đã chiến thắng xuất sắc: ${prizes[prizes.length - 1]}`;
+            } else {
+                titleObj.innerText = "RẤT TIẾC!";
+                titleObj.style.color = "var(--neon-red)";
+                titleObj.style.textShadow = "0 0 20px var(--neon-red)";
+                subObj.innerText = `Trò chơi kết thúc. Phần thưởng của bạn là: ${guaranteedPrize}`;
+            }
+        }
+    </script>
+</body>
+</html>
