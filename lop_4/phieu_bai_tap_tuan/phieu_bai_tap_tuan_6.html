@@ -449,7 +449,7 @@
         </script>
 
         <button type="submit" class="btn-submit" id="submitBtn">📝 NỘP BÀI</button>
-        <button type="button" class="btn-exit" id="exitBtn" onclick="exitApp()">🚪 THOÁT</button>
+        <button type="button" class="btn-exit" id="exitBtn" onclick="exitApp()">🚪 ĐÓNG CỬA SỔ</button>
 
     </form>
 </div>
@@ -490,7 +490,7 @@
         let timeSpentStr = mins + " phút " + secs + " giây";
 
         let correctCount = 0;
-        let formData = new URLSearchParams(); // Khởi tạo gói dữ liệu gửi đi
+        let formData = new URLSearchParams(); 
 
         // THÊM THÔNG TIN CƠ BẢN VÀ THỜI GIAN LÀM BÀI
         formData.append('Thời gian', new Date().toLocaleString('vi-VN'));
@@ -606,35 +606,16 @@
         });
     }
 
+    // HÀM ĐÓNG TRÌNH DUYỆT
     function exitApp() {
-        // Reset nội dung
-        document.getElementById('quizForm').reset();
-        document.querySelectorAll('input, select, .word-btn').forEach(el => el.disabled = false);
-        
-        for(let i = 11; i <= 20; i++) {
-            let target = document.getElementById('target-' + i);
-            let source = document.getElementById('source-' + i);
-            while(target.firstChild) {
-                source.appendChild(target.firstChild);
-            }
+        // Cố gắng đóng cửa sổ. Lưu ý: một số trình duyệt có cơ chế bảo mật chặn JS đóng các tab không phải do JS mở ra.
+        if (confirm("Em có chắc chắn muốn thoát khỏi bài tập này?")) {
+            window.close();
+            // Fallback nếu window.close() bị trình duyệt chặn
+            setTimeout(function() {
+                alert("Em có thể bấm dấu X trên thẻ trình duyệt để thoát trang nhé.");
+            }, 500);
         }
-
-        document.querySelectorAll('.explanation').forEach(el => el.style.display = 'none');
-        document.getElementById('resultBoard').style.display = 'none';
-        document.querySelectorAll('.q-box').forEach(el => {
-            el.classList.remove('correct-box', 'incorrect-box');
-        });
-
-        // Khôi phục đồng hồ tính giờ lại từ đầu
-        startTime = Date.now();
-
-        const submitBtn = document.getElementById('submitBtn');
-        submitBtn.style.display = 'block';
-        submitBtn.innerText = "📝 NỘP BÀI";
-        submitBtn.disabled = false;
-        document.getElementById('exitBtn').style.display = 'none';
-
-        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 </script>
 
