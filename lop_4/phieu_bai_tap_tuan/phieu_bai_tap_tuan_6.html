@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phiếu bài tập Tiếng Anh - Tuần 6</title>
+    <style>
+        :root {
+            --primary: #007bff;
+            --secondary: #ffc107;
+            --success: #28a745;
+            --danger: #dc3545;
+            --bg: #f4f7f6;
+            --box-bg: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--box-bg);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid var(--primary);
+        }
+
+        .header h1 {
+            color: var(--primary);
+            margin: 0 0 15px 0;
+            font-size: 28px;
+        }
+
+        .student-form {
+            display: flex;
+            gap: 40px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+        }
+
+        .input-group label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        .input-group input, .input-group select {
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            min-width: 200px;
+        }
+
+        .part-title {
+            background-color: var(--primary);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin: 30px 0 20px 0;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .q-box {
+            background: #fff;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .q-text {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .radio-label {
+            display: block;
+            padding: 10px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            border: 1px solid transparent;
+        }
+
+        .radio-label:hover {
+            background-color: #e2eefd;
+            border-color: #b8d4f9;
+        }
+
+        .radio-label input {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+
+        select.inline-select {
+            padding: 5px 10px;
+            font-size: 16px;
+            border: 2px solid var(--primary);
+            border-radius: 5px;
+            outline: none;
+        }
+
+        .reading-box {
+            background-color: #fff9e6;
+            border-left: 5px solid var(--secondary);
+            padding: 15px;
+            margin-bottom: 20px;
+            font-style: italic;
+            font-size: 16px;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .sort-source, .sort-target {
+            min-height: 60px;
+            border-radius: 8px;
+            padding: 15px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .sort-source {
+            background-color: #f8f9fa;
+            border: 2px solid #eee;
+        }
+
+        .sort-target {
+            background-color: #f0f7ff;
+            border: 2px dashed var(--primary);
+            margin-top: 15px;
+        }
+
+        .word-btn {
+            background-color: var(--secondary);
+            color: #000;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            transition: transform 0.1s;
+        }
+
+        .word-btn:active {
+            transform: scale(0.95);
+        }
+
+        .word-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .btn-submit {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background-color: var(--success);
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .btn-submit:hover {
+            background-color: #218838;
+        }
+
+        .btn-submit:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+
+        .btn-exit {
+            display: none;
+            width: 100%;
+            padding: 15px;
+            background-color: var(--danger);
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .btn-exit:hover {
+            background-color: #c82333;
+        }
+
+        .result-board {
+            display: none;
+            background: linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 30px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .result-board h2 {
+            margin: 0 0 10px 0;
+            color: #2c3e50;
+        }
+
+        .score {
+            font-size: 36px;
+            font-weight: bold;
+            color: #d35400;
+        }
+
+        .explanation {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #e9ecef;
+            border-left: 5px solid var(--primary);
+            border-radius: 5px;
+        }
+
+        .correct-box {
+            border-color: var(--success);
+            background-color: #f4fff4;
+        }
+
+        .incorrect-box {
+            border-color: var(--danger);
+            background-color: #fff4f4;
+        }
+        
+        .ans-text {
+            color: var(--danger);
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <form id="quizForm" onsubmit="event.preventDefault(); submitQuiz();">
+        <!-- Header -->
+        <div class="header">
+            <h1>PHIẾU BÀI TẬP TUẦN 6</h1>
+            <div class="student-form">
+                <div class="input-group">
+                    <label for="studentName">Họ và tên học sinh *</label>
+                    <input type="text" id="studentName" placeholder="Nhập họ và tên..." required>
+                </div>
+                <div class="input-group">
+                    <label for="studentClass">Lớp *</label>
+                    <select id="studentClass" required>
+                        <option value="">-- Chọn lớp --</option>
+                        <script>
+                            for(let i=1; i<=5; i++) {
+                                for(let j=1; j<=5; j++) {
+                                    document.write(`<option value="${i}/${j}">${i}/${j}</option>`);
+                                }
+                            }
+                        </script>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bảng kết quả (Ẩn mặc định) -->
+        <div id="resultBoard" class="result-board">
+            <h2>KẾT QUẢ BÀI LÀM</h2>
+            <p>Học sinh: <strong id="resName"></strong> - Lớp: <strong id="resClass"></strong></p>
+            <p>Số câu đúng: <strong id="resCorrect"></strong> / 20</p>
+            <p>Thời gian làm bài: <strong id="resTime"></strong></p>
+            <div class="score" id="resScore">10 ĐIỂM</div>
+            <h3 id="resMessage" style="color: #e74c3c;"></h3>
+        </div>
+
+        <!-- PART 1 -->
+        <div class="part-title">PART 1: MULTIPLE CHOICE</div>
+        
+        <div class="q-box" id="box-1">
+            <div class="q-text">1. ________ is your birthday?</div>
+            <label class="radio-label"><input type="radio" name="q1" value="A"> A. What</label>
+            <label class="radio-label"><input type="radio" name="q1" value="B"> B. When</label>
+            <label class="radio-label"><input type="radio" name="q1" value="C"> C. Who</label>
+            <label class="radio-label"><input type="radio" name="q1" value="D"> D. How</label>
+            <div class="explanation" id="exp-1">Đáp án đúng: <span class="ans-text">B. When</span><br>Giải thích: Dùng từ để hỏi "When" (Khi nào) để hỏi về thời gian.</div>
+        </div>
+
+        <div class="q-box" id="box-2">
+            <div class="q-text">2. It's ________ May.</div>
+            <label class="radio-label"><input type="radio" name="q2" value="A"> A. in</label>
+            <label class="radio-label"><input type="radio" name="q2" value="B"> B. on</label>
+            <label class="radio-label"><input type="radio" name="q2" value="C"> C. at</label>
+            <label class="radio-label"><input type="radio" name="q2" value="D"> D. of</label>
+            <div class="explanation" id="exp-2">Đáp án đúng: <span class="ans-text">A. in</span><br>Giải thích: Dùng giới từ "in" trước các tháng.</div>
+        </div>
+
+        <div class="q-box" id="box-3">
+            <div class="q-text">3. Tháng 1 trong tiếng Anh là:</div>
+            <label class="radio-label"><input type="radio" name="q3" value="A"> A. February</label>
+            <label class="radio-label"><input type="radio" name="q3" value="B"> B. March</label>
+            <label class="radio-label"><input type="radio" name="q3" value="C"> C. January</label>
+            <label class="radio-label"><input type="radio" name="q3" value="D"> D. April</label>
+            <div class="explanation" id="exp-3">Đáp án đúng: <span class="ans-text">C. January</span><br>Giải thích: January nghĩa là tháng 1.</div>
+        </div>
+
+        <div class="q-box" id="box-4">
+            <div class="q-text">4. When's ________ birthday? - It's in April.</div>
+            <label class="radio-label"><input type="radio" name="q4" value="A"> A. you</label>
+            <label class="radio-label"><input type="radio" name="q4" value="B"> B. I</label>
+            <label class="radio-label"><input type="radio" name="q4" value="C"> C. your</label>
+            <label class="radio-label"><input type="radio" name="q4" value="D"> D. it</label>
+            <div class="explanation" id="exp-4">Đáp án đúng: <span class="ans-text">C. your</span><br>Giải thích: Cần tính từ sở hữu "your" (của bạn) bổ nghĩa cho danh từ birthday.</div>
+        </div>
+
+        <div class="q-box" id="box-5">
+            <div class="q-text">5. Chọn từ đúng để hoàn thành câu:</div>
+            My birthday is in 
+            <select name="q5" id="q5" class="inline-select">
+                <option value="">-- Chọn --</option>
+                <option value="March">March</option>
+                <option value="When">When</option>
+            </select> .
+            <div class="explanation" id="exp-5">Đáp án đúng: <span class="ans-text">March</span><br>Giải thích: Sau giới từ "in" cần một danh từ chỉ tháng.</div>
+        </div>
+
+        <!-- PART 2 -->
+        <div class="part-title">PART 2: READING</div>
+        <div class="reading-box">
+            "Hello, my name is Anna. I am a student in class 4A. My birthday is in January. I have three best friends: Ben, Lucy, and Sam. Ben's birthday is in February. Lucy's birthday is in March. And Sam's birthday is in May. We like birthdays very much. In April, we do not have any birthdays, but we play games together."
+        </div>
+
+        <div class="q-box" id="box-6">
+            <div class="q-text">6. When is Anna's birthday?</div>
+            <label class="radio-label"><input type="radio" name="q6" value="A"> A. In January</label>
+            <label class="radio-label"><input type="radio" name="q6" value="B"> B. In February</label>
+            <label class="radio-label"><input type="radio" name="q6" value="C"> C. In March</label>
+            <div class="explanation" id="exp-6">Đáp án đúng: <span class="ans-text">A. In January</span><br>Giải thích: Dựa vào câu "My birthday is in January."</div>
+        </div>
+
+        <div class="q-box" id="box-7">
+            <div class="q-text">7. Whose birthday is in February?</div>
+            <label class="radio-label"><input type="radio" name="q7" value="A"> A. Anna</label>
+            <label class="radio-label"><input type="radio" name="q7" value="B"> B. Ben</label>
+            <label class="radio-label"><input type="radio" name="q7" value="C"> C. Sam</label>
+            <div class="explanation" id="exp-7">Đáp án đúng: <span class="ans-text">B. Ben</span><br>Giải thích: Dựa vào câu "Ben's birthday is in February."</div>
+        </div>
+
+        <div class="q-box" id="box-8">
+            <div class="q-text">8. Chọn từ đúng để điền vào chỗ trống:</div>
+            Lucy's birthday is in 
+            <select name="q8" id="q8" class="inline-select">
+                <option value="">-- Chọn --</option>
+                <option value="January">January</option>
+                <option value="March">March</option>
+                <option value="April">April</option>
+            </select> .
+            <div class="explanation" id="exp-8">Đáp án đúng: <span class="ans-text">March</span><br>Giải thích: Dựa vào câu "Lucy's birthday is in March."</div>
+        </div>
+
+        <div class="q-box" id="box-9">
+            <div class="q-text">9. Chọn từ đúng để điền vào chỗ trống:</div>
+            Sam's birthday is in 
+            <select name="q9" id="q9" class="inline-select">
+                <option value="">-- Chọn --</option>
+                <option value="February">February</option>
+                <option value="April">April</option>
+                <option value="May">May</option>
+            </select> .
+            <div class="explanation" id="exp-9">Đáp án đúng: <span class="ans-text">May</span><br>Giải thích: Dựa vào câu "And Sam's birthday is in May."</div>
+        </div>
+
+        <div class="q-box" id="box-10">
+            <div class="q-text">10. Do they have any birthdays in April?</div>
+            <label class="radio-label"><input type="radio" name="q10" value="A"> A. Yes</label>
+            <label class="radio-label"><input type="radio" name="q10" value="B"> B. No</label>
+            <div class="explanation" id="exp-10">Đáp án đúng: <span class="ans-text">B. No</span><br>Giải thích: Dựa vào câu "In April, we do not have any birthdays..."</div>
+        </div>
+
+        <!-- PART 3 -->
+        <div class="part-title">PART 3: WRITING (Bấm vào các từ để sắp xếp thành câu)</div>
+        
+        <script>
+            const sortingData = [
+                { id: 11, words: ['birthday', 'When', 'is', 'your', '?'], ans: 'When is your birthday ?' },
+                { id: 12, words: ['is', 'It', 'in', 'January', '.'], ans: 'It is in January .' },
+                { id: 13, words: ['in', 'My', 'birthday', 'February', 'is', '.'], ans: 'My birthday is in February .' },
+                { id: 14, words: ["When's", 'birthday', 'your', '?'], ans: "When's your birthday ?" },
+                { id: 15, words: ['in', "It's", 'May', '.'], ans: "It's in May ." },
+                { id: 16, words: ['is', 'When', 'birthday', 'your', '?'], ans: 'When is your birthday ?' },
+                { id: 17, words: ['is', 'in', 'It', 'March', '.'], ans: 'It is in March .' },
+                { id: 18, words: ['is', 'My', 'in', 'birthday', 'April', '.'], ans: 'My birthday is in April .' },
+                { id: 19, words: ['birthday', 'in', 'is', 'May', "Anna's", '.'], ans: "Anna's birthday is in May ." },
+                { id: 20, words: ['is', 'It', 'February', 'in', '.'], ans: 'It is in February .' }
+            ];
+
+            sortingData.forEach(item => {
+                document.write(`
+                    <div class="q-box" id="box-${item.id}">
+                        <div class="q-text">${item.id}. Sắp xếp câu:</div>
+                        <div class="sort-source" id="source-${item.id}">
+                            ${item.words.map(w => `<button type="button" class="word-btn" onclick="moveWord(this, 'source-${item.id}', 'target-${item.id}')">${w}</button>`).join('')}
+                        </div>
+                        <div class="sort-target" id="target-${item.id}"></div>
+                        <div class="explanation" id="exp-${item.id}">Đáp án đúng: <span class="ans-text">${item.ans}</span></div>
+                    </div>
+                `);
+            });
+
+            function moveWord(btn, sourceId, targetId) {
+                let parentId = btn.parentElement.id;
+                if (parentId === sourceId) {
+                    document.getElementById(targetId).appendChild(btn);
+                } else {
+                    document.getElementById(sourceId).appendChild(btn);
+                }
+            }
+        </script>
+
+        <button type="submit" class="btn-submit" id="submitBtn">📝 NỘP BÀI</button>
+        <button type="button" class="btn-exit" id="exitBtn" onclick="exitApp()">🚪 THOÁT</button>
+
+    </form>
+</div>
+
+<script>
+    // BẮT ĐẦU ĐỒNG HỒ TÍNH THỜI GIAN LÀM BÀI
+    let startTime = Date.now();
+
+    const correctAnswers = {
+        q1: 'B', q2: 'A', q3: 'C', q4: 'C', q5: 'March',
+        q6: 'A', q7: 'B', q8: 'March', q9: 'May', q10: 'B',
+        q11: 'When is your birthday ?',
+        q12: 'It is in January .',
+        q13: 'My birthday is in February .',
+        q14: "When's your birthday ?",
+        q15: "It's in May .",
+        q16: 'When is your birthday ?',
+        q17: 'It is in March .',
+        q18: 'My birthday is in April .',
+        q19: "Anna's birthday is in May .",
+        q20: 'It is in February .'
+    };
+
+    function submitQuiz() {
+        let name = document.getElementById('studentName').value.trim();
+        let stuClass = document.getElementById('studentClass').value;
+        
+        if (!name || !stuClass) {
+            alert("Vui lòng điền đầy đủ Họ tên và Lớp nhé!");
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            return;
+        }
+
+        // TÍNH TOÁN THỜI GIAN LÀM BÀI
+        let timeSpentSeconds = Math.floor((Date.now() - startTime) / 1000);
+        let mins = Math.floor(timeSpentSeconds / 60);
+        let secs = timeSpentSeconds % 60;
+        let timeSpentStr = mins + " phút " + secs + " giây";
+
+        let correctCount = 0;
+        let formData = new URLSearchParams(); // Khởi tạo gói dữ liệu gửi đi
+
+        // THÊM THÔNG TIN CƠ BẢN VÀ THỜI GIAN LÀM BÀI
+        formData.append('Thời gian', new Date().toLocaleString('vi-VN'));
+        formData.append('Họ và tên', name);
+        formData.append('Lớp', stuClass);
+        formData.append('Thời_Gian_Làm_Bài', timeSpentStr);
+        formData.append('Tên_Đề', "Phiếu Bài Tập Tiếng Anh - Tuần 6");
+
+        // CHẤM ĐIỂM & ĐÓNG GÓI CHI TIẾT CÂU HỎI TRẮC NGHIỆM (1-10)
+        for (let i = 1; i <= 10; i++) {
+            let userAns = '';
+            if (i === 5 || i === 8 || i === 9) {
+                userAns = document.getElementById('q'+i).value;
+            } else {
+                let radio = document.querySelector(`input[name="q${i}"]:checked`);
+                if (radio) userAns = radio.value;
+            }
+
+            let box = document.getElementById('box-' + i);
+            let qText = box.querySelector('.q-text').innerText.replace(/^\d+\.\s*/, '').trim();
+            let isCorrect = (userAns === correctAnswers['q'+i]);
+            
+            if (isCorrect) {
+                correctCount++;
+                box.classList.add('correct-box');
+            } else {
+                box.classList.add('incorrect-box');
+            }
+
+            // Ghi nhận chi tiết từng câu đẩy vào formData
+            formData.append('Câu_' + i, qText);
+            formData.append('Câu_' + i + '_Status', isCorrect ? "CORRECT" : "INCORRECT");
+            formData.append('Câu_' + i + '_StudentAns', userAns || "Chưa trả lời");
+            formData.append('Câu_' + i + '_CorrectAns', correctAnswers['q'+i]);
+        }
+
+        // CHẤM ĐIỂM & ĐÓNG GÓI CHI TIẾT CÂU HỎI SẮP XẾP (11-20)
+        for (let i = 11; i <= 20; i++) {
+            let targetDiv = document.getElementById('target-' + i);
+            let btns = targetDiv.querySelectorAll('.word-btn');
+            let userArr = Array.from(btns).map(btn => btn.innerText);
+            let userAns = userArr.join(' ');
+            
+            let box = document.getElementById('box-' + i);
+            let qText = "Sắp xếp câu: " + Array.from(document.getElementById('source-'+i).children).map(b => b.innerText).join(' / ');
+            let isCorrect = (userAns === correctAnswers['q'+i]);
+
+            if (isCorrect) {
+                correctCount++;
+                box.classList.add('correct-box');
+            } else {
+                box.classList.add('incorrect-box');
+            }
+
+            // Ghi nhận chi tiết từng câu đẩy vào formData
+            formData.append('Câu_' + i, qText);
+            formData.append('Câu_' + i + '_Status', isCorrect ? "CORRECT" : "INCORRECT");
+            formData.append('Câu_' + i + '_StudentAns', userAns || "Chưa sắp xếp");
+            formData.append('Câu_' + i + '_CorrectAns', correctAnswers['q'+i]);
+        }
+
+        let score = correctCount * 0.5;
+
+        // Bổ sung Điểm tổng kết vào gói dữ liệu
+        formData.append('Số câu đúng', correctCount + '/20');
+        formData.append('Điểm', score);
+
+        // Cập nhật bảng kết quả hiển thị trên màn hình
+        document.getElementById('resName').innerText = name;
+        document.getElementById('resClass').innerText = stuClass;
+        document.getElementById('resCorrect').innerText = correctCount;
+        document.getElementById('resTime').innerText = timeSpentStr;
+        document.getElementById('resScore').innerText = score + ' ĐIỂM';
+        
+        let msg = "";
+        if (score === 10) msg = "Tuyệt vời! Em làm bài rất xuất sắc! 🌟";
+        else if (score >= 8) msg = "Rất tốt! Cố gắng phát huy nhé! 👍";
+        else if (score >= 5) msg = "Khá tốt! Em cần cẩn thận hơn một chút. 💪";
+        else msg = "Đừng buồn! Hãy ôn bài và cố gắng hơn ở lần sau nhé! ❤️";
+        document.getElementById('resMessage').innerText = msg;
+
+        document.getElementById('resultBoard').style.display = 'block';
+        document.querySelectorAll('.explanation').forEach(el => el.style.display = 'block');
+
+        // Khóa form không cho sửa lại
+        document.querySelectorAll('input, select, .word-btn').forEach(el => el.disabled = true);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        // TIẾN HÀNH GỬI TOÀN BỘ GÓI DỮ LIỆU ĐÃ ĐÓNG GÓI LÊN GOOGLE SHEETS
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbwN9_3ziB7VWuDlrHlhNSUhUUSYvAgtBPj8RzWsaEBCjgokgoNTY0OzFQMCGU9j3hbG/exec';
+        
+        const submitBtn = document.getElementById('submitBtn');
+        submitBtn.innerText = "⏳ ĐANG LƯU KẾT QUẢ...";
+        submitBtn.disabled = true;
+
+        fetch(scriptURL, { 
+            method: 'POST', 
+            body: formData, 
+            mode: 'no-cors',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        })
+        .then(() => {
+            console.log('Đã gửi yêu cầu lưu điểm và chi tiết bài làm');
+            submitBtn.style.display = 'none';
+            document.getElementById('exitBtn').style.display = 'block';
+        })
+        .catch(error => {
+            console.error('Lỗi khi lưu dữ liệu:', error);
+            submitBtn.style.display = 'none';
+            document.getElementById('exitBtn').style.display = 'block';
+        });
+    }
+
+    function exitApp() {
+        // Reset nội dung
+        document.getElementById('quizForm').reset();
+        document.querySelectorAll('input, select, .word-btn').forEach(el => el.disabled = false);
+        
+        for(let i = 11; i <= 20; i++) {
+            let target = document.getElementById('target-' + i);
+            let source = document.getElementById('source-' + i);
+            while(target.firstChild) {
+                source.appendChild(target.firstChild);
+            }
+        }
+
+        document.querySelectorAll('.explanation').forEach(el => el.style.display = 'none');
+        document.getElementById('resultBoard').style.display = 'none';
+        document.querySelectorAll('.q-box').forEach(el => {
+            el.classList.remove('correct-box', 'incorrect-box');
+        });
+
+        // Khôi phục đồng hồ tính giờ lại từ đầu
+        startTime = Date.now();
+
+        const submitBtn = document.getElementById('submitBtn');
+        submitBtn.style.display = 'block';
+        submitBtn.innerText = "📝 NỘP BÀI";
+        submitBtn.disabled = false;
+        document.getElementById('exitBtn').style.display = 'none';
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+</script>
+
+</body>
+</html>
