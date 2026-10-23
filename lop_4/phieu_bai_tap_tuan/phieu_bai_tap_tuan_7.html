@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phiếu Bài Tập Tiếng Anh - Tuần 7</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Nunito', sans-serif; background-color: #f0fdf4; }
+        .radio-label {
+            display: inline-flex; align-items: center; padding: 0.75rem 1.25rem;
+            background-color: white; border: 2px solid #e5e7eb; border-radius: 0.75rem;
+            cursor: pointer; transition: all 0.2s; width: 100%;
+        }
+        .radio-label:hover { border-color: #3b82f6; background-color: #eff6ff; }
+        input[type="radio"]:checked + .radio-label {
+            border-color: #3b82f6; background-color: #eff6ff; font-weight: bold; color: #1d4ed8;
+        }
+        input[type="radio"]:disabled + .radio-label { cursor: not-allowed; opacity: 0.7; }
+        
+        .correct-answer-box { border-color: #22c55e !important; background-color: #f0fdf4 !important; color: #166534 !important; }
+        .wrong-answer-box { border-color: #ef4444 !important; background-color: #fef2f2 !important; color: #991b1b !important; }
+        
+        .sort-word {
+            display: inline-block; padding: 0.5rem 1rem; margin: 0.25rem;
+            background-color: #e0f2fe; color: #0369a1; border-radius: 0.5rem;
+            cursor: pointer; font-weight: 600; border: 2px solid #bae6fd;
+            transition: all 0.2s; user-select: none;
+        }
+        .sort-word:hover { background-color: #bae6fd; transform: translateY(-2px); }
+        .sort-word.disabled { cursor: not-allowed; opacity: 0.6; transform: none; }
+        
+        .sort-result-area {
+            min-height: 50px; border: 2px dashed #cbd5e1; border-radius: 0.75rem;
+            padding: 0.5rem; display: flex; flex-wrap: wrap; align-items: center; background-color: #f8fafc;
+        }
+        
+        .explanation { display: none; margin-top: 0.5rem; padding: 0.75rem; background-color: #fffbeb; border-left: 4px solid #f59e0b; border-radius: 0.375rem; font-size: 0.9rem; color: #92400e; }
+        
+        /* Select & Input styles */
+        .styled-input { border: 2px solid #cbd5e1; border-radius: 0.5rem; padding: 0.25rem 0.5rem; outline: none; transition: border-color 0.2s; }
+        .styled-input:focus { border-color: #3b82f6; }
+        .styled-input:disabled { background-color: #f1f5f9; cursor: not-allowed; }
+    </style>
+</head>
+<body class="text-gray-800 p-4 md:p-8">
+
+    <div class="max-w-4xl mx-auto bg-white rounded-3xl shadow-xl overflow-hidden border-4 border-green-400">
+        
+        <!-- Header -->
+        <div class="bg-green-500 text-white p-6 md:p-10 text-center">
+            <h1 class="text-3xl md:text-4xl font-extrabold uppercase mb-2">Phiếu Bài Tập Tuần 7</h1>
+            <h2 class="text-xl md:text-2xl font-semibold opacity-90">Unit 4: Lesson 2 and 3</h2>
+        </div>
+
+        <div class="p-6 md:p-10">
+            <!-- Form Thông tin -->
+            <div class="bg-green-50 p-6 rounded-2xl mb-8 border border-green-200 shadow-sm" id="student-info-form">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-green-800 font-bold mb-2">Họ và tên học sinh: <span class="text-red-500">*</span></label>
+                        <input type="text" id="student-name" class="w-full px-4 py-3 rounded-xl border-2 border-green-300 focus:border-green-500 focus:ring-0 outline-none text-lg transition" placeholder="Nhập họ và tên...">
+                    </div>
+                    <div>
+                        <label class="block text-green-800 font-bold mb-2">Lớp: <span class="text-red-500">*</span></label>
+                        <select id="student-class" class="w-full px-4 py-3 rounded-xl border-2 border-green-300 focus:border-green-500 outline-none text-lg bg-white transition cursor-pointer">
+                            <option value="">-- Chọn lớp --</option>
+                            <!-- Script sẽ render danh sách lớp -->
+                        </select>
+                    </div>
+                </div>
+                <div id="error-msg" class="text-red-500 font-bold mt-3 hidden">⚠️ Vui lòng điền đầy đủ Họ Tên và Lớp!</div>
+            </div>
+
+            <!-- Bảng kết quả (Ẩn mặc định) -->
+            <div id="result-summary" class="hidden mb-8 p-6 rounded-2xl border-4 text-center transform transition-all">
+                <h3 class="text-2xl font-bold mb-4" id="result-praise"></h3>
+                <div class="text-lg mb-2">Học sinh: <span id="res-name" class="font-bold text-blue-700"></span> - Lớp: <span id="res-class" class="font-bold text-blue-700"></span></div>
+                <div class="text-xl">Số câu đúng: <span id="res-correct" class="font-bold text-green-600 text-2xl"></span> / 20</div>
+                <div class="text-xl font-bold mt-2">Tổng điểm: <span id="res-score" class="text-4xl text-red-500"></span> / 10</div>
+            </div>
+
+            <!-- Bài làm -->
+            <div id="exercise-area">
+                
+                <!-- PART 1: MCQ -->
+                <div class="mb-10">
+                    <h3 class="text-2xl font-bold text-blue-600 uppercase mb-4 pb-2 border-b-2 border-blue-200">PART 1: Choose the correct answer.</h3>
+                    
+                    <!-- Q1 -->
+                    <div class="mb-6 question-block" data-ans="B">
+                        <p class="text-lg font-bold mb-3">1. What do you want to ______? - I want some lemonade.</p>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                            <label><input type="radio" name="q1" value="A" class="hidden"><span class="radio-label">A. eat</span></label>
+                            <label><input type="radio" name="q1" value="B" class="hidden"><span class="radio-label">B. drink</span></label>
+                            <label><input type="radio" name="q1" value="C" class="hidden"><span class="radio-label">C. have</span></label>
+                            <label><input type="radio" name="q1" value="D" class="hidden"><span class="radio-label">D. do</span></label>
+                        </div>
+                        <div class="explanation"><strong>Giải thích:</strong> "lemonade" là nước chanh, dùng động từ "drink" - uống. (Đáp án B)</div>
+                    </div>
+
+                    <!-- Q2 -->
+                    <div class="mb-6 question-block" data-ans="C">
+                        <p class="text-lg font-bold mb-3">2. What do you want to eat? - I want ______ grapes.</p>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                            <label><input type="radio" name="q2" value="A" class="hidden"><span class="radio-label">A. a</span></label>
+                            <label><input type="radio" name="q2" value="B" class="hidden"><span class="radio-label">B. an</span></label>
+                            <label><input type="radio" name="q2" value="C" class="hidden"><span class="radio-label">C. some</span></label>
+                            <label><input type="radio" name="q2" value="D" class="hidden"><span class="radio-label">D. the</span></label>
+                        </div>
+                        <div class="explanation"><strong>Giải thích:</strong> Dùng "some" trước danh từ số nhiều "grapes". (Đáp án C)</div>
+                    </div>
+
+                    <!-- Q3 -->
+                    <div class="mb-6 question-block" data-ans="A">
+                        <p class="text-lg font-bold mb-3">3. ______ do you want to drink? - I want some water.</p>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                            <label><input type="radio" name="q3" value="A" class="hidden"><span class="radio-label">A. What</span></label>
+                            <label><input type="radio" name="q3" value="B" class="hidden"><span class="radio-label">B. Who</span></label>
+                            <label><input type="radio" name="q3" value="C" class="hidden"><span class="radio-label">C. How</span></label>
+                            <label><input type="radio" name="q3" value="D" class="hidden"><span class="radio-label">D. Where</span></label>
+                        </div>
+                        <div class="explanation"><strong>Giải thích:</strong> Từ để hỏi cái gì là "What". (Đáp án A)</div>
+                    </div>
+
+                    <!-- Q4 -->
+                    <div class="mb-6 question-block" data-ans="C">
+                        <p class="text-lg font-bold mb-3">4. I am thirsty. I want some ______.</p>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                            <label><input type="radio" name="q4" value="A" class="hidden"><span class="radio-label">A. jam</span></label>
+                            <label><input type="radio" name="q4" value="B" class="hidden"><span class="radio-label">B. grapes</span></label>
+                            <label><input type="radio" name="q4" value="C" class="hidden"><span class="radio-label">C. water</span></label>
+                            <label><input type="radio" name="q4" value="D" class="hidden"><span class="radio-label">D. eat</span></label>
+                        </div>
+                        <div class="explanation"><strong>Giải thích:</strong> Đang khát nước "thirsty" nên chọn "water" - nước lọc. (Đáp án C)</div>
+                    </div>
+
+                    <!-- Q5 -->
+                    <div class="mb-6 question-block" data-ans="C">
+                        <p class="text-lg font-bold mb-3">5. What do you want to eat? - I want some ______.</p>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                            <label><input type="radio" name="q5" value="A" class="hidden"><span class="radio-label">A. water</span></label>
+                            <label><input type="radio" name="q5" value="B" class="hidden"><span class="radio-label">B. lemonade</span></label>
+                            <label><input type="radio" name="q5" value="C" class="hidden"><span class="radio-label">C. jam</span></label>
+                            <label><input type="radio" name="q5" value="D" class="hidden"><span class="radio-label">D. drink</span></label>
+                        </div>
+                        <div class="explanation"><strong>Giải thích:</strong> Hỏi "eat" - ăn, nên chọn đồ ăn là "jam" - mứt. (Đáp án C)</div>
+                    </div>
+                </div>
+
+                <!-- PART 2: READING & SELECT -->
+                <div class="mb-10">
+                    <h3 class="text-2xl font-bold text-blue-600 uppercase mb-4 pb-2 border-b-2 border-blue-200">PART 2: Read and choose the correct answer.</h3>
+                    <div class="bg-gray-50 border border-gray-300 p-5 rounded-xl text-lg italic text-gray-700 mb-6 shadow-inner leading-relaxed">
+                        "Hello, my name is Anna. I am with my brother, Ben. We are hungry and thirsty. Mom asks, 'What do you want to eat, Anna?'. I say, 'I want some grapes'. Ben likes sweet food. Mom asks him, 'What do you want to eat, Ben?'. He says, 'I want some jam'. Then, we want to drink. I want some water. Ben doesn't like water. He says, 'I want some lemonade'. We are very happy."
+                    </div>
+
+                    <!-- Q6 to Q10 using Select -->
+                    <div class="space-y-4">
+                        <div class="question-block bg-white p-4 rounded-xl border" data-ans="B">
+                            <p class="text-lg font-bold mb-2">6. Who is Anna with?</p>
+                            <select id="q6" class="styled-input w-full md:w-1/2 text-lg">
+                                <option value="">-- Chọn đáp án --</option>
+                                <option value="A">A. Mom</option>
+                                <option value="B">B. Her brother, Ben</option>
+                                <option value="C">C. Her friends</option>
+                            </select>
+                            <div class="explanation"><strong>Giải thích:</strong> Thông tin trong bài: "I am with my brother, Ben." (Đáp án B)</div>
+                        </div>
+
+                        <div class="question-block bg-white p-4 rounded-xl border" data-ans="B">
+                            <p class="text-lg font-bold mb-2">7. What does Anna want to eat?</p>
+                            <select id="q7" class="styled-input w-full md:w-1/2 text-lg">
+                                <option value="">-- Chọn đáp án --</option>
+                                <option value="A">A. some jam</option>
+                                <option value="B">B. some grapes</option>
+                                <option value="C">C. some water</option>
+                            </select>
+                            <div class="explanation"><strong>Giải thích:</strong> Lời của Anna: "I say, 'I want some grapes'". (Đáp án B)</div>
+                        </div>
+
+                        <div class="question-block bg-white p-4 rounded-xl border" data-ans="A">
+                            <p class="text-lg font-bold mb-2">8. What does Ben want to eat?</p>
+                            <select id="q8" class="styled-input w-full md:w-1/2 text-lg">
+                                <option value="">-- Chọn đáp án --</option>
+                                <option value="A">A. some jam</option>
+                                <option value="B">B. some grapes</option>
+                                <option value="C">C. some lemonade</option>
+                            </select>
+                            <div class="explanation"><strong>Giải thích:</strong> Lời của Ben: "He says, 'I want some jam'". (Đáp án A)</div>
+                        </div>
+
+                        <div class="question-block bg-white p-4 rounded-xl border" data-ans="B">
+                            <p class="text-lg font-bold mb-2">9. What does Anna want to drink?</p>
+                            <select id="q9" class="styled-input w-full md:w-1/2 text-lg">
+                                <option value="">-- Chọn đáp án --</option>
+                                <option value="A">A. some lemonade</option>
+                                <option value="B">B. some water</option>
+                                <option value="C">C. some jam</option>
+                            </select>
+                            <div class="explanation"><strong>Giải thích:</strong> Lời của Anna: "I want some water." (Đáp án B)</div>
+                        </div>
+
+                        <div class="question-block bg-white p-4 rounded-xl border" data-ans="B">
+                            <p class="text-lg font-bold mb-2">10. What does Ben want to drink?</p>
+                            <select id="q10" class="styled-input w-full md:w-1/2 text-lg">
+                                <option value="">-- Chọn đáp án --</option>
+                                <option value="A">A. some water</option>
+                                <option value="B">B. some lemonade</option>
+                                <option value="C">C. some grapes</option>
+                            </select>
+                            <div class="explanation"><strong>Giải thích:</strong> Lời của Ben: "He says, 'I want some lemonade'." (Đáp án B)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PART 3: WRITING & FILL BLANKS -->
+                <div class="mb-6">
+                    <h3 class="text-2xl font-bold text-blue-600 uppercase mb-4 pb-2 border-b-2 border-blue-200">PART 3: Write and fill in the blanks.</h3>
+                    
+                    <p class="text-xl font-bold mb-4 text-purple-700">A. Order the words. (Bấm vào từ để sắp xếp)</p>
+                    
+                    <div class="space-y-6" id="sorting-questions">
+                        <!-- Q11 -->
+                        <div class="question-block p-4 bg-white rounded-xl border" data-type="sort" data-ans="What do you want to eat?">
+                            <p class="text-lg font-bold mb-2">11. do / What / you / eat? / want / to</p>
+                            <div class="sort-source flex flex-wrap mb-2">
+                                <span class="sort-word">What</span><span class="sort-word">you</span><span class="sort-word">to</span><span class="sort-word">want</span><span class="sort-word">do</span><span class="sort-word">eat?</span>
+                            </div>
+                            <div class="sort-result-area mb-2" data-id="q11"></div>
+                            <div class="explanation"><strong>Giải thích:</strong> What do you want to eat? (Cấu trúc câu hỏi ăn gì).</div>
+                        </div>
+
+                        <!-- Q12 -->
+                        <div class="question-block p-4 bg-white rounded-xl border" data-type="sort" data-ans="I want some grapes.">
+                            <p class="text-lg font-bold mb-2">12. want / I / grapes. / some</p>
+                            <div class="sort-source flex flex-wrap mb-2">
+                                <span class="sort-word">I</span><span class="sort-word">grapes.</span><span class="sort-word">want</span><span class="sort-word">some</span>
+                            </div>
+                            <div class="sort-result-area mb-2" data-id="q12"></div>
+                            <div class="explanation"><strong>Giải thích:</strong> I want some grapes. (Cấu trúc câu trả lời với nho).</div>
+                        </div>
+
+                        <!-- Q13 -->
+                        <div class="question-block p-4 bg-white rounded-xl border" data-type="sort" data-ans="What do you want to drink?">
+                            <p class="text-lg font-bold mb-2">13. to / What / drink? / want / do / you</p>
+                            <div class="sort-source flex flex-wrap mb-2">
+                                <span class="sort-word">do</span><span class="sort-word">drink?</span><span class="sort-word">want</span><span class="sort-word">to</span><span class="sort-word">you</span><span class="sort-word">What</span>
+                            </div>
+                            <div class="sort-result-area mb-2" data-id="q13"></div>
+                            <div class="explanation"><strong>Giải thích:</strong> What do you want to drink? (Cấu trúc câu hỏi uống gì).</div>
+                        </div>
+
+                        <!-- Q14 -->
+                        <div class="question-block p-4 bg-white rounded-xl border" data-type="sort" data-ans="I want some lemonade.">
+                            <p class="text-lg font-bold mb-2">14. some / I / lemonade. / want</p>
+                            <div class="sort-source flex flex-wrap mb-2">
+                                <span class="sort-word">want</span><span class="sort-word">lemonade.</span><span class="sort-word">some</span><span class="sort-word">I</span>
+                            </div>
+                            <div class="sort-result-area mb-2" data-id="q14"></div>
+                            <div class="explanation"><strong>Giải thích:</strong> I want some lemonade. (Cấu trúc câu trả lời với nước chanh).</div>
+                        </div>
+
+                        <!-- Q15 -->
+                        <div class="question-block p-4 bg-white rounded-xl border" data-type="sort" data-ans="I want some water.">
+                            <p class="text-lg font-bold mb-2">15. water. / want / some / I</p>
+                            <div class="sort-source flex flex-wrap mb-2">
+                                <span class="sort-word">some</span><span class="sort-word">I</span><span class="sort-word">water.</span><span class="sort-word">want</span>
+                            </div>
+                            <div class="sort-result-area mb-2" data-id="q15"></div>
+                            <div class="explanation"><strong>Giải thích:</strong> I want some water. (Cấu trúc câu trả lời với nước lọc).</div>
+                        </div>
+                    </div>
+
+                    <p class="text-xl font-bold mt-8 mb-4 text-purple-700">B. Fill in the blanks. (Chọn từ trong menu xổ xuống)</p>
+                    <div class="space-y-4">
+                        <div class="question-block p-4 bg-white rounded-xl border" data-type="input" data-ans="to">
+                            <p class="text-lg">16. What do you want <select id="q16" class="styled-input mx-2 text-blue-700 font-bold"><option value="">--</option><option value="to">to</option><option value="in">in</option><option value="at">at</option></select> eat?</p>
+                            <div class="explanation"><strong>Giải thích:</strong> Đáp án: <strong>to</strong> (Cấu trúc: want + to + V nguyên mẫu).</div>
+                        </div>
+
+                        <div class="question-block p-4 bg-white rounded-xl border" data-type="input" data-ans="want">
+                            <p class="text-lg">17. I <select id="q17" class="styled-input mx-2 text-blue-700 font-bold"><option value="">--</option><option value="want">want</option><option value="wants">wants</option><option value="wanting">wanting</option></select> some jam.</p>
+                            <div class="explanation"><strong>Giải thích:</strong> Đáp án: <strong>want</strong> (Cấu trúc: I + want + some...).</div>
+                        </div>
+
+                        <div class="question-block p-4 bg-white rounded-xl border" data-type="input" data-ans="do">
+                            <p class="text-lg">18. What <select id="q18" class="styled-input mx-2 text-blue-700 font-bold"><option value="">--</option><option value="do">do</option><option value="does">does</option><option value="are">are</option></select> you want to drink?</p>
+                            <div class="explanation"><strong>Giải thích:</strong> Đáp án: <strong>do</strong> (Trợ động từ "do" đi với chủ ngữ "you").</div>
+                        </div>
+
+                        <div class="question-block p-4 bg-white rounded-xl border" data-type="input" data-ans="some">
+                            <p class="text-lg">19. I want <select id="q19" class="styled-input mx-2 text-blue-700 font-bold"><option value="">--</option><option value="a">a</option><option value="an">an</option><option value="some">some</option></select> grapes.</p>
+                            <div class="explanation"><strong>Giải thích:</strong> Đáp án: <strong>some</strong> (Dùng "some" trước danh từ chỉ đồ ăn/thức uống).</div>
+                        </div>
+
+                        <div class="question-block p-4 bg-white rounded-xl border" data-type="input" data-ans="drink">
+                            <p class="text-lg">20. What do you want to <select id="q20" class="styled-input mx-2 text-blue-700 font-bold"><option value="">--</option><option value="eat">eat</option><option value="drink">drink</option><option value="have">have</option></select>? - I want some water.</p>
+                            <div class="explanation"><strong>Giải thích:</strong> Đáp án: <strong>drink</strong> (Câu trả lời là "water" - nước lọc, nên dùng động từ "drink").</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="mt-8 pt-6 border-t border-gray-200 flex flex-col sm:flex-row justify-center gap-4">
+                <button id="btn-submit" onclick="submitForm()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-10 rounded-full text-xl shadow-lg transition-transform transform hover:scale-105 uppercase tracking-wider">
+                    Nộp Bài
+                </button>
+                <button id="btn-exit" onclick="exitForm()" class="hidden bg-gray-500 hover:bg-gray-600 text-white font-bold py-4 px-10 rounded-full text-xl shadow-lg transition-transform transform hover:scale-105 uppercase tracking-wider">
+                    Thoát
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Khởi tạo danh sách lớp học
+        function initClasses() {
+            const selectClass = document.getElementById('student-class');
+            for (let grade = 1; grade <= 5; grade++) {
+                for (let c = 1; c <= 5; c++) {
+                    const opt = document.createElement('option');
+                    opt.value = `${grade}/${c}`;
+                    opt.textContent = `Lớp ${grade}/${c}`;
+                    selectClass.appendChild(opt);
+                }
+            }
+        }
+        initClasses();
+
+        // Logic Sắp xếp từ (Q11-Q15)
+        document.querySelectorAll('.sort-source').forEach(sourceDiv => {
+            const resultArea = sourceDiv.nextElementSibling;
+            
+            sourceDiv.querySelectorAll('.sort-word').forEach(wordBtn => {
+                wordBtn.addEventListener('click', function() {
+                    if (this.classList.contains('disabled') || document.getElementById('btn-submit').disabled) return;
+                    
+                    const clone = this.cloneNode(true);
+                    clone.classList.remove('disabled');
+                    
+                    clone.addEventListener('click', function() {
+                        if(document.getElementById('btn-submit').disabled) return;
+                        this.remove();
+                        wordBtn.classList.remove('disabled');
+                    });
+                    
+                    resultArea.appendChild(clone);
+                    this.classList.add('disabled');
+                });
+            });
+        });
+
+        // Hàm chấm điểm
+        function submitForm() {
+            const name = document.getElementById('student-name').value.trim();
+            const stdClass = document.getElementById('student-class').value;
+            const errorMsg = document.getElementById('error-msg');
+            
+            if (!name || !stdClass) {
+                errorMsg.classList.remove('hidden');
+                document.getElementById('student-info-form').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return;
+            }
+            errorMsg.classList.add('hidden');
+
+            let correctCount = 0;
+            const pointsPerQ = 0.5;
+            let details = []; // Mảng thu thập chi tiết từng câu gửi về Google Sheets
+
+            // Chấm điểm Part 1 (Radios Q1-Q5)
+            for(let i=1; i<=5; i++) {
+                const block = document.querySelector(`input[name="q${i}"]`).closest('.question-block');
+                const correctAnsVal = block.getAttribute('data-ans');
+                const selected = document.querySelector(`input[name="q${i}"]:checked`);
+                
+                // Lấy chi tiết nội dung câu hỏi
+                const qPrompt = block.querySelector('p').textContent.replace(/[✔✘]/g, '').trim();
+                const correctLabel = block.querySelector(`input[value="${correctAnsVal}"]`).nextElementSibling.textContent.trim();
+                const userLabel = selected ? selected.nextElementSibling.textContent.trim() : "Chưa trả lời";
+                const isCorrect = selected && selected.value === correctAnsVal;
+
+                details.push({
+                    isCorrect: isCorrect,
+                    questionPrompt: qPrompt,
+                    studentAnswer: userLabel,
+                    correctAnswer: correctLabel
+                });
+
+                if (isCorrect) {
+                    correctCount++;
+                    block.querySelector('p').innerHTML += ' <span class="text-green-600">✔</span>';
+                } else {
+                    block.querySelector('p').innerHTML += ' <span class="text-red-500">✘</span>';
+                }
+            }
+
+            // Chấm điểm Part 2 (Selects Q6-Q10)
+            for(let i=6; i<=10; i++) {
+                const selectEl = document.getElementById(`q${i}`);
+                const block = selectEl.closest('.question-block');
+                const correctAnsVal = block.getAttribute('data-ans');
+                
+                const qPrompt = block.querySelector('p').textContent.trim();
+                const correctLabel = block.querySelector(`option[value="${correctAnsVal}"]`).textContent.trim();
+                const userLabel = selectEl.value ? selectEl.options[selectEl.selectedIndex].textContent.trim() : "Chưa trả lời";
+                const isCorrect = selectEl.value === correctAnsVal;
+
+                details.push({
+                    isCorrect: isCorrect,
+                    questionPrompt: qPrompt,
+                    studentAnswer: userLabel,
+                    correctAnswer: correctLabel
+                });
+
+                if (isCorrect) {
+                    correctCount++;
+                    selectEl.classList.add('correct-answer-box');
+                } else {
+                    selectEl.classList.add('wrong-answer-box');
+                }
+            }
+
+            // Chấm điểm Part 3 (Sorting & Fill)
+            const blocks = document.querySelectorAll('.question-block[data-type]');
+            blocks.forEach(block => {
+                const type = block.getAttribute('data-type');
+                const correctAns = block.getAttribute('data-ans').trim();
+                const correctAnsLower = correctAns.toLowerCase();
+                const qPrompt = block.querySelector('p').textContent.trim();
+                let userAns = "";
+                let userLabel = "";
+                let isCorrect = false;
+
+                if (type === "sort") {
+                    const resultArea = block.querySelector('.sort-result-area');
+                    const words = Array.from(resultArea.querySelectorAll('.sort-word')).map(w => w.textContent);
+                    userAns = words.join(" ").trim();
+                    userLabel = userAns || "Chưa trả lời";
+                    isCorrect = (userAns.toLowerCase() === correctAnsLower);
+                    
+                    if (isCorrect) {
+                        correctCount++;
+                        resultArea.classList.add('correct-answer-box');
+                    } else {
+                        resultArea.classList.add('wrong-answer-box');
+                    }
+                } else if (type === "input") {
+                    const inputEl = block.querySelector('input[type="text"], select');
+                    userAns = inputEl.value.toLowerCase().trim();
+                    userLabel = inputEl.options ? (inputEl.value ? inputEl.options[inputEl.selectedIndex].textContent : "Chưa trả lời") : (inputEl.value || "Chưa trả lời");
+                    isCorrect = (userAns === correctAnsLower);
+                    
+                    if (isCorrect) {
+                        correctCount++;
+                        inputEl.classList.add('correct-answer-box');
+                    } else {
+                        inputEl.classList.add('wrong-answer-box');
+                    }
+                }
+
+                details.push({
+                    isCorrect: isCorrect,
+                    questionPrompt: qPrompt,
+                    studentAnswer: userLabel,
+                    correctAnswer: correctAns
+                });
+            });
+
+            // Tính điểm (Tổng điểm giờ là số nguyên/số thập phân thuần túy)
+            const totalScore = correctCount * pointsPerQ;
+
+            // Khóa Form
+            document.querySelectorAll('input, select, button').forEach(el => el.disabled = true);
+            document.getElementById('btn-submit').classList.add('hidden');
+            const btnExit = document.getElementById('btn-exit');
+            btnExit.classList.remove('hidden');
+            btnExit.disabled = false; // Bật lại nút thoát
+
+            // Hiển thị kết quả
+            document.getElementById('res-name').textContent = name;
+            document.getElementById('res-class').textContent = stdClass;
+            document.getElementById('res-correct').textContent = correctCount;
+            document.getElementById('res-score').textContent = totalScore;
+            
+            const praiseEl = document.getElementById('result-praise');
+            const summaryDiv = document.getElementById('result-summary');
+            summaryDiv.classList.remove('hidden');
+            
+            if(totalScore === 10) {
+                praiseEl.textContent = "🏆 Xuất sắc! Em làm bài hoàn hảo!";
+                summaryDiv.className = "mb-8 p-6 rounded-2xl border-4 text-center bg-green-100 border-green-500";
+            } else if(totalScore >= 7) {
+                praiseEl.textContent = "🌟 Rất tốt! Cố gắng phát huy nhé!";
+                summaryDiv.className = "mb-8 p-6 rounded-2xl border-4 text-center bg-blue-100 border-blue-500";
+            } else if(totalScore >= 5) {
+                praiseEl.textContent = "👍 Khá lắm! Em hãy ôn tập kỹ hơn nha!";
+                summaryDiv.className = "mb-8 p-6 rounded-2xl border-4 text-center bg-yellow-100 border-yellow-500";
+            } else {
+                praiseEl.textContent = "💪 Cố lên! Em cần ôn lại bài thật kỹ!";
+                summaryDiv.className = "mb-8 p-6 rounded-2xl border-4 text-center bg-red-100 border-red-500";
+            }
+
+            // Hiện giải thích
+            document.querySelectorAll('.explanation').forEach(el => el.style.display = 'block');
+
+            // --- BẮT ĐẦU: GỬI DỮ LIỆU VỀ GOOGLE SHEETS ---
+            const scriptURL = 'https://script.google.com/macros/s/AKfycbymgKEPSmpoq16PJcF3-pImoa7vIhSrzL-uQexIM4MjQpuGDlZmUctJzU7VgAeMdY6J8g/exec'; 
+            
+            // Đã đổi "Điểm" và "Số câu đúng" thành dữ liệu số nguyên/số thập phân 
+            // Thêm mảng "details" để App Script đọc chi tiết từng câu
+            const payload = {
+                "Họ và tên": name,
+                "Lớp": stdClass,
+                "Điểm": totalScore, 
+                "Số câu đúng": correctCount,
+                "Thời gian": new Date().toLocaleString("vi-VN"),
+                "Tên_Đề": "Phiếu Bài Tập Tuần 7 - Unit 4",
+                "details": details 
+            };
+
+            fetch(scriptURL, { 
+                method: 'POST', 
+                headers: {
+                    'Content-Type': 'text/plain;charset=utf-8',
+                },
+                body: JSON.stringify(payload), 
+                mode: 'no-cors' 
+            })
+                .then(() => console.log('Đã gửi điểm thành công về Google Sheets!'))
+                .catch(error => console.error('Lỗi khi gửi điểm:', error));
+            // --- KẾT THÚC: GỬI DỮ LIỆU VỀ GOOGLE SHEETS ---
+
+            // Cuộn lên đầu kết quả
+            summaryDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // Thoát và reset
+        function exitForm() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            setTimeout(() => {
+                location.reload();
+            }, 500);
+        }
+    </script>
+</body>
+</html>
