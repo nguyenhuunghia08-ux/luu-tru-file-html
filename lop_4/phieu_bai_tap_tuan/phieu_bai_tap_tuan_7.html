@@ -309,7 +309,7 @@
                     Nộp Bài
                 </button>
                 <button id="btn-exit" onclick="exitForm()" class="hidden bg-gray-500 hover:bg-gray-600 text-white font-bold py-4 px-10 rounded-full text-xl shadow-lg transition-transform transform hover:scale-105 uppercase tracking-wider">
-                    Thoát
+                    ĐÓNG BÀI TẬP
                 </button>
             </div>
         </div>
@@ -469,7 +469,7 @@
                 });
             });
 
-            // Tính điểm (Tổng điểm giờ là số nguyên/số thập phân thuần túy)
+            // Tính điểm (Tổng điểm là số nguyên/thập phân)
             const totalScore = correctCount * pointsPerQ;
 
             // Khóa Form
@@ -509,8 +509,6 @@
             // --- BẮT ĐẦU: GỬI DỮ LIỆU VỀ GOOGLE SHEETS ---
             const scriptURL = 'https://script.google.com/macros/s/AKfycbymgKEPSmpoq16PJcF3-pImoa7vIhSrzL-uQexIM4MjQpuGDlZmUctJzU7VgAeMdY6J8g/exec'; 
             
-            // Đã đổi "Điểm" và "Số câu đúng" thành dữ liệu số nguyên/số thập phân 
-            // Thêm mảng "details" để App Script đọc chi tiết từng câu
             const payload = {
                 "Họ và tên": name,
                 "Lớp": stdClass,
@@ -521,6 +519,7 @@
                 "details": details 
             };
 
+            // Ép gửi bằng raw text chống lỗi CORS
             fetch(scriptURL, { 
                 method: 'POST', 
                 headers: {
@@ -529,7 +528,7 @@
                 body: JSON.stringify(payload), 
                 mode: 'no-cors' 
             })
-                .then(() => console.log('Đã gửi điểm thành công về Google Sheets!'))
+                .then(() => console.log('Đã gửi điểm thành công!'))
                 .catch(error => console.error('Lỗi khi gửi điểm:', error));
             // --- KẾT THÚC: GỬI DỮ LIỆU VỀ GOOGLE SHEETS ---
 
@@ -539,10 +538,21 @@
 
         // Thoát và reset
         function exitForm() {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            // Cố gắng ép đóng tab (chỉ hoạt động trên vài trình duyệt hoặc iframe/webview)
+            window.close();
+
+            // Nếu trình duyệt chặn lệnh đóng tab, hiển thị UI thay thế thân thiện cho học sinh
             setTimeout(() => {
-                location.reload();
-            }, 500);
+                document.body.innerHTML = `
+                    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background-color: #f0fdf4; font-family: 'Nunito', sans-serif; text-align: center; padding: 20px;">
+                        <h1 style="color: #16a34a; font-size: 2.5rem; margin-bottom: 10px; font-weight: bold;">✅ NỘP BÀI THÀNH CÔNG!</h1>
+                        <p style="color: #1f2937; font-size: 1.5rem;">Hệ thống đã lưu điểm của em.</p>
+                        <p style="color: #b91c1c; font-size: 1.2rem; font-weight: bold; margin-top: 30px; padding: 15px; background: #fee2e2; border-radius: 10px;">
+                            👉 Em hãy bấm dấu ❌ hoặc nút quay lại ở trên trình duyệt để thoát trang web nhé!
+                        </p>
+                    </div>
+                `;
+            }, 300);
         }
     </script>
 </body>
