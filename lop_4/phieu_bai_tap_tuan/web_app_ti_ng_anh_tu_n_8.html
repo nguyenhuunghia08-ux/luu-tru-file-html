@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phiếu Bài Tập Tiếng Anh - Tuần 8</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Nunito:wght@700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .title-font { font-family: 'Nunito', sans-serif; }
+        
+        /* Hiệu ứng chọn Radio */
+        .radio-label input:checked + div {
+            background-color: #3b82f6;
+            border-color: #3b82f6;
+        }
+        .radio-label input:checked + div .dot {
+            background-color: #fff;
+        }
+        .radio-label:hover { background-color: #eff6ff; }
+        
+        /* CSS cho phần sắp xếp từ */
+        .word-btn { transition: all 0.2s ease; cursor: pointer; }
+        .word-btn:active { transform: scale(0.95); }
+        .word-btn.disabled { opacity: 0.5; pointer-events: none; }
+        
+        /* Hiệu ứng hộp kết quả */
+        .result-box { transition: all 0.3s ease; }
+    </style>
+</head>
+<body class="bg-sky-50 text-gray-800 pb-20">
+
+    <div class="max-w-3xl mx-auto mt-8 px-4">
+        
+        <!-- Header Form -->
+        <div class="bg-white rounded-3xl shadow-xl overflow-hidden mb-8 border-t-8 border-blue-500">
+            <div class="bg-blue-500 p-6 text-center text-white">
+                <h1 class="text-3xl md:text-4xl font-extrabold title-font mb-2 uppercase tracking-wide">Phiếu Bài Tập Tuần 8</h1>
+                <p class="text-blue-100 text-lg">Unit 5: Things we can do</p>
+            </div>
+            
+            <div class="p-6 md:p-8 space-y-6">
+                <div id="errorMsg" class="hidden bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded-lg mb-6 font-semibold shadow-sm">
+                    ⚠️ Vui lòng nhập Họ Tên và chọn Lớp trước khi làm bài!
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wider">Họ và tên học sinh <span class="text-red-500">*</span></label>
+                        <input type="text" id="studentName" placeholder="Nhập họ và tên..." class="w-full px-4 py-4 bg-gray-50 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 focus:bg-white transition-colors text-lg shadow-sm">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wider">Lớp <span class="text-red-500">*</span></label>
+                        <select id="studentClass" class="w-full px-4 py-4 bg-gray-50 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 focus:bg-white transition-colors text-lg shadow-sm font-semibold text-gray-700">
+                            <option value="">-- Chọn Lớp --</option>
+                            <!-- Tự động sinh option bằng JS ở cuối -->
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <form id="quizForm" onsubmit="return false;">
+            
+            <!-- PART 1: MCQ -->
+            <div class="mb-6 flex items-center gap-3">
+                <div class="bg-yellow-400 text-yellow-900 px-4 py-2 rounded-xl font-bold title-font shadow-sm uppercase tracking-wide">Part 1</div>
+                <h2 class="text-xl font-bold text-gray-700">Multiple Choice</h2>
+            </div>
+
+            <!-- Q1 -->
+            <div class="q-block bg-white p-6 rounded-2xl shadow-md mb-6 border-2 border-transparent transition-colors" data-q="1">
+                <p class="font-bold text-lg mb-4 text-gray-800">1. ______ you swim? - Yes, I can.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <label class="radio-label flex items-center p-4 border-2 border-gray-100 rounded-xl cursor-pointer">
+                        <input type="radio" name="q1" value="A" class="hidden">
+                        <div class="w-6 h-6 border-2 border-gray-300 rounded-full flex items-center justify-center mr-4 transition-colors"><div class="dot w-2 h-2 rounded-full"></div></div>
+                        <span class="text-lg font-medium">A. Do</span>
+                    </label>
+                    <label class="radio-label flex items-center p-4 border-2 border-gray-100 rounded-xl cursor-pointer">
+                        <input type="radio" name="q1" value="B" class="hidden">
+                        <div class="w-6 h-6 border-2 border-gray-300 rounded-full flex items-center justify-center mr-4 transition-colors"><div class="dot w-2 h-2 rounded-full"></div></div>
+                        <span class="text-lg font-medium">B. Can</span>
+                    </label>
+                    <label class="radio-label flex items-center p-4 border-2 border-gray-100 rounded-xl cursor-pointer">
+                        <input type="radio" name="q1" value="C" class="hidden">
+                        <div class="w-6 h-6 border-2 border-gray-300 rounded-full flex items-center justify-center mr-4 transition-colors"><div class="dot w-2 h-2 rounded-full"></div></div>
+                        <span class="text-lg font-medium">C. Are</span>
+                    </label>
+                    <label class="radio-label flex items-center p-4 border-2 border-gray-100 rounded-xl cursor-pointer">
+                        <input type="radio" name="q1" value="D" class="hidden">
+                        <div class="w-6 h-6 border-2 border-gray-300 rounded-full flex items-center justify-center mr-4 transition-colors"><div class="dot w-2 h-2 rounded-full"></div></div>
+                        <span class="text-lg font-medium">D. Is</span>
+                    </label>
+                </div>
+                <div class="feedback hidden mt-4 p-4 rounded-xl text-base shadow-inner"></div>
+            </div>
+
+            <!-- Q2 -->
+            <div class="q-block bg-white p-6 rounded-2xl shadow-md mb-6 border-2 border-transparent transition-colors" data-q="2">
+                <p class="font-bold text-lg mb-4 text-gray-800">2. Can he play the ______?</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <label class="radio-label flex items-center p-4 border-2 border-gray-100 rounded-xl cursor-pointer"><input type="radio" name="q2" value="A" class="hidden"><div class="w-6 h-6 border-2 border-gray-300 rounded-full flex items-center justify-center mr-4 transition-colors"><div class="dot w-2 h-2 rounded-full"></div></div><span class="text-lg font-medium">A. bike</span></label>
+                    <label class="radio-label flex items-center p-4 border-2 border-gray-100 rounded-xl cursor-pointer"><input type="radio" name="q2" value="B" class="hidden"><div class="w-6 h-6 border-2 border-gray-300 rounded-full flex items-center justify-center mr-4 transition-colors"><div class="dot w-2 h-2 rounded-full"></div></div><span class="text-lg font-medium">B. horse</span></label>
+                    <label class="radio-label flex items-center p-4 border-2 border-gray-100 rounded-xl cursor-pointer"><input type="radio" name="q2" value="C" class="hidden"><div class="w-6 h-6 border-2 border-gray-300 rounded-full flex items-center justify-center mr-4 transition-colors"><div class="dot w-2 h-2 rounded-full"></div></div><span class="text-lg font-medium">C. guitar</span></label>
+                    <label class="radio-label flex items-center p-4 border-2 border-gray-100 rounded-xl cursor-pointer"><input type="radio" name="q2" value="D" class="hidden"><div class="w-6 h-6 border-2 border-gray-300 rounded-full flex items-center justify-center mr-4 transition-colors"><div class="dot w-2 h-2 rounded-full"></div></div><span class="text-lg font-medium">D. cook</span></label>
+                </div>
+                <div class="feedback hidden mt-4 p-4 rounded-xl text-base shadow-inner"></div>
+            </div>
+
+            <!-- Q3 -->
+            <div class="q-block bg-white p-6 rounded-2xl shadow-md mb-6 border-2 border-transparent transition-colors" data-q="3">
+                <p class="font-bold text-lg mb-4 text-gray-800">3. No, she can't, ______ she can draw.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <label class="radio-label flex items-center p-4 border-2 border-gray-100 rounded-xl cursor-pointer"><input type="radio" name="q3" value="A" class="hidden"><div class="w-6 h-6 border-2 border-gray-300 rounded-full flex items-center justify-center mr-4 transition-colors"><div class="dot w-2 h-2 rounded-full"></div></div><span class="text-lg font-medium">A. and</span></label>
+                    <label class="radio-label flex items-center p-4 border-2 border-gray-100 rounded-xl cursor-pointer"><input type="radio" name="q3" value="B" class="hidden"><div class="w-6 h-6 border-2 border-gray-300 rounded-full flex items-center justify-center mr-4 transition-colors"><div class="dot w-2 h-2 rounded-full"></div></div><span class="text-lg font-medium">B. but</span></label>
+                    <label class="radio-label flex items-center p-4 border-2 border-gray-100 rounded-xl cursor-pointer"><input type="radio" name="q3" value="C" class="hidden"><div class="w-6 h-6 border-2 border-gray-300 rounded-full flex items-center justify-center mr-4 transition-colors"><div class="dot w-2 h-2 rounded-full"></div></div><span class="text-lg font-medium">C. or</span></label>
+                    <label class="radio-label flex items-center p-4 border-2 border-gray-100 rounded-xl cursor-pointer"><input type="radio" name="q3" value="D" class="hidden"><div class="w-6 h-6 border-2 border-gray-300 rounded-full flex items-center justify-center mr-4 transition-colors"><div class="dot w-2 h-2 rounded-full"></div></div><span class="text-lg font-medium">D. so</span></label>
+                </div>
+                <div class="feedback hidden mt-4 p-4 rounded-xl text-base shadow-inner"></div>
+            </div>
+
+            <!-- Q4 -->
+            <div class="q-block bg-white p-6 rounded-2xl shadow-md mb-6 border-2 border-transparent transition-colors" data-q="4">
+                <p class="font-bold text-lg mb-4 text-gray-800">4. Can she ride a ______? - Yes, she can.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <label class="radio-label flex items-center p-4 border-2 border-gray-100 rounded-xl cursor-pointer"><input type="radio" name="q4" value="A" class="hidden"><div class="w-6 h-6 border-2 border-gray-300 rounded-full flex items-center justify-center mr-4 transition-colors"><div class="dot w-2 h-2 rounded-full"></div></div><span class="text-lg font-medium">A. horse</span></label>
+                    <label class="radio-label flex items-center p-4 border-2 border-gray-100 rounded-xl cursor-pointer"><input type="radio" name="q4" value="B" class="hidden"><div class="w-6 h-6 border-2 border-gray-300 rounded-full flex items-center justify-center mr-4 transition-colors"><div class="dot w-2 h-2 rounded-full"></div></div><span class="text-lg font-medium">B. piano</span></label>
+                    <label class="radio-label flex items-center p-4 border-2 border-gray-100 rounded-xl cursor-pointer"><input type="radio" name="q4" value="C" class="hidden"><div class="w-6 h-6 border-2 border-gray-300 rounded-full flex items-center justify-center mr-4 transition-colors"><div class="dot w-2 h-2 rounded-full"></div></div><span class="text-lg font-medium">C. swim</span></label>
+                    <label class="radio-label flex items-center p-4 border-2 border-gray-100 rounded-xl cursor-pointer"><input type="radio" name="q4" value="D" class="hidden"><div class="w-6 h-6 border-2 border-gray-300 rounded-full flex items-center justify-center mr-4 transition-colors"><div class="dot w-2 h-2 rounded-full"></div></div><span class="text-lg font-medium">D. draw</span></label>
+                </div>
+                <div class="feedback hidden mt-4 p-4 rounded-xl text-base shadow-inner"></div>
+            </div>
+
+            <!-- Q5 -->
+            <div class="q-block bg-white p-6 rounded-2xl shadow-md mb-8 border-2 border-transparent transition-colors" data-q="5">
+                <p class="font-bold text-lg mb-4 text-gray-800">5. ______ she roller skate? - No, she can't.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <label class="radio-label flex items-center p-4 border-2 border-gray-100 rounded-xl cursor-pointer"><input type="radio" name="q5" value="A" class="hidden"><div class="w-6 h-6 border-2 border-gray-300 rounded-full flex items-center justify-center mr-4 transition-colors"><div class="dot w-2 h-2 rounded-full"></div></div><span class="text-lg font-medium">A. Do</span></label>
+                    <label class="radio-label flex items-center p-4 border-2 border-gray-100 rounded-xl cursor-pointer"><input type="radio" name="q5" value="B" class="hidden"><div class="w-6 h-6 border-2 border-gray-300 rounded-full flex items-center justify-center mr-4 transition-colors"><div class="dot w-2 h-2 rounded-full"></div></div><span class="text-lg font-medium">B. Does</span></label>
+                    <label class="radio-label flex items-center p-4 border-2 border-gray-100 rounded-xl cursor-pointer"><input type="radio" name="q5" value="C" class="hidden"><div class="w-6 h-6 border-2 border-gray-300 rounded-full flex items-center justify-center mr-4 transition-colors"><div class="dot w-2 h-2 rounded-full"></div></div><span class="text-lg font-medium">C. Is</span></label>
+                    <label class="radio-label flex items-center p-4 border-2 border-gray-100 rounded-xl cursor-pointer"><input type="radio" name="q5" value="D" class="hidden"><div class="w-6 h-6 border-2 border-gray-300 rounded-full flex items-center justify-center mr-4 transition-colors"><div class="dot w-2 h-2 rounded-full"></div></div><span class="text-lg font-medium">D. Can</span></label>
+                </div>
+                <div class="feedback hidden mt-4 p-4 rounded-xl text-base shadow-inner"></div>
+            </div>
+
+            <!-- PART 2: READING -->
+            <div class="mb-6 flex items-center gap-3">
+                <div class="bg-green-500 text-white px-4 py-2 rounded-xl font-bold title-font shadow-sm uppercase tracking-wide">Part 2</div>
+                <h2 class="text-xl font-bold text-gray-700">Reading</h2>
+            </div>
+            
+            <div class="bg-orange-50 border-l-4 border-orange-400 p-5 rounded-r-xl mb-6 shadow-sm text-gray-800 text-lg leading-relaxed">
+                Hi, my name is Tom. I am nine years old. I have many friends. This is my friend, Mary. She can play the piano very well, but she can't play the guitar. That is Peter. He can ride a bike and swim. Can he roller skate? No, he can't. My sister is Anna. She can draw beautiful pictures and cook good food. I can ride a horse, but I can't swim. We can do many things!
+            </div>
+
+            <!-- Q6 -->
+            <div class="q-block bg-white p-6 rounded-2xl shadow-md mb-6 border-2 border-transparent transition-colors" data-q="6">
+                <p class="font-bold text-lg mb-4 text-gray-800">6. What can Mary play?</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <label class="radio-label flex items-center p-4 border-2 border-gray-100 rounded-xl cursor-pointer"><input type="radio" name="q6" value="A" class="hidden"><div class="w-6 h-6 border-2 border-gray-300 rounded-full flex items-center justify-center mr-4 transition-colors"><div class="dot w-2 h-2 rounded-full"></div></div><span class="text-lg font-medium">A. the guitar</span></label>
+                    <label class="radio-label flex items-center p-4 border-2 border-gray-100 rounded-xl cursor-pointer"><input type="radio" name="q6" value="B" class="hidden"><div class="w-6 h-6 border-2 border-gray-300 rounded-full flex items-center justify-center mr-4 transition-colors"><div class="dot w-2 h-2 rounded-full"></div></div><span class="text-lg font-medium">B. the piano</span></label>
+                    <label class="radio-label flex items-center p-4 border-2 border-gray-100 rounded-xl cursor-pointer"><input type="radio" name="q6" value="C" class="hidden"><div class="w-6 h-6 border-2 border-gray-300 rounded-full flex items-center justify-center mr-4 transition-colors"><div class="dot w-2 h-2 rounded-full"></div></div><span class="text-lg font-medium">C. a bike</span></label>
+                    <label class="radio-label flex items-center p-4 border-2 border-gray-100 rounded-xl cursor-pointer"><input type="radio" name="q6" value="D" class="hidden"><div class="w-6 h-6 border-2 border-gray-300 rounded-full flex items-center justify-center mr-4 transition-colors"><div class="dot w-2 h-2 rounded-full"></div></div><span class="text-lg font-medium">D. a horse</span></label>
+                </div>
+                <div class="feedback hidden mt-4 p-4 rounded-xl text-base shadow-inner"></div>
+            </div>
+
+            <!-- Q7 -->
+            <div class="q-block bg-white p-6 rounded-2xl shadow-md mb-6 border-2 border-transparent transition-colors" data-q="7">
+                <p class="font-bold text-lg mb-4 text-gray-800">7. Can Peter swim?</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <label class="radio-label flex items-center p-4 border-2 border-gray-100 rounded-xl cursor-pointer"><input type="radio" name="q7" value="A" class="hidden"><div class="w-6 h-6 border-2 border-gray-300 rounded-full flex items-center justify-center mr-4 transition-colors"><div class="dot w-2 h-2 rounded-full"></div></div><span class="text-lg font-medium">A. Yes, he can.</span></label>
+                    <label class="radio-label flex items-center p-4 border-2 border-gray-100 rounded-xl cursor-pointer"><input type="radio" name="q7" value="B" class="hidden"><div class="w-6 h-6 border-2 border-gray-300 rounded-full flex items-center justify-center mr-4 transition-colors"><div class="dot w-2 h-2 rounded-full"></div></div><span class="text-lg font-medium">B. No, he can't.</span></label>
+                    <label class="radio-label flex items-center p-4 border-2 border-gray-100 rounded-xl cursor-pointer"><input type="radio" name="q7" value="C" class="hidden"><div class="w-6 h-6 border-2 border-gray-300 rounded-full flex items-center justify-center mr-4 transition-colors"><div class="dot w-2 h-2 rounded-full"></div></div><span class="text-lg font-medium">C. Yes, she can.</span></label>
+                    <label class="radio-label flex items-center p-4 border-2 border-gray-100 rounded-xl cursor-pointer"><input type="radio" name="q7" value="D" class="hidden"><div class="w-6 h-6 border-2 border-gray-300 rounded-full flex items-center justify-center mr-4 transition-colors"><div class="dot w-2 h-2 rounded-full"></div></div><span class="text-lg font-medium">D. No, she can't.</span></label>
+                </div>
+                <div class="feedback hidden mt-4 p-4 rounded-xl text-base shadow-inner"></div>
+            </div>
+
+            <!-- Q8 -->
+            <div class="q-block bg-white p-6 rounded-2xl shadow-md mb-6 border-2 border-transparent transition-colors" data-q="8">
+                <p class="font-bold text-lg mb-4 text-gray-800">8. Who can draw pictures and cook?</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <label class="radio-label flex items-center p-4 border-2 border-gray-100 rounded-xl cursor-pointer"><input type="radio" name="q8" value="A" class="hidden"><div class="w-6 h-6 border-2 border-gray-300 rounded-full flex items-center justify-center mr-4 transition-colors"><div class="dot w-2 h-2 rounded-full"></div></div><span class="text-lg font-medium">A. Tom</span></label>
+                    <label class="radio-label flex items-center p-4 border-2 border-gray-100 rounded-xl cursor-pointer"><input type="radio" name="q8" value="B" class="hidden"><div class="w-6 h-6 border-2 border-gray-300 rounded-full flex items-center justify-center mr-4 transition-colors"><div class="dot w-2 h-2 rounded-full"></div></div><span class="text-lg font-medium">B. Mary</span></label>
+                    <label class="radio-label flex items-center p-4 border-2 border-gray-100 rounded-xl cursor-pointer"><input type="radio" name="q8" value="C" class="hidden"><div class="w-6 h-6 border-2 border-gray-300 rounded-full flex items-center justify-center mr-4 transition-colors"><div class="dot w-2 h-2 rounded-full"></div></div><span class="text-lg font-medium">C. Peter</span></label>
+                    <label class="radio-label flex items-center p-4 border-2 border-gray-100 rounded-xl cursor-pointer"><input type="radio" name="q8" value="D" class="hidden"><div class="w-6 h-6 border-2 border-gray-300 rounded-full flex items-center justify-center mr-4 transition-colors"><div class="dot w-2 h-2 rounded-full"></div></div><span class="text-lg font-medium">D. Anna</span></label>
+                </div>
+                <div class="feedback hidden mt-4 p-4 rounded-xl text-base shadow-inner"></div>
+            </div>
+
+            <!-- Q9 & 10 Dropdowns -->
+            <div class="q-block bg-white p-6 rounded-2xl shadow-md mb-6 border-2 border-transparent transition-colors" data-q="9">
+                <p class="font-bold text-lg text-gray-800 leading-10">9. Tom can ride a 
+                    <select id="q9" class="mx-2 px-3 py-2 bg-gray-100 border-2 border-gray-300 rounded-lg text-blue-700 font-bold focus:outline-none focus:border-blue-500 cursor-pointer shadow-sm">
+                        <option value="">--chọn--</option>
+                        <option value="bike">bike</option>
+                        <option value="horse">horse</option>
+                        <option value="piano">piano</option>
+                        <option value="guitar">guitar</option>
+                    </select> .
+                </p>
+                <div class="feedback hidden mt-4 p-4 rounded-xl text-base shadow-inner"></div>
+            </div>
+
+            <div class="q-block bg-white p-6 rounded-2xl shadow-md mb-8 border-2 border-transparent transition-colors" data-q="10">
+                <p class="font-bold text-lg text-gray-800 leading-10">10. Peter can't 
+                    <select id="q10" class="mx-2 px-3 py-2 bg-gray-100 border-2 border-gray-300 rounded-lg text-blue-700 font-bold focus:outline-none focus:border-blue-500 cursor-pointer shadow-sm">
+                        <option value="">--chọn--</option>
+                        <option value="swim">swim</option>
+                        <option value="ride a bike">ride a bike</option>
+                        <option value="roller skate">roller skate</option>
+                        <option value="cook">cook</option>
+                    </select> .
+                </p>
+                <div class="feedback hidden mt-4 p-4 rounded-xl text-base shadow-inner"></div>
+            </div>
+
+            <!-- PART 3: WRITING -->
+            <div class="mb-6 flex items-center gap-3">
+                <div class="bg-purple-500 text-white px-4 py-2 rounded-xl font-bold title-font shadow-sm uppercase tracking-wide">Part 3</div>
+                <h2 class="text-xl font-bold text-gray-700">Writing</h2>
+            </div>
+            
+            <p class="text-gray-600 font-bold mb-4 ml-2">👉 Nhấn vào các từ bên dưới để sắp xếp thành câu đúng:</p>
+
+            <!-- Khối Render Q11 -> Q15 bằng JS để gọn mã (tái sử dụng component) -->
+            <div id="sortQuestionsContainer"></div>
+
+            <p class="text-gray-600 font-bold mb-4 ml-2 mt-8">👉 Chọn từ đúng điền vào chỗ trống:</p>
+
+            <!-- Q16 -> Q20 Inline Selects -->
+            <div class="q-block bg-white p-6 rounded-2xl shadow-md mb-6 border-2 border-transparent transition-colors" data-q="16">
+                <p class="font-bold text-lg text-gray-800 leading-10">16. Can you 
+                    <select id="q16" class="mx-2 px-3 py-2 bg-gray-100 border-2 border-gray-300 rounded-lg text-purple-700 font-bold focus:outline-none focus:border-purple-500 cursor-pointer shadow-sm">
+                        <option value="">--chọn--</option><option value="cook">cook</option><option value="roller">roller</option>
+                    </select> food? - Yes, I can.
+                </p>
+                <div class="feedback hidden mt-4 p-4 rounded-xl text-base shadow-inner"></div>
+            </div>
+
+            <div class="q-block bg-white p-6 rounded-2xl shadow-md mb-6 border-2 border-transparent transition-colors" data-q="17">
+                <p class="font-bold text-lg text-gray-800 leading-10">17. 
+                    <select id="q17" class="mx-2 px-3 py-2 bg-gray-100 border-2 border-gray-300 rounded-lg text-purple-700 font-bold focus:outline-none focus:border-purple-500 cursor-pointer shadow-sm">
+                        <option value="">--chọn--</option><option value="Can">Can</option><option value="Do">Do</option>
+                    </select> he ride a horse? - No, he can't.
+                </p>
+                <div class="feedback hidden mt-4 p-4 rounded-xl text-base shadow-inner"></div>
+            </div>
+
+            <div class="q-block bg-white p-6 rounded-2xl shadow-md mb-6 border-2 border-transparent transition-colors" data-q="18">
+                <p class="font-bold text-lg text-gray-800 leading-10">18. She can't swim, 
+                    <select id="q18" class="mx-2 px-3 py-2 bg-gray-100 border-2 border-gray-300 rounded-lg text-purple-700 font-bold focus:outline-none focus:border-purple-500 cursor-pointer shadow-sm">
+                        <option value="">--chọn--</option><option value="but">but</option><option value="and">and</option>
+                    </select> she can roller skate.
+                </p>
+                <div class="feedback hidden mt-4 p-4 rounded-xl text-base shadow-inner"></div>
+            </div>
+
+            <div class="q-block bg-white p-6 rounded-2xl shadow-md mb-6 border-2 border-transparent transition-colors" data-q="19">
+                <p class="font-bold text-lg text-gray-800 leading-10">19. Can she play 
+                    <select id="q19" class="mx-2 px-3 py-2 bg-gray-100 border-2 border-gray-300 rounded-lg text-purple-700 font-bold focus:outline-none focus:border-purple-500 cursor-pointer shadow-sm">
+                        <option value="">--chọn--</option><option value="the">the</option><option value="a">a</option>
+                    </select> guitar?
+                </p>
+                <div class="feedback hidden mt-4 p-4 rounded-xl text-base shadow-inner"></div>
+            </div>
+
+            <div class="q-block bg-white p-6 rounded-2xl shadow-md mb-8 border-2 border-transparent transition-colors" data-q="20">
+                <p class="font-bold text-lg text-gray-800 leading-10">20. I can't ride a bike, but I 
+                    <select id="q20" class="mx-2 px-3 py-2 bg-gray-100 border-2 border-gray-300 rounded-lg text-purple-700 font-bold focus:outline-none focus:border-purple-500 cursor-pointer shadow-sm">
+                        <option value="">--chọn--</option><option value="can">can</option><option value="can't">can't</option>
+                    </select> draw.
+                </p>
+                <div class="feedback hidden mt-4 p-4 rounded-xl text-base shadow-inner"></div>
+            </div>
+
+            <!-- Submit Button Area -->
+            <div class="text-center mt-12 mb-8">
+                <button type="button" id="btnSubmit" onclick="submitQuiz()" class="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white text-xl font-bold py-5 px-12 rounded-full shadow-xl transform transition-transform hover:-translate-y-1 w-full md:w-auto uppercase tracking-wide">
+                    🚀 Nộp Bài Ngay
+                </button>
+            </div>
+
+        </form>
+
+        <!-- Bảng Tổng Kết (Ẩn mặc định) -->
+        <div id="resultModal" class="hidden bg-white p-8 rounded-3xl shadow-2xl mt-8 border-t-8 border-green-500 text-center animate-fade-in-up">
+            <h2 class="text-3xl font-extrabold text-gray-800 mb-6 uppercase">Kết Quả Bài Làm</h2>
+            <div class="grid grid-cols-2 gap-4 text-left bg-gray-50 p-6 rounded-2xl mb-6">
+                <div class="text-gray-600 font-bold">Họ và tên:</div>
+                <div id="resName" class="text-indigo-700 font-bold text-lg"></div>
+                <div class="text-gray-600 font-bold">Lớp:</div>
+                <div id="resClass" class="text-indigo-700 font-bold text-lg"></div>
+                <div class="text-gray-600 font-bold">Số câu đúng:</div>
+                <div id="resCorrect" class="text-green-600 font-bold text-lg"></div>
+                <div class="text-gray-600 font-bold">Tổng điểm:</div>
+                <div id="resScore" class="text-red-500 font-extrabold text-2xl"></div>
+            </div>
+            <div id="resPraise" class="text-2xl font-bold mb-8 title-font"></div>
+            <button type="button" onclick="exitQuiz()" class="bg-gray-800 hover:bg-black text-white text-lg font-bold py-4 px-10 rounded-full shadow-lg transition-colors uppercase tracking-wide">
+                THOÁT
+            </button>
+        </div>
+
+    </div>
+
+    <script>
+        // Sinh danh sách Lớp từ 1/1 đến 5/5
+        const classSelect = document.getElementById('studentClass');
+        for (let grade = 1; grade <= 5; grade++) {
+            for (let cls = 1; cls <= 5; cls++) {
+                let opt = document.createElement('option');
+                opt.value = `${grade}/${cls}`;
+                opt.textContent = `Lớp ${grade}/${cls}`;
+                classSelect.appendChild(opt);
+            }
+        }
+
+        // Data cho phần sắp xếp câu
+        const sortData = [
+            { q: 11, words: ["you", "Can", "ride", "a", "bike?"] },
+            { q: 12, words: ["he", "No,", "can't."] },
+            { q: 13, words: ["she", "Can", "the", "play", "piano?"] },
+            { q: 14, words: ["she", "can't,", "but", "she", "can", "draw.", "No,"] },
+            { q: 15, words: ["can", "I", "play", "the", "guitar."] }
+        ];
+
+        const sortContainer = document.getElementById('sortQuestionsContainer');
+        
+        // Render HTML cho các câu sắp xếp
+        sortData.forEach(item => {
+            let html = `
+            <div class="q-block bg-white p-6 rounded-2xl shadow-md mb-6 border-2 border-transparent transition-colors" data-q="${item.q}">
+                <p class="font-bold text-lg mb-4 text-gray-800">${item.q}. ${item.words.join(' / ')}</p>
+                
+                <div class="bg-gray-50 border-2 border-dashed border-gray-300 rounded-xl min-h-[60px] p-3 flex flex-wrap gap-2 mb-4 result-box items-center" id="resBox_${item.q}">
+                    <!-- Nơi thả từ -->
+                </div>
+                
+                <div class="flex flex-wrap gap-2 source-box" id="srcBox_${item.q}">
+                    ${item.words.sort(() => Math.random() - 0.5).map((w, idx) => 
+                        `<button type="button" class="word-btn bg-indigo-100 hover:bg-indigo-200 text-indigo-800 font-bold py-2 px-4 rounded-lg shadow-sm border border-indigo-200" onclick="moveWord(this, ${item.q})">${w}</button>`
+                    ).join('')}
+                </div>
+                
+                <input type="hidden" id="q${item.q}" value="">
+                <div class="feedback hidden mt-4 p-4 rounded-xl text-base shadow-inner"></div>
+            </div>
+            `;
+            sortContainer.insertAdjacentHTML('beforeend', html);
+        });
+
+        // Logic di chuyển từ
+        function moveWord(btn, qId) {
+            // Nếu form đã khóa thì không cho bấm
+            if(document.getElementById('btnSubmit').disabled) return;
+
+            const resBox = document.getElementById(`resBox_${qId}`);
+            const srcBox = document.getElementById(`srcBox_${qId}`);
+            const hiddenInput = document.getElementById(`q${qId}`);
+
+            if (btn.parentElement === srcBox) {
+                // Di chuyển lên kết quả
+                resBox.appendChild(btn);
+                btn.classList.replace('bg-indigo-100', 'bg-green-100');
+                btn.classList.replace('text-indigo-800', 'text-green-800');
+                btn.classList.replace('hover:bg-indigo-200', 'hover:bg-green-200');
+                btn.classList.replace('border-indigo-200', 'border-green-300');
+            } else {
+                // Đưa về vị trí cũ
+                srcBox.appendChild(btn);
+                btn.classList.replace('bg-green-100', 'bg-indigo-100');
+                btn.classList.replace('text-green-800', 'text-indigo-800');
+                btn.classList.replace('hover:bg-green-200', 'hover:bg-indigo-200');
+                btn.classList.replace('border-green-300', 'border-indigo-200');
+            }
+
+            // Cập nhật giá trị chuỗi vào input ẩn
+            let selectedWords = Array.from(resBox.children).map(b => b.innerText);
+            hiddenInput.value = selectedWords.join(' ');
+        }
+
+        // Đáp án và giải thích
+        const ansKey = {
+            q1: { ans: "B", exp: "Hỏi về khả năng dùng cấu trúc 'Can you...?'" },
+            q2: { ans: "C", exp: "Đi với động từ 'play' (chơi) phải là một nhạc cụ: play the guitar." },
+            q3: { ans: "B", exp: "Dùng 'but' để nối 2 vế câu mang ý nghĩa trái ngược nhau." },
+            q4: { ans: "A", exp: "Đi với động từ 'ride' là 'a horse' hoặc 'a bike'." },
+            q5: { ans: "D", exp: "Hỏi về khả năng của ngôi thứ 3 số ít dùng cấu trúc 'Can she...?'" },
+            q6: { ans: "B", exp: "Thông tin trong bài: 'She can play the piano very well'." },
+            q7: { ans: "A", exp: "Thông tin trong bài: 'He can ride a bike and swim.'" },
+            q8: { ans: "D", exp: "Thông tin: 'My sister is Anna. She can draw beautiful pictures and cook good food.'" },
+            q9: { ans: "horse", exp: "Thông tin trong bài: 'I can ride a horse'." },
+            q10: { ans: "roller skate", exp: "Thông tin trong bài: 'Can he roller skate? No, he can't.'" },
+            q11: { ans: "Can you ride a bike?", exp: "Cấu trúc câu hỏi: Can + chủ ngữ + động từ + tân ngữ?" },
+            q12: { ans: "No, he can't.", exp: "Câu trả lời phủ định cho câu hỏi Can he...?" },
+            q13: { ans: "Can she play the piano?", exp: "Cấu trúc câu hỏi khả năng chơi nhạc cụ." },
+            q14: { ans: "No, she can't, but she can draw.", exp: "Cấu trúc diễn đạt không thể làm gì nhưng có thể làm gì khác." },
+            q15: { ans: "I can play the guitar.", exp: "Câu khẳng định về khả năng của bản thân." },
+            q16: { ans: "cook", exp: "Cụm từ đúng: cook food (nấu ăn)." },
+            q17: { ans: "Can", exp: "Câu hỏi về khả năng bắt đầu bằng Can." },
+            q18: { ans: "but", exp: "Từ nối 'but' diễn đạt hai vế tương phản (không bơi NHƯNG trượt patin)." },
+            q19: { ans: "the", exp: "Trước tên các loại nhạc cụ cần có mạo từ 'the'." },
+            q20: { ans: "can", exp: "Vế trước là 'can't', vế sau đi sau chữ 'but' phải là khẳng định (can)." }
+        };
+
+        function submitQuiz() {
+            const name = document.getElementById("studentName").value.trim();
+            const sClass = document.getElementById("studentClass").value;
+            const errorMsg = document.getElementById("errorMsg");
+
+            // Validate
+            if (!name || !sClass) {
+                errorMsg.classList.remove("hidden");
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                return;
+            }
+            errorMsg.classList.add("hidden");
+
+            // Đổi trạng thái nút bấm
+            const btnSubmit = document.getElementById("btnSubmit");
+            btnSubmit.innerHTML = "⏳ Đang nộp bài...";
+            btnSubmit.disabled = true;
+
+            let score = 0;
+            let correctCount = 0;
+            let details = []; // Mảng chứa chi tiết bài làm gửi lên Sheet
+
+            // Chấm điểm 20 câu
+            for (let i = 1; i <= 20; i++) {
+                let userAnswer = "";
+                let qBlock = document.querySelector(`.q-block[data-q="${i}"]`);
+                let isCorrect = false;
+
+                // Lấy nội dung câu hỏi
+                let qPrompt = qBlock.querySelector('p').innerText.replace(/\s+/g, ' ').trim();
+
+                // Lấy đáp án người dùng
+                if (i >= 1 && i <= 8) {
+                    let selected = document.querySelector(`input[name="q${i}"]:checked`);
+                    if (selected) userAnswer = selected.value;
+                } else {
+                    userAnswer = document.getElementById(`q${i}`).value.trim().replace(/\s+/g, ' '); 
+                }
+
+                let correctAnswer = ansKey[`q${i}`].ans;
+
+                // So sánh
+                if (userAnswer === correctAnswer) {
+                    isCorrect = true;
+                    correctCount++;
+                    score += 0.5;
+                    qBlock.classList.add('border-green-500', 'bg-green-50');
+                    qBlock.classList.remove('border-transparent', 'bg-white');
+                } else {
+                    qBlock.classList.add('border-red-500', 'bg-red-50');
+                    qBlock.classList.remove('border-transparent', 'bg-white');
+                }
+
+                // Hiển thị giải thích
+                let fb = qBlock.querySelector('.feedback');
+                fb.classList.remove('hidden');
+                if (isCorrect) {
+                    fb.innerHTML = `<strong><span class="text-green-700 text-lg">✅ Xuất sắc!</span></strong><br><span class="text-gray-700 mt-2 block">💡 <strong>Giải thích:</strong> ${ansKey['q'+i].exp}</span>`;
+                    fb.classList.add('bg-green-100');
+                } else {
+                    fb.innerHTML = `<strong><span class="text-red-600 text-lg">❌ Chưa đúng! Đáp án đúng là: <span class="text-red-700 underline">${correctAnswer}</span></span></strong><br><span class="text-gray-700 mt-2 block">💡 <strong>Giải thích:</strong> ${ansKey['q'+i].exp}</span>`;
+                    fb.classList.add('bg-red-100');
+                }
+
+                // Lưu chi tiết từng câu để gửi về Google Sheets
+                details.push({
+                    isCorrect: isCorrect,
+                    questionPrompt: qPrompt,
+                    studentAnswer: userAnswer || "Chưa trả lời",
+                    correctAnswer: correctAnswer
+                });
+            }
+
+            // GỬI DỮ LIỆU VỀ GOOGLE SHEETS
+            const scriptURL = "https://script.google.com/macros/s/AKfycbwgtn4KJVAzsmF_jVx5bHTc2QRc73nN0W-79vRvIYXv_PT48xzcSsRDQ1gqbXVhVr4UPA/exec";
+            
+            let sheetData = {
+                "Họ và tên": name,
+                "Lớp": sClass,
+                "Tên_Đề": "Phiếu Bài Tập Tiếng Anh Lớp 4 - Tuần 8",
+                "Điểm": score,
+                "Số câu đúng": correctCount,
+                "Thời_Gian_Làm_Bài": new Date().toLocaleString("vi-VN"),
+                "details": details
+            };
+
+            fetch(scriptURL, {
+                method: "POST",
+                body: JSON.stringify(sheetData),
+                headers: { "Content-Type": "text/plain;charset=utf-8" }
+            }).then(res => res.json())
+              .then(data => console.log("Đã gửi điểm lên Google Sheets thành công!", data))
+              .catch(err => console.error("Lỗi gửi điểm:", err));
+
+            // Khóa toàn bộ form
+            document.getElementById("studentName").disabled = true;
+            document.getElementById("studentClass").disabled = true;
+            
+            document.querySelectorAll('input[type="radio"]').forEach(r => {
+                r.disabled = true;
+                r.parentElement.classList.replace('cursor-pointer', 'cursor-not-allowed');
+            });
+            document.querySelectorAll('select').forEach(s => {
+                s.disabled = true;
+                s.classList.add('cursor-not-allowed', 'opacity-70');
+            });
+            document.querySelectorAll('.word-btn').forEach(btn => {
+                btn.classList.add('disabled', 'opacity-50');
+            });
+
+            // Ẩn nút Nộp bài
+            document.getElementById("btnSubmit").style.display = 'none';
+
+            // Hiển thị bảng tổng kết
+            document.getElementById("resultModal").classList.remove("hidden");
+            document.getElementById("resName").innerText = name;
+            document.getElementById("resClass").innerText = sClass;
+            document.getElementById("resCorrect").innerText = `${correctCount} câu`;
+            document.getElementById("resScore").innerText = `${score} Điểm`;
+
+            let praise = document.getElementById("resPraise");
+            if(score === 10) {
+                praise.innerHTML = "🏆 Tuyệt vời! Em đạt điểm tuyệt đối!";
+                praise.className = "text-2xl font-bold mb-8 title-font text-green-600";
+            } else if (score >= 8) {
+                praise.innerHTML = "🌟 Rất tốt! Em đã nắm chắc bài học!";
+                praise.className = "text-2xl font-bold mb-8 title-font text-blue-600";
+            } else if (score >= 5) {
+                praise.innerHTML = "👍 Khá lắm! Hãy ôn tập thêm một chút nhé!";
+                praise.className = "text-2xl font-bold mb-8 title-font text-yellow-600";
+            } else {
+                praise.innerHTML = "💪 Cố lên! Em cần ôn lại bài kỹ hơn nhé!";
+                praise.className = "text-2xl font-bold mb-8 title-font text-orange-600";
+            }
+
+            // Cuộn xuống bảng kết quả
+            setTimeout(() => {
+                document.getElementById("resultModal").scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 300);
+        }
+
+        function exitQuiz() {
+            // Thủ thuật để đóng tab hiện tại
+            window.open('', '_self', ''); 
+            window.close();
+        }
+    </script>
+</body>
+</html>
