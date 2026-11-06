@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phiếu Bài Tập Tiếng Anh Tuần 9</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0fdf4; /* Nền xanh nhạt tươi sáng */
+        }
+        .question-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+        .question-card:hover {
+            border-color: #86efac;
+        }
+        .radio-label {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 2px solid #e5e7eb;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 8px;
+        }
+        .radio-label:hover {
+            background-color: #f0fdfa;
+            border-color: #14b8a6;
+        }
+        input[type="radio"] {
+            margin-right: 10px;
+            width: 18px;
+            height: 18px;
+            accent-color: #0d9488;
+        }
+        .word-btn {
+            background-color: #0ea5e9;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 9999px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            border: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .word-btn:hover {
+            background-color: #0284c7;
+            transform: translateY(-2px);
+        }
+        .word-btn:active {
+            transform: translateY(0);
+        }
+        .answer-zone {
+            min-height: 52px;
+            border: 2px dashed #cbd5e1;
+            border-radius: 12px;
+            padding: 8px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            background-color: #f8fafc;
+            align-items: center;
+        }
+        .explanation {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            font-size: 14px;
+        }
+        .correct-card {
+            border-color: #22c55e !important;
+            background-color: #f0fdf4 !important;
+        }
+        .wrong-card {
+            border-color: #ef4444 !important;
+            background-color: #fef2f2 !important;
+        }
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23007CB2%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+            background-repeat: no-repeat;
+            background-position: right .7rem top 50%;
+            background-size: .65rem auto;
+        }
+    </style>
+</head>
+<body class="text-gray-800 pb-20">
+
+    <div class="max-w-4xl mx-auto pt-10 px-4">
+        <!-- Header Form -->
+        <div class="bg-white rounded-2xl p-8 mb-8 shadow-lg border-t-8 border-teal-500 text-center">
+            <h1 class="text-3xl font-bold text-teal-700 mb-2 uppercase">PHIẾU BÀI TẬP TUẦN 9</h1>
+            <p class="text-gray-500 mb-6 font-medium">Unit / Lesson: Review 1 & Extension activities</p>
+            
+            <div class="flex flex-col md:flex-row gap-4 justify-center">
+                <div class="flex-1 max-w-sm w-full mx-auto">
+                    <label class="block text-left text-sm font-semibold text-gray-700 mb-1">Họ và tên học sinh <span class="text-red-500">*</span></label>
+                    <input type="text" id="studentName" placeholder="Nhập họ và tên..." class="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:border-teal-500 focus:outline-none transition-colors font-medium">
+                </div>
+                <div class="w-full md:w-48 mx-auto">
+                    <label class="block text-left text-sm font-semibold text-gray-700 mb-1">Lớp <span class="text-red-500">*</span></label>
+                    <select id="studentClass" class="w-full px-4 py-3 rounded-lg border-2 border-gray-300 focus:border-teal-500 focus:outline-none transition-colors font-medium cursor-pointer bg-white">
+                        <option value="">-- Chọn lớp --</option>
+                        <!-- Khối 1-5 -->
+                        <option value="1/1">1/1</option><option value="1/2">1/2</option><option value="1/3">1/3</option><option value="1/4">1/4</option><option value="1/5">1/5</option>
+                        <option value="2/1">2/1</option><option value="2/2">2/2</option><option value="2/3">2/3</option><option value="2/4">2/4</option><option value="2/5">2/5</option>
+                        <option value="3/1">3/1</option><option value="3/2">3/2</option><option value="3/3">3/3</option><option value="3/4">3/4</option><option value="3/5">3/5</option>
+                        <option value="4/1">4/1</option><option value="4/2">4/2</option><option value="4/3">4/3</option><option value="4/4">4/4</option><option value="4/5">4/5</option>
+                        <option value="5/1">5/1</option><option value="5/2">5/2</option><option value="5/3">5/3</option><option value="5/4">5/4</option><option value="5/5">5/5</option>
+                    </select>
+                </div>
+            </div>
+            <p id="error-msg" class="text-red-500 font-medium mt-4 hidden">Vui lòng nhập đầy đủ Họ Tên và Lớp trước khi nộp bài!</p>
+        </div>
+
+        <!-- Result Board (Hidden initially) -->
+        <div id="resultBoard" class="hidden bg-white rounded-2xl p-8 mb-8 shadow-lg border-t-8 border-indigo-500 text-center animate-fade-in-down">
+            <h2 class="text-2xl font-bold text-indigo-700 mb-4">KẾT QUẢ BÀI LÀM</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                <div class="bg-indigo-50 p-4 rounded-xl">
+                    <p class="text-sm text-gray-500 font-semibold mb-1">Họ Tên</p>
+                    <p id="resName" class="font-bold text-lg text-indigo-900">-</p>
+                </div>
+                <div class="bg-indigo-50 p-4 rounded-xl">
+                    <p class="text-sm text-gray-500 font-semibold mb-1">Lớp</p>
+                    <p id="resClass" class="font-bold text-lg text-indigo-900">-</p>
+                </div>
+                <div class="bg-indigo-50 p-4 rounded-xl">
+                    <p class="text-sm text-gray-500 font-semibold mb-1">Số Câu Đúng</p>
+                    <p class="font-bold text-lg text-green-600"><span id="resCorrect">0</span>/20</p>
+                </div>
+                <div class="bg-indigo-50 p-4 rounded-xl">
+                    <p class="text-sm text-gray-500 font-semibold mb-1">Tổng Điểm</p>
+                    <p class="font-bold text-xl text-red-600"><span id="resScore">0</span> ĐIỂM</p>
+                </div>
+            </div>
+            <p id="resPraise" class="text-lg font-semibold text-indigo-600 italic"></p>
+        </div>
+
+        <!-- PART 1 -->
+        <h3 class="text-xl font-bold text-teal-800 mb-4 bg-teal-100 p-3 rounded-lg border-l-4 border-teal-500">PART 1: CHOOSE THE CORRECT ANSWER</h3>
+        
+        <div class="question-card" id="card-q1">
+            <p class="font-semibold text-lg mb-3">1. Where _____ he from? - He is from Japan.</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                <label class="radio-label"><input type="radio" name="q1" value="A"> A. is</label>
+                <label class="radio-label"><input type="radio" name="q1" value="B"> B. am</label>
+                <label class="radio-label"><input type="radio" name="q1" value="C"> C. are</label>
+                <label class="radio-label"><input type="radio" name="q1" value="D"> D. do</label>
+            </div>
+            <div class="explanation" id="expl-q1">
+                <strong>Đáp án: A. is</strong><br>Giải thích: Chủ ngữ "he" đi với động từ to be "is".
+            </div>
+        </div>
+
+        <div class="question-card" id="card-q2">
+            <p class="font-semibold text-lg mb-3">2. What time is it? - It's eight _____.</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                <label class="radio-label"><input type="radio" name="q2" value="A"> A. clock</label>
+                <label class="radio-label"><input type="radio" name="q2" value="B"> B. o'clock</label>
+                <label class="radio-label"><input type="radio" name="q2" value="C"> C. time</label>
+                <label class="radio-label"><input type="radio" name="q2" value="D"> D. hours</label>
+            </div>
+            <div class="explanation" id="expl-q2">
+                <strong>Đáp án: B. o'clock</strong><br>Giải thích: Cụm từ chỉ giờ chẵn: số đếm + o'clock.
+            </div>
+        </div>
+
+        <div class="question-card" id="card-q3">
+            <p class="font-semibold text-lg mb-3">3. ______ your birthday? - It's in April.</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                <label class="radio-label"><input type="radio" name="q3" value="A"> A. Where's</label>
+                <label class="radio-label"><input type="radio" name="q3" value="B"> B. What's</label>
+                <label class="radio-label"><input type="radio" name="q3" value="C"> C. When's</label>
+                <label class="radio-label"><input type="radio" name="q3" value="D"> D. Who's</label>
+            </div>
+            <div class="explanation" id="expl-q3">
+                <strong>Đáp án: C. When's</strong><br>Giải thích: Hỏi sinh nhật khi nào dùng từ để hỏi "When".
+            </div>
+        </div>
+
+        <div class="question-card" id="card-q4">
+            <p class="font-semibold text-lg mb-3">4. I have a friend. She is _____ America.</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                <label class="radio-label"><input type="radio" name="q4" value="A"> A. in</label>
+                <label class="radio-label"><input type="radio" name="q4" value="B"> B. from</label>
+                <label class="radio-label"><input type="radio" name="q4" value="C"> C. at</label>
+                <label class="radio-label"><input type="radio" name="q4" value="D"> D. on</label>
+            </div>
+            <div class="explanation" id="expl-q4">
+                <strong>Đáp án: B. from</strong><br>Giải thích: Cấu trúc đến từ đâu: "be from + tên quốc gia".
+            </div>
+        </div>
+
+        <div class="question-card" id="card-q5">
+            <p class="font-semibold text-lg mb-3">5. What do you want to _____? - I want some water.</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                <label class="radio-label"><input type="radio" name="q5" value="A"> A. eat</label>
+                <label class="radio-label"><input type="radio" name="q5" value="B"> B. drink</label>
+                <label class="radio-label"><input type="radio" name="q5" value="C"> C. play</label>
+                <label class="radio-label"><input type="radio" name="q5" value="D"> D. draw</label>
+            </div>
+            <div class="explanation" id="expl-q5">
+                <strong>Đáp án: B. drink</strong><br>Giải thích: "water" là nước, nên cần động từ "drink" - uống.
+            </div>
+        </div>
+
+        <!-- PART 2 -->
+        <h3 class="text-xl font-bold text-teal-800 mb-4 mt-8 bg-teal-100 p-3 rounded-lg border-l-4 border-teal-500">PART 2: READ AND ANSWER</h3>
+        <div class="bg-yellow-50 p-5 rounded-xl border border-yellow-200 mb-6 italic text-gray-700 leading-relaxed shadow-sm">
+            My name is Anna. I am nine years old. I am from Australia. I am a pupil at Rose Primary School. I go to school at seven o'clock from Mondays to Fridays. I like music and arts. I can play the piano and draw pictures. At the weekend, I stay at home. I can cook, but I can't skate. My favourite food is grapes.
+        </div>
+        
+        <p class="font-semibold text-gray-600 mb-3">* Choose the correct answer:</p>
+        
+        <div class="question-card" id="card-q6">
+            <p class="font-semibold text-lg mb-3">6. Where is Anna from?</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                <label class="radio-label"><input type="radio" name="q6" value="A"> A. America</label>
+                <label class="radio-label"><input type="radio" name="q6" value="B"> B. Australia</label>
+                <label class="radio-label"><input type="radio" name="q6" value="C"> C. Britain</label>
+                <label class="radio-label"><input type="radio" name="q6" value="D"> D. Japan</label>
+            </div>
+            <div class="explanation" id="expl-q6">
+                <strong>Đáp án: B. Australia</strong><br>Giải thích: Dẫn chứng trong bài "I am from Australia.".
+            </div>
+        </div>
+
+        <div class="question-card" id="card-q7">
+            <p class="font-semibold text-lg mb-3">7. What time does she go to school?</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                <label class="radio-label"><input type="radio" name="q7" value="A"> A. 6:00</label>
+                <label class="radio-label"><input type="radio" name="q7" value="B"> B. 7:00</label>
+                <label class="radio-label"><input type="radio" name="q7" value="C"> C. 8:00</label>
+                <label class="radio-label"><input type="radio" name="q7" value="D"> D. 9:00</label>
+            </div>
+            <div class="explanation" id="expl-q7">
+                <strong>Đáp án: B. 7:00</strong><br>Giải thích: Dẫn chứng "I go to school at seven o'clock...".
+            </div>
+        </div>
+
+        <p class="font-semibold text-gray-600 mb-3">* Choose the correct word to fill in the blanks:</p>
+
+        <div class="question-card" id="card-q8">
+            <p class="font-semibold text-lg mb-2">8. She can play the piano and 
+                <select id="q8" class="inline-block px-3 py-1 rounded-md border-2 border-gray-300 font-medium text-teal-700 bg-white ml-1 focus:outline-none">
+                    <option value="">...</option>
+                    <option value="draw">draw</option>
+                    <option value="cook">cook</option>
+                    <option value="skate">skate</option>
+                </select> pictures.
+            </p>
+            <div class="explanation" id="expl-q8">
+                <strong>Đáp án: draw</strong><br>Giải thích: Dẫn chứng "I can play the piano and draw pictures."
+            </div>
+        </div>
+
+        <div class="question-card" id="card-q9">
+            <p class="font-semibold text-lg mb-2">9. She stays at home at the 
+                <select id="q9" class="inline-block px-3 py-1 rounded-md border-2 border-gray-300 font-medium text-teal-700 bg-white ml-1 focus:outline-none">
+                    <option value="">...</option>
+                    <option value="weekend">weekend</option>
+                    <option value="Mondays">Mondays</option>
+                    <option value="Fridays">Fridays</option>
+                </select>.
+            </p>
+            <div class="explanation" id="expl-q9">
+                <strong>Đáp án: weekend</strong><br>Giải thích: Dẫn chứng "At the weekend, I stay at home."
+            </div>
+        </div>
+
+        <div class="question-card" id="card-q10">
+            <p class="font-semibold text-lg mb-2">10. Can she skate? - 
+                <select id="q10" class="inline-block px-3 py-1 rounded-md border-2 border-gray-300 font-medium text-teal-700 bg-white ml-1 focus:outline-none">
+                    <option value="">...</option>
+                    <option value="Yes, she can.">Yes, she can.</option>
+                    <option value="No, she can't.">No, she can't.</option>
+                    <option value="Yes, she is.">Yes, she is.</option>
+                </select>
+            </p>
+            <div class="explanation" id="expl-q10">
+                <strong>Đáp án: No, she can't.</strong><br>Giải thích: Dẫn chứng "I can cook, but I can't skate."
+            </div>
+        </div>
+
+        <!-- PART 3 -->
+        <h3 class="text-xl font-bold text-teal-800 mb-4 mt-8 bg-teal-100 p-3 rounded-lg border-l-4 border-teal-500">PART 3: WRITING</h3>
+        <p class="font-semibold text-gray-600 mb-3">* Reorder the words to make correct sentences (Bấm vào từ để sắp xếp):</p>
+
+        <!-- Script tạo logic sắp xếp câu -->
+        <script>
+            function createReorderQuestion(qId, number, originalText, wordList) {
+                document.write(`
+                <div class="question-card" id="card-q${qId}">
+                    <p class="font-semibold text-lg mb-3">${number}. ${originalText}</p>
+                    <div class="word-bank flex flex-wrap gap-2 mb-4" id="bank-q${qId}">
+                        ${wordList.map((word, idx) => `<button type="button" class="word-btn" onclick="moveWord(this, 'bank', 'zone', 'q${qId}')">${word}</button>`).join('')}
+                    </div>
+                    <div class="answer-zone" id="zone-q${qId}">
+                        <span class="text-gray-400 italic text-sm p-2 pointer-events-none select-none">Bấm vào từ ở trên để xếp xuống đây...</span>
+                    </div>
+                    <input type="hidden" id="q${qId}" value="">
+                    <div class="explanation" id="expl-q${qId}"></div>
+                </div>
+                `);
+            }
+        </script>
+
+        <script>
+            createReorderQuestion(11, "11", "from / Where / you / are / ?", ["from", "Where", "you", "are", "?"]);
+            createReorderQuestion(12, "12", "is / time / it / What / ?", ["is", "time", "it", "What", "?"]);
+            createReorderQuestion(13, "13", "birthday / My / in / is / March / .", ["birthday", "My", "in", "is", "March", "."]);
+            createReorderQuestion(14, "14", "he / play / Can / guitar / the / ?", ["he", "play", "Can", "guitar", "the", "?"]);
+            createReorderQuestion(15, "15", "to / want / I / some / eat / grapes / .", ["to", "want", "I", "some", "eat", "grapes", "."]);
+        </script>
+
+        <p class="font-semibold text-gray-600 mb-3 mt-6">* Choose the best word to fill in the blanks:</p>
+
+        <div class="question-card" id="card-q16">
+            <p class="font-semibold text-lg mb-2">16. What day is it 
+                <select id="q16" class="inline-block px-3 py-1 rounded-md border-2 border-gray-300 font-medium text-teal-700 bg-white ml-1 focus:outline-none">
+                    <option value="">...</option>
+                    <option value="today">today</option>
+                    <option value="time">time</option>
+                    <option value="Monday">Monday</option>
+                </select> ? - It's Tuesday.
+            </p>
+            <div class="explanation" id="expl-q16">
+                <strong>Đáp án: today</strong><br>Giải thích: Cấu trúc hỏi thứ: What day is it today?
+            </div>
+        </div>
+
+        <div class="question-card" id="card-q17">
+            <p class="font-semibold text-lg mb-2">17. In London, it's one 
+                <select id="q17" class="inline-block px-3 py-1 rounded-md border-2 border-gray-300 font-medium text-teal-700 bg-white ml-1 focus:outline-none">
+                    <option value="">...</option>
+                    <option value="o'clock">o'clock</option>
+                    <option value="clock">clock</option>
+                    <option value="time">time</option>
+                </select>.
+            </p>
+            <div class="explanation" id="expl-q17">
+                <strong>Đáp án: o'clock</strong><br>Giải thích: Dùng o'clock để chỉ giờ chẵn.
+            </div>
+        </div>
+
+        <div class="question-card" id="card-q18">
+            <p class="font-semibold text-lg mb-2">18. 
+                <select id="q18" class="inline-block px-3 py-1 rounded-md border-2 border-gray-300 font-medium text-teal-700 bg-white ml-1 focus:outline-none">
+                    <option value="">...</option>
+                    <option value="What">What</option>
+                    <option value="Where">Where</option>
+                    <option value="When">When</option>
+                </select> do you want to eat?
+            </p>
+            <div class="explanation" id="expl-q18">
+                <strong>Đáp án: What</strong><br>Giải thích: Hỏi bạn muốn ăn GÌ, dùng từ để hỏi "What".
+            </div>
+        </div>
+
+        <div class="question-card" id="card-q19">
+            <p class="font-semibold text-lg mb-2">19. She can sing, 
+                <select id="q19" class="inline-block px-3 py-1 rounded-md border-2 border-gray-300 font-medium text-teal-700 bg-white ml-1 focus:outline-none">
+                    <option value="">...</option>
+                    <option value="but">but</option>
+                    <option value="and">and</option>
+                    <option value="in">in</option>
+                </select> she can't dance.
+            </p>
+            <div class="explanation" id="expl-q19">
+                <strong>Đáp án: but</strong><br>Giải thích: Dùng liên từ "but" để nối 2 mệnh đề tương phản (có thể hát nhưng không thể múa).
+            </div>
+        </div>
+
+        <div class="question-card" id="card-q20">
+            <p class="font-semibold text-lg mb-2">20. I go to school 
+                <select id="q20" class="inline-block px-3 py-1 rounded-md border-2 border-gray-300 font-medium text-teal-700 bg-white ml-1 focus:outline-none">
+                    <option value="">...</option>
+                    <option value="from">from</option>
+                    <option value="in">in</option>
+                    <option value="at">at</option>
+                </select> Mondays to Fridays.
+            </p>
+            <div class="explanation" id="expl-q20">
+                <strong>Đáp án: from</strong><br>Giải thích: Cấu trúc từ thứ mấy đến thứ mấy: "from ... to ...".
+            </div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="mt-10 flex justify-center gap-4">
+            <button id="btnSubmit" onclick="submitExam()" class="bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-600 hover:to-emerald-600 text-white font-bold py-4 px-12 rounded-full shadow-lg transform transition hover:scale-105 text-lg">
+                🚀 NỘP BÀI
+            </button>
+            <button id="btnExit" onclick="exitApp()" class="hidden bg-gray-500 hover:bg-gray-600 text-white font-bold py-4 px-12 rounded-full shadow-lg transform transition hover:scale-105 text-lg">
+                ❌ THOÁT
+            </button>
+        </div>
+
+    </div>
+
+    <script>
+        const correctAnswers = {
+            q1: "A", q2: "B", q3: "C", q4: "B", q5: "B",
+            q6: "B", q7: "B", 
+            q8: "draw", q9: "weekend", q10: "No, she can't.",
+            q11: "Where are you from ?", 
+            q12: "What time is it ?", 
+            q13: "My birthday is in March .", 
+            q14: "Can he play the guitar ?", 
+            q15: "I want to eat some grapes .",
+            q16: "today", q17: "o'clock", q18: "What", q19: "but", q20: "from"
+        };
+
+        const explanationsText = {
+            q11: "<strong>Đáp án: Where are you from ?</strong><br>Giải thích: Câu hỏi bạn đến từ đâu.",
+            q12: "<strong>Đáp án: What time is it ?</strong><br>Giải thích: Câu hỏi bây giờ là mấy giờ.",
+            q13: "<strong>Đáp án: My birthday is in March .</strong><br>Giải thích: Sinh nhật của tôi vào tháng Ba.",
+            q14: "<strong>Đáp án: Can he play the guitar ?</strong><br>Giải thích: Câu hỏi khả năng: Can + S + V?",
+            q15: "<strong>Đáp án: I want to eat some grapes .</strong><br>Giải thích: Cấu trúc: want to + V."
+        };
+
+        // Logic for Reordering sentences
+        function moveWord(btn, from, to, qId) {
+            const isSubmitting = document.getElementById('btnSubmit').disabled;
+            if (isSubmitting) return; // Khóa nếu đã nộp bài
+
+            const bank = document.getElementById(`bank-${qId}`);
+            const zone = document.getElementById(`zone-${qId}`);
+            const input = document.getElementById(qId);
+            
+            // Remove helper text if exists
+            const helperText = zone.querySelector('span');
+            if (helperText) helperText.remove();
+
+            if (from === 'bank') {
+                zone.appendChild(btn);
+                btn.setAttribute('onclick', `moveWord(this, 'zone', 'bank', '${qId}')`);
+                btn.classList.replace('bg-sky-500', 'bg-indigo-500'); // Đổi màu khi chuyển xuống
+            } else {
+                bank.appendChild(btn);
+                btn.setAttribute('onclick', `moveWord(this, 'bank', 'zone', '${qId}')`);
+                btn.classList.replace('bg-indigo-500', 'bg-sky-500'); // Đổi màu lại
+            }
+
+            // Update hidden input value
+            const currentWords = Array.from(zone.querySelectorAll('.word-btn')).map(b => b.innerText);
+            input.value = currentWords.join(' ');
+        }
+
+        function submitExam() {
+            const name = document.getElementById('studentName').value.trim();
+            const sClass = document.getElementById('studentClass').value;
+            const errorMsg = document.getElementById('error-msg');
+            const btnSubmit = document.getElementById('btnSubmit');
+
+            if (!name || !sClass) {
+                errorMsg.classList.remove('hidden');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                return;
+            }
+            errorMsg.classList.add('hidden');
+
+            // Đổi trạng thái nút bấm tránh nộp đúp
+            btnSubmit.innerText = "⏳ ĐANG GỬI DỮ LIỆU...";
+            btnSubmit.disabled = true;
+
+            let correctCount = 0;
+            let details = []; // Mảng chứa chi tiết bài làm gửi lên Google Sheets
+
+            // Chấm điểm
+            for (let i = 1; i <= 20; i++) {
+                let qId = 'q' + i;
+                let userAnswer = '';
+                let isCorrect = false;
+                let questionPrompt = document.querySelector(`#card-${qId} p.font-semibold`).innerText.split('. ').slice(1).join('. ');
+
+                if (i <= 7) {
+                    // Radio
+                    const checked = document.querySelector(`input[name="${qId}"]:checked`);
+                    if (checked) userAnswer = checked.value;
+                } else if ((i >= 8 && i <= 10) || (i >= 16 && i <= 20)) {
+                    // Select
+                    userAnswer = document.getElementById(qId).value;
+                } else if (i >= 11 && i <= 15) {
+                    // Reorder
+                    userAnswer = document.getElementById(qId).value.trim();
+                    // Inject explanation content
+                    document.getElementById(`expl-${qId}`).innerHTML = explanationsText[qId];
+                }
+
+                if (userAnswer === correctAnswers[qId]) {
+                    isCorrect = true;
+                    correctCount++;
+                    document.getElementById(`card-${qId}`).classList.add('correct-card');
+                } else {
+                    document.getElementById(`card-${qId}`).classList.add('wrong-card');
+                }
+                
+                // Ghi nhận chi tiết từng câu
+                details.push({
+                    questionPrompt: "Câu " + i + ": " + questionPrompt,
+                    studentAnswer: userAnswer || "Chưa trả lời",
+                    correctAnswer: correctAnswers[qId],
+                    isCorrect: isCorrect
+                });
+
+                // Hiện giải thích
+                document.getElementById(`expl-${qId}`).style.display = 'block';
+            }
+
+            // Tính điểm
+            const score = correctCount * 0.5;
+
+            // Đóng gói dữ liệu gửi API
+            const payload = {
+                "Họ và tên": name,
+                "Lớp": sClass,
+                "Điểm": score,
+                "Số câu đúng": correctCount + " / 20",
+                "Thời gian": new Date().toLocaleString("vi-VN"),
+                "details": details
+            };
+
+            const scriptURL = 'https://script.google.com/macros/s/AKfycbxFEDATYTC2_ADGrKVdQTaIw9B_com23feq4KJM9XOGO-XriZ34Xcv0r5YGFDC7sW9s/exec';
+
+            // Gửi dữ liệu qua Google Sheets
+            fetch(scriptURL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'text/plain;charset=utf-8',
+                },
+                body: JSON.stringify(payload)
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Khóa Form
+                const allInputs = document.querySelectorAll('input, select, button.word-btn');
+                allInputs.forEach(el => {
+                    el.disabled = true;
+                    el.style.pointerEvents = 'none';
+                });
+                
+                document.getElementById('btnSubmit').classList.add('hidden');
+                document.getElementById('btnExit').classList.remove('hidden'); // Hiện nút thoát
+
+                // Hiển thị kết quả
+                document.getElementById('resName').innerText = name;
+                document.getElementById('resClass').innerText = sClass;
+                document.getElementById('resCorrect').innerText = correctCount;
+                document.getElementById('resScore').innerText = score.toFixed(1);
+                
+                let praise = "";
+                if (score === 10) praise = "Tuyệt vời! Em đạt điểm tuyệt đối!";
+                else if (score >= 8) praise = "Rất tốt! Em đã nắm chắc bài học.";
+                else if (score >= 5) praise = "Khá tốt! Em cố gắng ôn tập thêm nhé.";
+                else praise = "Em cần cố gắng xem lại kiến thức bài học nhiều hơn nhé!";
+                document.getElementById('resPraise').innerText = praise;
+
+                document.getElementById('resultBoard').classList.remove('hidden');
+                
+                // Cuộn lên xem kết quả
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            })
+            .catch(error => {
+                console.error('Lỗi khi gửi lên Google Sheets:', error);
+                alert("Kết nối có vấn đề, điểm của em chưa được lưu lại. Vui lòng kiểm tra mạng và bấm NỘP BÀI lần nữa nhé!");
+                btnSubmit.innerText = "🚀 NỘP BÀI";
+                btnSubmit.disabled = false;
+            });
+        }
+
+        function exitApp() {
+            // Cố gắng đóng cửa sổ (Sẽ hoạt động nếu tab được mở bằng script, hoặc trên một số browser/web view)
+            window.close();
+            // Fallback nếu window.close() bị trình duyệt chặn (do bảo mật)
+            setTimeout(() => {
+                alert("Đã kết thúc bài làm. Thầy/Cô và học sinh có thể đóng tab trình duyệt này nhé.");
+            }, 300);
+        }
+    </script>
+</body>
+</html>
