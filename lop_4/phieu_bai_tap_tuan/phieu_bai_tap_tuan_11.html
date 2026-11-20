@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phiếu Bài Tập Tiếng Anh Lớp 4 - Unit 7 Lesson 1</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #e0f2fe 0%, #fef9c3 50%, #fce7f3 100%);
+            min-height: 100vh;
+            color: #1e293b;
+        }
+        .option-label {
+            transition: all 0.2s ease;
+        }
+        .option-label:hover:not(.disabled-opt) {
+            background-color: #eff6ff;
+            border-color: #3b82f6;
+            transform: translateY(-1px);
+        }
+        .word-chip {
+            transition: all 0.15s ease;
+            user-select: none;
+        }
+        .word-chip:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="py-6 px-3 sm:px-6">
+
+    <!-- Thông báo lỗi nổi (không dùng alert) -->
+    <div id="toastBox" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 hidden bg-red-600 text-white font-bold px-6 py-3 rounded-2xl shadow-xl text-base sm:text-lg text-center max-w-md w-11/12">
+        Vui lòng nhập Họ và tên và chọn Lớp trước khi nộp bài nhé!
+    </div>
+
+    <div class="max-w-4xl mx-auto">
+
+        <!-- HEADER FORM -->
+        <header id="topHeader" class="bg-white rounded-3xl shadow-lg border-4 border-blue-400 p-5 sm:p-8 mb-6">
+            <div class="text-center mb-6">
+                <span class="inline-block bg-amber-400 text-slate-900 font-extrabold text-xs sm:text-sm px-4 py-1.5 rounded-full uppercase tracking-wider mb-2 shadow-sm">
+                    Tiếng Anh Lớp 4 • Global Success
+                </span>
+                <h1 class="text-2xl sm:text-4xl font-black text-blue-700 tracking-tight uppercase">
+                    PHIẾU BÀI TẬP TUẦN 11
+                </h1>
+                <p class="text-base sm:text-lg font-bold text-slate-600 mt-1">
+                    Unit 7: Our timetables – Lesson 1
+                </p>
+            </div>
+
+            <!-- Thông tin học sinh -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-blue-50/80 p-4 sm:p-5 rounded-2xl border-2 border-blue-200">
+                <div class="sm:col-span-2">
+                    <label for="studentName" class="block text-sm sm:text-base font-extrabold text-slate-800 mb-1.5">
+                        Họ và tên học sinh <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text" id="studentName"
+                        class="w-full px-4 py-3 text-base sm:text-lg font-bold bg-white border-2 border-blue-300 rounded-2xl focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200 transition" />
+                </div>
+
+                <div>
+                    <label for="studentClass" class="block text-sm sm:text-base font-extrabold text-slate-800 mb-1.5">
+                        Lớp <span class="text-red-500">*</span>
+                    </label>
+                    <select id="studentClass"
+                        class="w-full px-4 py-3 text-base sm:text-lg font-bold bg-white border-2 border-blue-300 rounded-2xl focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200 transition cursor-pointer">
+                        <option value="">-- Chọn lớp --</option>
+                        <option value="1/1">1/1</option>
+                        <option value="1/2">1/2</option>
+                        <option value="1/3">1/3</option>
+                        <option value="1/4">1/4</option>
+                        <option value="1/5">1/5</option>
+                        <option value="2/1">2/1</option>
+                        <option value="2/2">2/2</option>
+                        <option value="2/3">2/3</option>
+                        <option value="2/4">2/4</option>
+                        <option value="2/5">2/5</option>
+                        <option value="3/1">3/1</option>
+                        <option value="3/2">3/2</option>
+                        <option value="3/3">3/3</option>
+                        <option value="3/4">3/4</option>
+                        <option value="3/5">3/5</option>
+                        <option value="4/1">4/1</option>
+                        <option value="4/2">4/2</option>
+                        <option value="4/3">4/3</option>
+                        <option value="4/4">4/4</option>
+                        <option value="4/5">4/5</option>
+                        <option value="5/1">5/1</option>
+                        <option value="5/2">5/2</option>
+                        <option value="5/3">5/3</option>
+                        <option value="5/4">5/4</option>
+                        <option value="5/5">5/5</option>
+                    </select>
+                </div>
+            </div>
+        </header>
+
+        <!-- BẢNG TỔNG KẾT ĐIỂM (Ẩn trước khi nộp bài) -->
+        <section id="resultBoard" class="hidden bg-white rounded-3xl shadow-xl border-4 border-emerald-400 p-6 sm:p-8 mb-6 text-center">
+            <div class="inline-block bg-emerald-100 text-emerald-800 font-extrabold px-4 py-1 rounded-full text-sm mb-2">
+                KẾT QUẢ BÀI LÀM
+            </div>
+            <h2 id="praiseText" class="text-2xl sm:text-3xl font-black text-emerald-700 mb-4">
+                Tuyệt vời! Con làm bài rất tốt!
+            </h2>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 max-w-2xl mx-auto">
+                <div class="bg-slate-50 p-3 rounded-2xl border-2 border-slate-200">
+                    <div class="text-xs font-bold text-slate-500 uppercase">Học sinh</div>
+                    <div id="resName" class="text-base sm:text-lg font-extrabold text-slate-800 truncate mt-0.5">-</div>
+                </div>
+                <div class="bg-slate-50 p-3 rounded-2xl border-2 border-slate-200">
+                    <div class="text-xs font-bold text-slate-500 uppercase">Lớp</div>
+                    <div id="resClass" class="text-base sm:text-lg font-extrabold text-slate-800 mt-0.5">-</div>
+                </div>
+                <div class="bg-blue-50 p-3 rounded-2xl border-2 border-blue-200">
+                    <div class="text-xs font-bold text-blue-600 uppercase">Số câu đúng</div>
+                    <div id="resCorrect" class="text-xl sm:text-2xl font-black text-blue-700 mt-0.5">0/20</div>
+                </div>
+                <div class="bg-amber-50 p-3 rounded-2xl border-2 border-amber-300">
+                    <div class="text-xs font-bold text-amber-700 uppercase">Tổng điểm</div>
+                    <div id="resScore" class="text-xl sm:text-2xl font-black text-red-600 mt-0.5">0.0</div>
+                </div>
+            </div>
+            <!-- Trạng thái gửi điểm về Google Sheets -->
+            <div id="syncStatusBox" class="hidden mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold"></div>
+        </section>
+
+        <!-- NỘI DUNG 20 CÂU HỎI -->
+        <form id="quizForm" onsubmit="return false;" class="space-y-6">
+
+            <!-- PART 1 -->
+            <div class="bg-white rounded-3xl shadow-md border-2 border-indigo-200 p-5 sm:p-7">
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="bg-indigo-600 text-white font-black px-3.5 py-1 rounded-xl text-sm sm:text-base">PART 1</span>
+                    <h2 class="text-lg sm:text-xl font-black text-indigo-800 uppercase">Trắc nghiệm &amp; Khoanh chọn (5 câu)</h2>
+                </div>
+                <p class="text-slate-600 font-semibold italic mb-5 text-sm sm:text-base">
+                    Bấm chọn đáp án đúng nhất (A, B, C hoặc D).
+                </p>
+
+                <div id="part1Container" class="space-y-5"></div>
+            </div>
+
+            <!-- PART 2 -->
+            <div class="bg-white rounded-3xl shadow-md border-2 border-teal-200 p-5 sm:p-7">
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="bg-teal-600 text-white font-black px-3.5 py-1 rounded-xl text-sm sm:text-base">PART 2</span>
+                    <h2 class="text-lg sm:text-xl font-black text-teal-800 uppercase">Đọc hiểu &amp; Chọn từ đúng (5 câu)</h2>
+                </div>
+                <p class="text-slate-600 font-semibold italic mb-4 text-sm sm:text-base">
+                    Đọc đoạn văn sau và hoàn thành các câu hỏi từ Question 6 đến Question 10.
+                </p>
+
+                <!-- Đoạn văn đọc hiểu -->
+                <div class="bg-teal-50/90 border-2 border-teal-300 rounded-2xl p-4 sm:p-5 mb-6 text-slate-800 text-base sm:text-lg leading-relaxed font-semibold">
+                    Hi! My name is Linh. I am in Class 4C. Today, I have class at seven o'clock. I have four subjects today. In the morning, I have Vietnamese and science. I like science very much. In the afternoon, I have English and maths. My best friend Hoa is in my class, too. Today, Hoa has maths, English, and science. My cousin Phong is in Class 4D. He has Vietnamese and English today. We really like our subjects at school!
+                </div>
+
+                <div id="part2Container" class="space-y-5"></div>
+            </div>
+
+            <!-- PART 3 -->
+            <div class="bg-white rounded-3xl shadow-md border-2 border-amber-200 p-5 sm:p-7">
+                <div class="flex items-center gap-3 mb-2">
+                    <span class="bg-amber-500 text-white font-black px-3.5 py-1 rounded-xl text-sm sm:text-base">PART 3</span>
+                    <h2 class="text-lg sm:text-xl font-black text-amber-800 uppercase">Sắp xếp câu &amp; Chọn từ đúng (10 câu)</h2>
+                </div>
+                <p class="text-slate-600 font-semibold italic mb-5 text-sm sm:text-base">
+                    Bấm chọn từng từ để xếp thành câu hoàn chỉnh (Câu 11–15) và chọn từ đúng trong menu xổ xuống (Câu 16–20).
+                </p>
+
+                <div id="part3Container" class="space-y-5"></div>
+            </div>
+
+            <!-- NÚT HÀNH ĐỘNG -->
+            <div class="flex flex-wrap justify-center items-center gap-4 pt-2 pb-10">
+                <button type="button" id="submitBtn" onclick="gradeQuiz()"
+                    class="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-black text-lg sm:text-xl px-10 py-4 rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition cursor-pointer">
+                    NỘP BÀI
+                </button>
+
+                <button type="button" id="exitBtn" onclick="resetAndExit()"
+                    class="hidden bg-gradient-to-r from-rose-500 to-red-600 hover:from-rose-600 hover:to-red-700 text-white font-black text-lg sm:text-xl px-10 py-4 rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition cursor-pointer">
+                    THOÁT
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Dữ liệu 20 câu hỏi chuẩn xác bám sát Unit 7 - Lesson 1 (Lớp 4)
+        const questionsData = [
+            // PART 1: MCQ (1-5)
+            {
+                id: 1,
+                part: 1,
+                type: 'mcq',
+                prompt: 'What ______ do you have today, Phong? – I have maths and science.',
+                options: [
+                    { key: 'A', text: 'subject' },
+                    { key: 'B', text: 'subjects' },
+                    { key: 'C', text: 'class' },
+                    { key: 'D', text: 'time' }
+                ],
+                answer: 'B',
+                answerDisplay: 'B. subjects',
+                explanation: 'Mẫu câu hỏi các môn học trong ngày dùng danh từ số nhiều: "What subjects do you have today?"'
+            },
+            {
+                id: 2,
+                part: 1,
+                type: 'mcq',
+                prompt: 'What subjects do you ______ today? – I have Vietnamese and English.',
+                options: [
+                    { key: 'A', text: 'am' },
+                    { key: 'B', text: 'is' },
+                    { key: 'C', text: 'have' },
+                    { key: 'D', text: 'are' }
+                ],
+                answer: 'C',
+                answerDisplay: 'C. have',
+                explanation: 'Động từ đi với môn học trong mẫu câu hỏi là "have" (có môn học gì).'
+            },
+            {
+                id: 3,
+                part: 1,
+                type: 'mcq',
+                prompt: 'I have ______ and English today.',
+                options: [
+                    { key: 'A', text: 'Vietnamese' },
+                    { key: 'B', text: 'today' },
+                    { key: 'C', text: 'subjects' },
+                    { key: 'D', text: 'seven' }
+                ],
+                answer: 'A',
+                answerDisplay: 'A. Vietnamese',
+                explanation: 'Sau "I have..." cần tên một môn học (Vietnamese – môn Tiếng Việt) để ghép với English.'
+            },
+            {
+                id: 4,
+                part: 1,
+                type: 'mcq',
+                prompt: 'Choose the odd one out. (Chọn từ khác loại)',
+                options: [
+                    { key: 'A', text: 'Vietnamese' },
+                    { key: 'B', text: 'English' },
+                    { key: 'C', text: 'science' },
+                    { key: 'D', text: 'today' }
+                ],
+                answer: 'D',
+                answerDisplay: 'D. today',
+                explanation: 'Vietnamese, English, science đều là tên môn học; còn today là từ chỉ thời gian (hôm nay).'
+            },
+            {
+                id: 5,
+                part: 1,
+                type: 'mcq',
+                prompt: 'Lucy: What subjects do you have today? – Ben: ______',
+                options: [
+                    { key: 'A', text: 'At nine, Lucy.' },
+                    { key: 'B', text: 'I have science and Vietnamese.' },
+                    { key: 'C', text: 'Yes, I do.' },
+                    { key: 'D', text: 'What time do you have class?' }
+                ],
+                answer: 'B',
+                answerDisplay: 'B. I have science and Vietnamese.',
+                explanation: 'Câu hỏi "What subjects do you have today?" hỏi về môn học, nên trả lời theo mẫu "I have + [tên môn học]."'
+            },
+
+            // PART 2: READING MCQ (6-7) & DROPDOWN (8-10)
+            {
+                id: 6,
+                part: 2,
+                type: 'mcq',
+                prompt: 'What time does Linh have class today?',
+                options: [
+                    { key: 'A', text: "At seven o'clock" },
+                    { key: 'B', text: "At eight o'clock" },
+                    { key: 'C', text: "At nine o'clock" },
+                    { key: 'D', text: "At ten o'clock" }
+                ],
+                answer: 'A',
+                answerDisplay: "A. At seven o'clock",
+                explanation: 'Thông tin trong đoạn văn: "Today, I have class at seven o\'clock."'
+            },
+            {
+                id: 7,
+                part: 2,
+                type: 'mcq',
+                prompt: 'What subjects does Linh have in the morning?',
+                options: [
+                    { key: 'A', text: 'English and maths' },
+                    { key: 'B', text: 'Vietnamese and science' },
+                    { key: 'C', text: 'Maths and science' },
+                    { key: 'D', text: 'Vietnamese and English' }
+                ],
+                answer: 'B',
+                answerDisplay: 'B. Vietnamese and science',
+                explanation: 'Thông tin trong đoạn văn: "In the morning, I have Vietnamese and science."'
+            },
+            {
+                id: 8,
+                part: 2,
+                type: 'select',
+                before: 'In the afternoon, Linh has',
+                after: '.',
+                choices: ['English and maths', 'Vietnamese and science', 'Vietnamese and English'],
+                answer: 'English and maths',
+                answerDisplay: 'English and maths',
+                explanation: 'Thông tin trong đoạn văn: "In the afternoon, I have English and maths."'
+            },
+            {
+                id: 9,
+                part: 2,
+                type: 'select',
+                before: 'Today, Hoa has',
+                after: '.',
+                choices: ['maths, English, and science', 'Vietnamese and English', 'English and maths'],
+                answer: 'maths, English, and science',
+                answerDisplay: 'maths, English, and science',
+                explanation: 'Thông tin trong đoạn văn: "Today, Hoa has maths, English, and science."'
+            },
+            {
+                id: 10,
+                part: 2,
+                type: 'select',
+                before: 'Phong is in Class 4D and he has',
+                after: 'today.',
+                choices: ['Vietnamese and English', 'maths and science', 'English and maths'],
+                answer: 'Vietnamese and English',
+                answerDisplay: 'Vietnamese and English',
+                explanation: 'Thông tin trong đoạn văn: "He (Phong) has Vietnamese and English today."'
+            },
+
+            // PART 3: REORDER (11-15)
+            {
+                id: 11,
+                part: 3,
+                type: 'reorder',
+                words: ['have', 'What', 'today', 'do', 'subjects', 'you', '?'],
+                validAnswers: ['What subjects do you have today?'],
+                answerDisplay: 'What subjects do you have today?',
+                explanation: 'Cấu trúc câu hỏi chuẩn: What subjects + do + you + have + today?'
+            },
+            {
+                id: 12,
+                part: 3,
+                type: 'reorder',
+                words: ['science', 'have', 'I', 'today', '.'],
+                validAnswers: ['I have science today.'],
+                answerDisplay: 'I have science today.',
+                explanation: 'Cấu trúc câu trả lời chuẩn: I + have + [môn học] + today.'
+            },
+            {
+                id: 13,
+                part: 3,
+                type: 'reorder',
+                words: ['maths', 'I', 'and', 'Vietnamese', 'have', '.'],
+                validAnswers: ['I have maths and Vietnamese.', 'I have Vietnamese and maths.'],
+                answerDisplay: 'I have maths and Vietnamese.',
+                explanation: 'Nối 2 môn học bằng "and" (chấp nhận cả "I have Vietnamese and maths.").'
+            },
+            {
+                id: 14,
+                part: 3,
+                type: 'reorder',
+                words: ['science', 'have', 'maths', 'I', 'and', '.'],
+                validAnswers: ['I have maths and science.', 'I have science and maths.'],
+                answerDisplay: 'I have maths and science.',
+                explanation: 'Nối 2 môn học bằng "and" (chấp nhận cả "I have science and maths.").'
+            },
+            {
+                id: 15,
+                part: 3,
+                type: 'reorder',
+                words: ['class', 'do', 'time', 'you', 'What', 'have', '?'],
+                validAnswers: ['What time do you have class?'],
+                answerDisplay: 'What time do you have class?',
+                explanation: 'Cấu trúc câu hỏi giờ vào lớp: What time + do + you + have + class?'
+            },
+
+            // PART 3: DROPDOWN (16-20)
+            {
+                id: 16,
+                part: 3,
+                type: 'select',
+                before: 'What',
+                after: 'do you have today, Hoa?',
+                choices: ['subjects', 'subject', 'time'],
+                answer: 'subjects',
+                answerDisplay: 'subjects',
+                explanation: 'Theo mẫu câu hỏi chuẩn: "What subjects do you have today?"'
+            },
+            {
+                id: 17,
+                part: 3,
+                type: 'select',
+                before: 'I',
+                after: 'Vietnamese and science today.',
+                choices: ['have', 'am', 'is'],
+                answer: 'have',
+                answerDisplay: 'have',
+                explanation: 'Chủ ngữ "I" đi với động từ "have" để nói về các môn học mình có.'
+            },
+            {
+                id: 18,
+                part: 3,
+                type: 'select',
+                before: 'I have maths',
+                after: 'English.',
+                choices: ['and', 'at', 'in'],
+                answer: 'and',
+                answerDisplay: 'and',
+                explanation: 'Dùng liên từ "and" (và) để nối hai môn học maths và English.'
+            },
+            {
+                id: 19,
+                part: 3,
+                type: 'select',
+                before: 'What subjects do you have',
+                after: '? – I have maths.',
+                choices: ['today', 'seven', 'class'],
+                answer: 'today',
+                answerDisplay: 'today',
+                explanation: 'Mẫu câu hỏi chuẩn của bài học là: "What subjects do you have today?" (Hôm nay bạn có những môn học gì?).'
+            },
+            {
+                id: 20,
+                part: 3,
+                type: 'select',
+                before: 'What subjects do you have today, Nam? – I have',
+                after: 'and science.',
+                choices: ['English', 'seven', 'today'],
+                answer: 'English',
+                answerDisplay: 'English',
+                explanation: 'Sau "I have..." cần tên một môn học (English – môn Tiếng Anh) để nối với môn science.'
+            }
+        ];
+
+        // Trạng thái sắp xếp câu của học sinh
+        let reorderState = {};
+
+        // =========================================================================
+        // CẤU HÌNH KẾT NỐI GOOGLE APPS SCRIPT (STEPUP EDU WEBHOOK)
+        // Đã tích hợp sẵn link Web App URL của Thầy/Cô:
+        // =========================================================================
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwmxnfwmFQ6GYu51tayNOBeAo0T5H4ETGAbpqs0Ee52MRlgbMUp1nlZkm6QHmxOvto/exec";
+
+        // Biến theo dõi thời gian làm bài & giám sát rời tab (khớp với Apps Script)
+        let quizStartTime = Date.now();
+        let tabViolations = 0;
+        let violationLogs = [];
+        let isQuizSubmitted = false;
+
+        document.addEventListener("visibilitychange", function () {
+            if (document.hidden && !isQuizSubmitted) {
+                tabViolations++;
+                const nowStr = new Date().toLocaleTimeString("vi-VN");
+                violationLogs.push(`Lần ${tabViolations} lúc ${nowStr}`);
+            }
+        });
+
+        function formatDuration(ms) {
+            const totalSec = Math.max(1, Math.floor(ms / 1000));
+            const mins = Math.floor(totalSec / 60);
+            const secs = totalSec % 60;
+            return mins > 0 ? `${mins} phút ${secs} giây` : `${secs} giây`;
+        }
+
+        // Khởi tạo giao diện toàn bộ 20 câu hỏi
+        function renderQuiz() {
+            const p1 = document.getElementById('part1Container');
+            const p2 = document.getElementById('part2Container');
+            const p3 = document.getElementById('part3Container');
+
+            p1.innerHTML = '';
+            p2.innerHTML = '';
+            p3.innerHTML = '';
+            reorderState = {};
+
+            questionsData.forEach((q) => {
+                const card = document.createElement('div');
+                card.id = `q-card-${q.id}`;
+                card.className = 'p-4 sm:p-5 rounded-2xl border-2 border-slate-200 bg-slate-50/60 transition-colors';
+
+                let innerHTML = '';
+
+                if (q.type === 'mcq') {
+                    innerHTML = `
+                        <div class="font-extrabold text-base sm:text-lg text-slate-800 mb-3">
+                            <span class="inline-block bg-blue-100 text-blue-800 px-2.5 py-0.5 rounded-lg mr-1.5">Question ${q.id}</span>
+                            ${q.prompt}
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                            ${q.options.map(opt => `
+                                <label id="lbl-${q.id}-${opt.key}" class="option-label flex items-center gap-3 p-3 bg-white border-2 border-slate-200 rounded-xl cursor-pointer font-bold text-slate-700 text-base">
+                                    <input type="radio" name="q${q.id}" value="${opt.key}" class="w-5 h-5 accent-blue-600 cursor-pointer" />
+                                    <span><strong class="text-blue-700">${opt.key}.</strong> ${opt.text}</span>
+                                </label>
+                            `).join('')}
+                        </div>
+                    `;
+                } else if (q.type === 'select') {
+                    innerHTML = `
+                        <div class="font-extrabold text-base sm:text-lg text-slate-800 leading-relaxed flex flex-wrap items-center gap-2">
+                            <span class="inline-block bg-teal-100 text-teal-800 px-2.5 py-0.5 rounded-lg mr-1">Question ${q.id}</span>
+                            <span>${q.before}</span>
+                            <select id="sel-${q.id}" class="px-3 py-2 bg-white border-2 border-blue-400 rounded-xl font-extrabold text-blue-800 text-base cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-300">
+                                <option value="">-- Chọn đáp án --</option>
+                                ${q.choices.map(c => `<option value="${c}">${c}</option>`).join('')}
+                            </select>
+                            <span>${q.after}</span>
+                        </div>
+                    `;
+                } else if (q.type === 'reorder') {
+                    reorderState[q.id] = [];
+                    innerHTML = `
+                        <div class="font-extrabold text-base sm:text-lg text-slate-800 mb-2">
+                            <span class="inline-block bg-amber-100 text-amber-800 px-2.5 py-0.5 rounded-lg mr-1.5">Question ${q.id}</span>
+                            Sắp xếp các từ sau thành câu đúng:
+                        </div>
+                        <div id="bank-${q.id}" class="flex flex-wrap gap-2 mb-3 p-3 bg-white rounded-xl border border-slate-200">
+                            ${q.words.map((w, idx) => `
+                                <button type="button" id="chip-${q.id}-${idx}" onclick="pickWord(${q.id}, ${idx})"
+                                    class="word-chip px-3.5 py-2 bg-amber-100 hover:bg-amber-200 text-amber-900 font-extrabold rounded-xl border-2 border-amber-300 text-base cursor-pointer">
+                                    ${w}
+                                </button>
+                            `).join('')}
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div id="ans-box-${q.id}" class="flex-1 min-h-[52px] p-2.5 bg-blue-50/70 border-2 border-dashed border-blue-400 rounded-xl flex flex-wrap items-center gap-2">
+                                <span class="text-slate-400 text-sm font-bold italic">Bấm vào các thẻ từ phía trên để xếp câu tại đây...</span>
+                            </div>
+                            <button type="button" id="clear-btn-${q.id}" onclick="clearReorder(${q.id})"
+                                class="px-3 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold rounded-xl text-sm cursor-pointer">
+                                Xóa
+                            </button>
+                        </div>
+                    `;
+                }
+
+                // Khung giải thích đáp án (ẩn trước khi nộp bài)
+                innerHTML += `
+                    <div id="feedback-${q.id}" class="hidden mt-3 pt-3 border-t border-slate-200 text-sm sm:text-base"></div>
+                `;
+
+                card.innerHTML = innerHTML;
+
+                if (q.part === 1) p1.appendChild(card);
+                else if (q.part === 2) p2.appendChild(card);
+                else p3.appendChild(card);
+            });
+        }
+
+        // Bấm chọn thẻ từ để đưa vào khung kết quả
+        function pickWord(qId, wordIdx) {
+            const q = questionsData.find(item => item.id === qId);
+            if (!q || reorderState[qId].includes(wordIdx)) return;
+
+            reorderState[qId].push(wordIdx);
+            const chip = document.getElementById(`chip-${qId}-${wordIdx}`);
+            if (chip) {
+                chip.disabled = true;
+                chip.classList.add('opacity-35', 'cursor-not-allowed');
+            }
+            updateReorderBox(qId);
+        }
+
+        // Bấm vào từ trong khung kết quả để trả lại hàng chờ
+        function unpickWord(qId, wordIdx) {
+            const submitBtn = document.getElementById('submitBtn');
+            if (submitBtn && submitBtn.disabled) return;
+
+            reorderState[qId] = reorderState[qId].filter(idx => idx !== wordIdx);
+            const chip = document.getElementById(`chip-${qId}-${wordIdx}`);
+            if (chip) {
+                chip.disabled = false;
+                chip.classList.remove('opacity-35', 'cursor-not-allowed');
+            }
+            updateReorderBox(qId);
+        }
+
+        // Xóa toàn bộ từ đã chọn của câu sắp xếp
+        function clearReorder(qId) {
+            const submitBtn = document.getElementById('submitBtn');
+            if (submitBtn && submitBtn.disabled) return;
+
+            const q = questionsData.find(item => item.id === qId);
+            reorderState[qId] = [];
+            q.words.forEach((_, idx) => {
+                const chip = document.getElementById(`chip-${qId}-${idx}`);
+                if (chip) {
+                    chip.disabled = false;
+                    chip.classList.remove('opacity-35', 'cursor-not-allowed');
+                }
+            });
+            updateReorderBox(qId);
+        }
+
+        // Cập nhật hiển thị khung câu đang ghép
+        function updateReorderBox(qId) {
+            const q = questionsData.find(item => item.id === qId);
+            const box = document.getElementById(`ans-box-${qId}`);
+            const picked = reorderState[qId];
+
+            if (picked.length === 0) {
+                box.innerHTML = '<span class="text-slate-400 text-sm font-bold italic">Bấm vào các thẻ từ phía trên để xếp câu tại đây...</span>';
+                return;
+            }
+
+            box.innerHTML = picked.map(idx => `
+                <button type="button" onclick="unpickWord(${qId}, ${idx})"
+                    class="px-3 py-1.5 bg-blue-600 text-white font-extrabold rounded-lg text-base shadow-sm hover:bg-blue-700 cursor-pointer">
+                    ${q.words[idx]}
+                </button>
+            `).join('');
+        }
+
+        // Ghép chuỗi câu chuẩn xác từ các thẻ từ đã chọn
+        function buildSentenceFromPicked(q) {
+            const tokens = reorderState[q.id].map(idx => q.words[idx]);
+            if (tokens.length === 0) return '';
+            let sentence = '';
+            tokens.forEach((tok, i) => {
+                if (i === 0) {
+                    sentence += tok;
+                } else if (tok === '.' || tok === '?') {
+                    sentence += tok;
+                } else {
+                    sentence += ' ' + tok;
+                }
+            });
+            return sentence.trim();
+        }
+
+        // Hiện thông báo lỗi nhẹ nhàng (thay thế alert)
+        function showToast(msg) {
+            const toast = document.getElementById('toastBox');
+            toast.textContent = msg;
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3500);
+        }
+
+        // CHẤM ĐIỂM BÀI LÀM
+        async function gradeQuiz() {
+            const nameInput = document.getElementById('studentName');
+            const classSelect = document.getElementById('studentClass');
+            const studentName = nameInput.value.trim();
+            const studentClass = classSelect.value;
+
+            // Validate Tên và Lớp
+            if (!studentName || !studentClass) {
+                showToast('Em vui lòng điền đầy đủ Họ và tên và chọn Lớp trước khi nộp bài nhé!');
+                document.getElementById('topHeader').scrollIntoView({ behavior: 'smooth' });
+                if (!studentName) nameInput.focus();
+                else classSelect.focus();
+                return;
+            }
+
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'ĐANG CHẤM BÀI...';
+
+            let correctCount = 0;
+            const detailsPayload = [];
+
+            questionsData.forEach((q) => {
+                let isCorrect = false;
+                let studentAnswerText = 'Chưa trả lời';
+                let questionPromptText = '';
+
+                if (q.type === 'mcq') {
+                    const checked = document.querySelector(`input[name="q${q.id}"]:checked`);
+                    const userVal = checked ? checked.value : '';
+                    isCorrect = (userVal === q.answer);
+                    questionPromptText = q.prompt;
+
+                    if (userVal) {
+                        const chosenOpt = q.options.find(o => o.key === userVal);
+                        studentAnswerText = chosenOpt ? `${chosenOpt.key}. ${chosenOpt.text}` : userVal;
+                    }
+
+                    // Đổi màu trực tiếp trên các lựa chọn
+                    q.options.forEach(opt => {
+                        const lbl = document.getElementById(`lbl-${q.id}-${opt.key}`);
+                        lbl.classList.add('disabled-opt', 'cursor-default');
+                        if (opt.key === q.answer) {
+                            lbl.classList.remove('bg-white', 'border-slate-200');
+                            lbl.classList.add('bg-emerald-100', 'border-emerald-500', 'text-emerald-900');
+                        } else if (opt.key === userVal && !isCorrect) {
+                            lbl.classList.remove('bg-white', 'border-slate-200');
+                            lbl.classList.add('bg-red-100', 'border-red-500', 'text-red-900');
+                        }
+                    });
+                } else if (q.type === 'select') {
+                    const sel = document.getElementById(`sel-${q.id}`);
+                    const userVal = sel.value;
+                    isCorrect = (userVal === q.answer);
+                    questionPromptText = `${q.before} [___] ${q.after}`.trim();
+                    studentAnswerText = userVal || 'Chưa chọn';
+
+                    sel.classList.remove('border-blue-400', 'text-blue-800');
+                    if (isCorrect) {
+                        sel.classList.add('bg-emerald-100', 'border-emerald-600', 'text-emerald-900');
+                    } else {
+                        sel.classList.add('bg-red-100', 'border-red-600', 'text-red-900');
+                    }
+                } else if (q.type === 'reorder') {
+                    const userSentence = buildSentenceFromPicked(q);
+                    isCorrect = q.validAnswers.some(ans => ans.toLowerCase() === userSentence.toLowerCase());
+                    questionPromptText = `Sắp xếp: ${q.words.join(' / ')}`;
+                    studentAnswerText = userSentence || 'Chưa xếp câu';
+
+                    const box = document.getElementById(`ans-box-${q.id}`);
+                    box.classList.remove('bg-blue-50/70', 'border-blue-400');
+                    if (isCorrect) {
+                        box.classList.add('bg-emerald-100', 'border-emerald-600');
+                    } else {
+                        box.classList.add('bg-red-100', 'border-red-600');
+                    }
+                }
+
+                if (isCorrect) correctCount++;
+
+                // Đóng gói chi tiết từng câu đúng chuẩn mảng details[] của Apps Script
+                detailsPayload.push({
+                    isCorrect: isCorrect,
+                    questionPrompt: questionPromptText,
+                    studentAnswer: studentAnswerText,
+                    correctAnswer: q.answerDisplay
+                });
+
+                // Đổi màu viền khung từng câu
+                const card = document.getElementById(`q-card-${q.id}`);
+                card.classList.remove('border-slate-200', 'bg-slate-50/60');
+                if (isCorrect) {
+                    card.classList.add('border-emerald-500', 'bg-emerald-50/40');
+                } else {
+                    card.classList.add('border-red-400', 'bg-red-50/40');
+                }
+
+                // Hiển thị ĐÁP ÁN VÀ GIẢI THÍCH bên dưới mỗi câu
+                const fb = document.getElementById(`feedback-${q.id}`);
+                fb.classList.remove('hidden');
+                fb.innerHTML = `
+                    <div class="flex items-start gap-2">
+                        <span class="font-black ${isCorrect ? 'text-emerald-700' : 'text-red-600'}">
+                            ${isCorrect ? '✔ Đúng!' : '✘ Chưa đúng!'}
+                        </span>
+                        <div>
+                            <div class="font-extrabold text-slate-800">
+                                Đáp án đúng: <span class="text-emerald-700">${q.answerDisplay}</span>
+                            </div>
+                            <div class="text-slate-600 font-semibold mt-0.5">
+                                💡 Giải thích: ${q.explanation}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            isQuizSubmitted = true;
+
+            // Khóa toàn bộ form
+            nameInput.disabled = true;
+            classSelect.disabled = true;
+            document.querySelectorAll('#quizForm input, #quizForm select, #quizForm button').forEach(el => {
+                if (el.id !== 'exitBtn') {
+                    el.disabled = true;
+                    el.classList.add('cursor-not-allowed');
+                }
+            });
+
+            // Tính điểm (0.5 điểm/câu, tối đa 10 điểm)
+            const scoreNum = Number((correctCount * 0.5).toFixed(1));
+            const score = scoreNum.toFixed(1);
+            let praise = '';
+            if (scoreNum >= 9) praise = '🌟 Xuất sắc! Con nắm bài siêu vững luôn!';
+            else if (scoreNum >= 7) praise = '👏 Giỏi lắm! Con cố gắng thêm chút nữa để đạt điểm 10 nhé!';
+            else if (scoreNum >= 5) praise = '👍 Đạt yêu cầu! Con xem lại phần giải thích bên dưới để nhớ bài hơn nhé!';
+            else praise = '💪 Cố gắng lên con nhé! Hãy đọc kỹ phần giải thích bên dưới để ôn lại bài!';
+
+            document.getElementById('resName').textContent = studentName;
+            document.getElementById('resClass').textContent = studentClass;
+            document.getElementById('resCorrect').textContent = `${correctCount}/20`;
+            document.getElementById('resScore').textContent = `${score} điểm`;
+            document.getElementById('praiseText').textContent = praise;
+
+            // Hiển thị bảng điểm & nút THOÁT
+            document.getElementById('resultBoard').classList.remove('hidden');
+            document.getElementById('submitBtn').classList.add('hidden');
+            document.getElementById('exitBtn').classList.remove('hidden');
+
+            // Cuộn lên bảng kết quả
+            document.getElementById('resultBoard').scrollIntoView({ behavior: 'smooth' });
+
+            // Gửi kết quả về Google Sheets nếu đã cấu hình GOOGLE_SCRIPT_URL
+            if (GOOGLE_SCRIPT_URL && GOOGLE_SCRIPT_URL.trim() !== "") {
+                const syncBox = document.getElementById('syncStatusBox');
+                syncBox.classList.remove('hidden');
+                syncBox.className = 'mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold bg-blue-100 text-blue-800';
+                syncBox.textContent = '⏳ Đang lưu kết quả bài làm lên Google Sheets của Thầy/Cô...';
+
+                const payload = {
+                    "Họ và tên": studentName,
+                    "Lớp": studentClass,
+                    "Thời gian": new Date().toLocaleString("vi-VN"),
+                    "Điểm": scoreNum,
+                    "Số câu đúng": `${correctCount} / 20`,
+                    "Thời_Gian_Làm_Bài": formatDuration(Date.now() - quizStartTime),
+                    "Số_Lần_Vi_Phạm": tabViolations,
+                    "Trạng_Thái_Gian_Lận": tabViolations > 0 ? `CẢNH BÁO (${tabViolations} vi phạm)` : "An toàn (0 vi phạm)",
+                    "Chi_Tiết_Vi_Phạm": violationLogs.length > 0 ? violationLogs.join("; ") : "Không có vi phạm",
+                    "Tên_Đề": "Phiếu bài tập Tuần 11 - Tiếng Anh Lớp 4 - Unit 7 Lesson 1",
+                    "details": detailsPayload
+                };
+
+                try {
+                    await fetch(GOOGLE_SCRIPT_URL.trim(), {
+                        method: "POST",
+                        mode: "no-cors",
+                        headers: {
+                            "Content-Type": "text/plain;charset=utf-8"
+                        },
+                        body: JSON.stringify(payload)
+                    });
+                    syncBox.className = 'mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold bg-emerald-100 text-emerald-800';
+                    syncBox.textContent = '✅ Đã lưu điểm và chi tiết bài làm lên Google Sheets thành công!';
+                } catch (err) {
+                    syncBox.className = 'mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold bg-amber-100 text-amber-800';
+                    syncBox.textContent = '⚠️ Chưa gửi được điểm lên mạng (Vui lòng kiểm tra kết nối Internet).';
+                }
+            }
+        }
+
+        // THOÁT: Tắt luôn bài làm ngay lập tức
+        function resetAndExit() {
+            try {
+                window.open('', '_self', '');
+                window.close();
+            } catch (e) {}
+
+            // Tắt luôn toàn bộ nội dung bài làm trên màn hình
+            document.documentElement.innerHTML = '';
+        }
+
+        // Khởi chạy lần đầu
+        window.onload = function() {
+            renderQuiz();
+        };
+    </script>
+</body>
+</html>
